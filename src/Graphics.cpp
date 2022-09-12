@@ -116,7 +116,6 @@ Graphics::~Graphics()
 		pdsv->Release();
 }
 
-
 void Graphics::BegainFrame()
 {
 
@@ -153,7 +152,6 @@ void Graphics::setViewPort(int x, int y, int width, int height)
 	vp.TopLeftY = y;
 
 	pcontext->RSSetViewports(1, &vp);
-
 }
 
 // test 
@@ -327,11 +325,11 @@ DirectX::XMMATRIX Graphics::getCamera()
 {
 	using namespace DirectX;
 
+
 	return
 		DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat3(&CameraPosition))
 		*
-		DirectX::XMMatrixRotationRollPitchYaw(-cameraRotation.y, -cameraRotation.x, 0)
-		;
+		DirectX::XMMatrixRotationRollPitchYaw(-cameraRotation.y, -cameraRotation.x, 0);
 }
 
 
