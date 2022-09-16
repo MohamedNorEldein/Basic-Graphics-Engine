@@ -9,7 +9,8 @@ private:
     ID3D11VertexShader* pvertexShaders = 0 ;
 
 public:
-    VertexShader(Graphics& gfx, const wchar_t* vertexShaderCompiledFileName = L"VertexShader1.cso") {
+    VertexShader(Graphics& gfx, const wchar_t* vertexShaderCompiledFileName = L"VertexShader1.cso"): Bindable(_VertexShader)
+    {
 
         CHECK(D3DReadFileToBlob(vertexShaderCompiledFileName, &pBlob));
         CHECK(GetDevice(gfx)->CreateVertexShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), 0, &pvertexShaders));

@@ -75,6 +75,7 @@ public:
 
     void CreatetestTriangle();
 
+public:
     inline IDXGISwapChain* getswapChain() {
         return pswapChain;
     }

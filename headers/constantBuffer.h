@@ -14,7 +14,7 @@ protected:
 
 public:
     DynamicConstantBuffer(Graphics& gfx , T& cb, unsigned int Slot ):
-        Slot(Slot)
+        Slot(Slot),Bindable(_unspecified)
     {
         D3D11_SUBRESOURCE_DATA TmatData = { 0 };
         TmatData.pSysMem = &cb;
@@ -34,7 +34,7 @@ public:
     }
 
     DynamicConstantBuffer(Graphics& gfx, unsigned int Slot ):
-    Slot(Slot)
+    Slot(Slot), Bindable(_unspecified)
     {
         
         D3D11_BUFFER_DESC bd = { 0 };
@@ -124,7 +124,8 @@ protected:
 
 public:
     StaticConstantBuffer(Graphics& gfx, T& cb, UINT Slot) :
-        Slot(Slot) {
+        Slot(Slot), Bindable(_unspecified)
+    {
         D3D11_SUBRESOURCE_DATA TmatData = { 0 };
         TmatData.pSysMem = &cb;
 
@@ -143,7 +144,7 @@ public:
     }
 
     StaticConstantBuffer(Graphics& gfx, UINT Slot):
-        Slot(Slot)
+        Slot(Slot), Bindable(_unspecified)
     {
 
         D3D11_BUFFER_DESC bd = { 0 };

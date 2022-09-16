@@ -1,8 +1,6 @@
 #include <App.h>
-#include <List.h>
-#include <VertexBuffer.h>
-
-
+#include "AugmantedTree.h"
+#include "mstring.h"
 
 int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 
@@ -17,7 +15,6 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	}
 	
-	cout(sin(0));
 	
 	std::cin.get();
 	FreeConsole();

@@ -4,7 +4,8 @@
 
 #include "WindowClass.h"
 #include "Light.h"
-#include "AssModel.h"
+#include "ObjModel.h"
+#include "Prism.h"
 
 
 #ifndef MAIN_CPP_APP_H
@@ -23,14 +24,13 @@ enum mouseEvetType {
 class App {
 private:
     Window window;
-    //Plane plane1;
-  //  Prism<4> prism, prism1;
-    AssModel model1, model2, model3;
+  
+    ObjModel model1, model2;
+    Prism cube;
     UniformLight sun;
 
     float v[2] = { 0 }, u[2] = { 0 };
     int d1 = 0;
-
 
 public:
     App();

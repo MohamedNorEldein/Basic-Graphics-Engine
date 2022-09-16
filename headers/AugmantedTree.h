@@ -189,6 +189,117 @@ namespace AugmantedTree {
 
     };
 
+    /******************************************************/
+                          /*MAP*/
+
+    template<typename keyType, typename DataType>
+    hash_value hash(void* t1, void* t2) {
+       
+        return (*((keyType*)t1)) - (*((keyType*)t2));
+    }
+
+    hash_value strhash(void* t1, void* t2);
+
+
+    template<typename keyType, typename DataType>
+    class Map:
+            protected tree
+    {
+    private:
+        node_ptr getroot() {
+            return tree_root;
+        }
+
+        struct T {
+            keyType key;
+            DataType data;
+        };
+
+
+    public:
+
+        Map( short array_length = 5) :
+                tree(hash<keyType, DataType >, sizeof(T), array_length) {
+
+        }
+
+        Map(hash_value(*hash_function)(void*, void*),short array_length = 5) :
+            tree(hash_function, sizeof(T), array_length) {
+
+        }
+
+        void insert(const keyType& key ,const DataType & data) {
+            T st{ key, data };
+            _insert((void*) & st);
+        }
+
+        void remove(const keyType& data) {
+            _remove((void*) & data);
+        }
+
+        T& find(const keyType & data) {
+            return *(T *)_find((void*) & data);
+        }
+
+        DataType& operator[](const keyType& data) {
+            return ((T *)_find((void*)& data))->data;
+        }
+
+        void print() {
+            _print();
+        }
+
+    };
+   
+
+    template<typename DataType>
+    class Map<const char * ,  DataType>
+        :
+        protected tree
+    {
+    private:
+        node_ptr getroot() {
+            return tree_root;
+        }
+
+        struct strT {
+            char key[50];
+            DataType data;
+        };
+
+    public:
+
+        Map(short array_length = 5) :
+            tree(strhash, sizeof(strT), array_length) {
+
+        }
+
+        void insert(const char* key, const DataType& data) {
+
+            strT st{0};
+            strcpy(st.key, key);
+            st.data = data;
+            _insert((void*)&st);
+        }
+
+        void remove(const char* data) {
+            _remove((void*)data);
+        }
+
+        strT& find(const char * data) {
+            return *(strT*)_find((void*)data);
+        }
+
+        DataType& operator[](const char * data) {
+            return ((strT*)_find((void*)data))->data;
+        }
+
+        void print() {
+            _print();
+        }
+
+    };
+
 }
 
 #endif //DATASTRUCTURES_CPP_AUGMANTEDTREE_H

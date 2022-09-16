@@ -124,26 +124,23 @@ namespace __BUFFER {
 #define pbuf(x) *(int*)(buf->data + (x) * size)
 
     void *find(BUFFER *buf, void *data, int start, int end, size_t size, hash_value(*hash_function)(void *, void *)) {
-//        std::cout<<pbuf(start)<<'\t'<<pbuf((start+end)/2)<<'\t'<<pbuf(end)<<'\n';
-//        std::cout<<start<<'\t'<<(start+end)/2<<'\t'<<end<<'\n';
 
-        if (end == start +1) {
+        if (end == start) {
             return buf(start);
         }
         int v = hash_function(data, buf((start + end)/2));
         if(v>0){
-            return find(buf,data,(start+end)/2,end,size,hash_function);
+            return find(buf,data,(start+end)/2+1,end,size,hash_function);
         }
         if(v<0){
             return find(buf,data,start,(start+end)/2,size,hash_function);
         }
-        return buf(start);
+        return buf((start + end) / 2);
     }
 
     void ordered_insert(BUFFER *buf, void *data, size_t size, short array_length,
                         hash_value(*hash_function)(void *, void *)) {
         void *place = find(buf, data, 0, buf->len, size, hash_function);
-//        printf("%x__  %x__", place, data);
         if (hash_function(data, place) == 0 and buf->len != 0) {
             throw ItemDoseExist(place);
         } else {

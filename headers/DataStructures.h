@@ -1,10 +1,15 @@
 
+/*
+ * update  14/9/2022
+ */
+
+
 #ifndef DATA_STRUCURE_DATA_STRUCTURES_H
 #define DATA_STRUCURE_DATA_STRUCTURES_H
+#pragma warning(disable : 4996)
 
 #include <iostream>
-#include <stdio.h>
-#include <string.h>
+#include <cstring>
 #include <valarray>
 
 #define break_line     std::cout<<"------------------------------------------------------------------------------------------------------------"<<'\n';
@@ -32,14 +37,14 @@ class ArrayIsEmpty : std::exception {
 
 class ListIsEmpty : std::exception {
 };
-typedef int hash_value;
-
+typedef float hash_value;
+typedef unsigned char byte;
 
 namespace __BUFFER {
 
     typedef struct BUFFER {
         int len;
-        unsigned char *data;
+        byte *data;
     } BUFFER;
 
     typedef struct BUFFER_ARRAY : BUFFER {
@@ -54,25 +59,25 @@ namespace __BUFFER {
 // used in short readerStack as buffer based readerStack:
     void _push_head(BUFFER &buf, void *item, size_t size, int array_length);
 
-    unsigned char *_pop_head(BUFFER &buf, size_t size);
+    byte *_pop_head(BUFFER &buf, size_t size);
 
-    void _push_tail(BUFFER &buf, unsigned char *item, size_t size, int array_length);
+    void _push_tail(BUFFER &buf, byte *item, size_t size, int array_length);
 
 // used in short queue and double queue as buffer based queue:
-    unsigned char *_pop_tail(BUFFER &buf, size_t size, int array_length);
+    byte *_pop_tail(BUFFER &buf, size_t size, int array_length);
 
-    unsigned char *_read_head(BUFFER &buf, size_t size);
+    byte *_read_head(BUFFER &buf, size_t size);
 
 //-----------------------------------
     void _push_head(BUFFER *buf, void *item, size_t size, int array_length);
 
-    unsigned char *_pop_head(BUFFER *buf, size_t size);
+    byte *_pop_head(BUFFER *buf, size_t size);
 
     void _push_tail(BUFFER *buf, void *item, size_t size, int array_length);
 
-    unsigned char *_pop_tail(BUFFER *buf, size_t size, int array_length);
+    byte *_pop_tail(BUFFER *buf, size_t size, int array_length);
 
-    unsigned char *_read_head(BUFFER *buf, size_t size);
+    byte *_read_head(BUFFER *buf, size_t size);
 
 
 
@@ -96,7 +101,7 @@ public:
         buf.size = sizeof(TYPE);
         buf.array_length = array_length;
         buf.len = 0;
-        buf.data = (unsigned char *) (new TYPE[array_length]);
+        buf.data = (byte *) (new TYPE[array_length]);
     }
 
     ~Array() {
@@ -106,7 +111,7 @@ public:
         return *(TYPE*)buf.data[i];
     }
     void push_head(TYPE item) {
-        __BUFFER::_push_head(buf, (unsigned char *) (&item), buf.size, buf.array_length);
+        __BUFFER::_push_head(buf, (byte *) (&item), buf.size, buf.array_length);
 //        std::cout << *(T*)(char *)(&item)<<'\t__'<< (item) << std::endl;
     }
 
@@ -115,7 +120,7 @@ public:
     }
 
     void push_tail(TYPE item) {
-        __BUFFER::_push_tail(buf, (unsigned char *) (&item), buf.size, buf.array_length);
+        __BUFFER::_push_tail(buf, (byte *) (&item), buf.size, buf.array_length);
     }
 
     TYPE pop_tail() {

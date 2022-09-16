@@ -31,6 +31,9 @@
     <Filter Include="ImGui">
       <UniqueIdentifier>{005a5562-0971-4cf7-9a0d-50d5d88577d2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="DataStructure">
+      <UniqueIdentifier>{36c76b06-cb4e-47cb-b8dc-c634703c1bf7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ImGui\imconfig.h">
@@ -60,15 +63,6 @@
     <ClInclude Include="headers\App.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="headers\AugmantedTree.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="headers\DataStructures.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="headers\DoubleLinkedList.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="headers\Events.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -84,12 +78,6 @@
     <ClInclude Include="headers\mndWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="headers\PixelShader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="headers\SingleLinkedList.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="headers\WindowClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -99,17 +87,8 @@
     <ClInclude Include="headers\constantBuffer.h">
       <Filter>Bindable</Filter>
     </ClInclude>
-    <ClInclude Include="headers\AssModel.h">
-      <Filter>Drawable\header</Filter>
-    </ClInclude>
     <ClInclude Include="headers\Bindable.h">
       <Filter>Bindable</Filter>
-    </ClInclude>
-    <ClInclude Include="headers\Drawable.h">
-      <Filter>Drawable\header</Filter>
-    </ClInclude>
-    <ClInclude Include="headers\Gobject.h">
-      <Filter>Drawable\header</Filter>
     </ClInclude>
     <ClInclude Include="headers\IndexBuffer.h">
       <Filter>Bindable</Filter>
@@ -126,11 +105,41 @@
     <ClInclude Include="headers\Light.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="headers\PrimativeTopology.h">
+      <Filter>Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\PixelShader.h">
+      <Filter>Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\ObjModel.h">
+      <Filter>Drawable\header</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\Drawable.h">
+      <Filter>Drawable\header</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\AugmantedTree.h">
+      <Filter>DataStructure</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\DataStructures.h">
+      <Filter>DataStructure</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\DoubleLinkedList.h">
+      <Filter>DataStructure</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\mstring.h">
+      <Filter>DataStructure</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\SingleLinkedList.h">
+      <Filter>DataStructure</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\Prism.h">
+      <Filter>Drawable\header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\App.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Events.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -141,18 +150,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Errors.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AgumantedTree.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DataStructures.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DoubleLinkedList.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SingleLinkedList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp">
@@ -179,11 +176,35 @@
     <ClCompile Include="ImGui\imgui_widgets.cpp">
       <Filter>ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="src\AssModel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Light.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\App.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ObjModel.cpp">
+      <Filter>Drawable\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Drawable.cpp">
+      <Filter>Drawable\source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AgumantedTree.cpp">
+      <Filter>DataStructure</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DataStructures.cpp">
+      <Filter>DataStructure</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DoubleLinkedList.cpp">
+      <Filter>DataStructure</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SingleLinkedList.cpp">
+      <Filter>DataStructure</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mstring.cpp">
+      <Filter>DataStructure</Filter>
+    </ClCompile>
+    <ClCompile Include="Prism.cpp">
+      <Filter>Drawable\source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -196,15 +217,9 @@
     <FxCompile Include="shaders\PixelShader1.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="shaders\PrismPixelShader.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="shaders\VertexShader1.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="x64\Debug\assimp-vc143-mtd.lib" />
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui.ini" />

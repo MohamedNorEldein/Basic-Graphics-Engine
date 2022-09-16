@@ -11,7 +11,7 @@ private:
     //wchar_t psName[250];
 
 public:
-    PixelShader(Graphics& gfx, const wchar_t* pixelShaderCompiledFileName = L"PixelShader1.cso")
+    PixelShader(Graphics& gfx, const wchar_t* pixelShaderCompiledFileName = L"PixelShader1.cso"):  Bindable(_PixelShader)
     {
 
         CHECK(D3DReadFileToBlob(pixelShaderCompiledFileName, &pBlob));

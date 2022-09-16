@@ -94,26 +94,29 @@ namespace AugmantedTree {
             return func_not_found(p);
         }
 
-        if (parent->leaf) {
-//            std::cout<<"parent len= "<<parent->len<<'\n';
+       
 
-            p[1] = __BUFFER::find(parent, data, 0, parent->len, size, hash_function);
-            if (hash_function(p[1], data) == 0) {
+        if (parent->leaf) {
+            p[1] = __BUFFER::find(parent, data, 0, parent->len-1, size, hash_function);
+
+            if (hash_function( data, p[1] ) == 0) {
+
                 return func_found(p);
             }
+           
+            
             return func_not_found(p);
         }
 
         if (hash_function(data, parent->data + (parent->len - 1) * size) > 0) {
             return read_item(parent->right, data, p, func_found, func_not_found);
-        } else if (hash_function(data, parent->data) < 0) {
-            return read_item(parent->left, data, p, func_found, func_not_found);
-        } else {
-            p[1] = __BUFFER::find(parent, data, 0, parent->len, size, hash_function);
-//            std::cout<<"data is "<< * (int*) data<<"\n";
-//            std::cout<<"p is "<< *(int*) p[1]<<"\n";
-            return func_found(p);
         }
+        if (hash_function(data, parent->data) < 0) {
+            return read_item(parent->left, data, p, func_found, func_not_found);
+        }
+        p[1] = __BUFFER::find(parent, data, 0, parent->len - 1, size, hash_function);
+        return func_found(p);
+
     }
 
     int height(tree_node *parent) {
@@ -222,7 +225,7 @@ namespace AugmantedTree {
                 ordered_insert(parent, data, size, array_length, hash_function);
                 return parent;
             } catch (ArrayIsFilled &) {
-                auto node = new tree_node;
+                auto node = new tree_node{0};
 //                {array_length, parent->data, false, nullptr, nullptr};
 
                 node->len = parent->len;
@@ -353,7 +356,9 @@ namespace AugmantedTree {
         if (parent->leaf) {
             std::cout << space(10 * (n - 1));
             std::cout << "h:-1 ";
-            read_buf(parent, p, [](void **p) { std::cout << *(int *) p[0] << ' '; });
+            read_buf(parent, p, [](void **p) {
+                printf("(%d, %d)",*(int *)p[0], *((int *)p[0]+1));
+            });
             std::cout << '\n';
             return;
         }
@@ -361,7 +366,8 @@ namespace AugmantedTree {
         _print_(parent->left, p[1], n);
         std::cout << space(10 * (n - 1));
         std::cout << "h:" << parent->height << ' ' << ' ';
-        read_buf(parent, p, [](void **p) { std::cout << *(int *) p[0] << ' '; });
+        read_buf(parent, p, [](void **p) {                 printf("(%d, %d)",*(int *)p[0], *((int *)p[0]+1));
+        });
         std::cout << '\n';
         _print_(parent->right, p[1], n);
 
@@ -437,6 +443,13 @@ namespace AugmantedTree {
         }
         iterator->push(parent);
         iterator_start(parent->left, iterator);
+    }
+
+
+
+    hash_value strhash(void* t1, void* t2) {
+
+        return strcmp((const char*)t2, (const char*)t1);
     }
 }
 

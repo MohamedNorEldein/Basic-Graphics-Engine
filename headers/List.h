@@ -29,15 +29,14 @@ public:
     Node* left, * right;
 };
 
-#define node Node<Type,count>
+#define listNode Node<Type,count>
 
 template<typename Type, int count=10>
 class List {
     // private types   
    
-
 private:
-    node* root;
+    listNode* root;
     int length;
 
 private:
@@ -45,7 +44,7 @@ private:
         return count;
     }
 
-    static node* find_node(node* parent, int q) {
+    static listNode* find_node(listNode* parent, int q) {
         if (q > parent->startCount)
             return find_node(parent->right, q);
         if (q < parent->startCount)
@@ -53,25 +52,25 @@ private:
         return parent;
     }
 
-    static Type &find_data(node* parent, int r) {
+    static Type &find_data(listNode* parent, int r) {
         return parent->data[r];
     }
 
-    static int height(node* parent) {
+    static int height(listNode* parent) {
         if (parent == nullptr) { return -1; }
 
         return parent->height;
     }
 
-    static void set_height(node* parent) {
+    static void set_height(listNode* parent) {
         if (parent == nullptr) { return; }
 
         parent->height = 1 + max(height(parent->right), height(parent->left));
     }
 
-    static node* right_r(node* x) {
-        node* y = x->right;
-        node* b = y->left;
+    static listNode* right_r(listNode* x) {
+        listNode* y = x->right;
+        listNode* b = y->left;
         y->left = x;
         x->right = b;
         set_height(b);
@@ -80,9 +79,9 @@ private:
         return y;
     }
 
-    static node* left_r(node* y) {
-        node* x = y->left;
-        node* b = x->right;
+    static listNode* left_r(listNode* y) {
+        listNode* x = y->left;
+        listNode* b = x->right;
         y->left = b;
         x->right = y;
         set_height(b);
@@ -90,13 +89,13 @@ private:
         return x;
     }
 
-    static int balance(node* parent) {
+    static int balance(listNode* parent) {
         if (parent == nullptr)
             return 0;
         return height(parent->left) - height(parent->right);
     }
 
-    static node* avl_function(node* parent) {
+    static listNode* avl_function(listNode* parent) {
 
         if (balance(parent) > 1) {
             if (balance(parent->left) < 0) {
@@ -124,13 +123,13 @@ private:
         }
     }
 
-    static node* push_s(node* parent, Type data) {
+    static listNode* push_s(listNode* parent, Type data) {
         if (parent == nullptr) {
-            node* p = new node{0};
+            listNode* p = new listNode{0};
             return p;
         }
         if (parent->right == nullptr) {
-            parent->right = new node{parent->startCount + 1, 0, {0}, nullptr, nullptr};
+            parent->right = new listNode{parent->startCount + 1, 0, {0}, nullptr, nullptr};
             parent->right->data[0] = data;
             return parent;
         }
@@ -138,7 +137,7 @@ private:
         return avl_function(parent);
     }
 
-    static void deleteNode(node* ptr) {
+    static void deleteNode(listNode* ptr) {
         if (ptr == nullptr)
             return;
         deleteNode(ptr->right);
@@ -146,7 +145,7 @@ private:
         delete ptr;
     }
 
-    static node* _pop(node* parent) {
+    static listNode* _pop(listNode* parent) {
         if (parent == nullptr) {
             throw EmptyList();
         }
@@ -159,7 +158,7 @@ private:
         return avl_function(parent);
     }
 
-    static void print_data(node* parent) {
+    static void print_data(listNode* parent) {
         std::cout << parent->startCount << ':';
         for (int i = 0; i < count; ++i) {
             std::cout << parent->data[i] << ' ';
@@ -167,7 +166,7 @@ private:
         std::cout << "\n";
     }
 
-    static void print_node(node* parent) {
+    static void print_node(listNode* parent) {
         if (!parent)
             return;
 
@@ -238,7 +237,7 @@ public:
 
 template<typename Type, int count >
 class ListIterator {
-    node** nodeArray;
+    listNode** nodeArray;
     int index,j,k,length;
 public:
     ListIterator(List<Type, count>& list) {
@@ -247,7 +246,7 @@ public:
 
         }
         length = list.length;
-        nodeArray = new node * [(unsigned int)(2 * log(list.length / count)) + 1];
+        nodeArray = new listNode * [(unsigned int)(2 * log(list.length / count)) + 1];
         //    std::cout << 2 * log(list.length / count) << '\n';
         index = 0;
         j = 0;
@@ -258,7 +257,7 @@ public:
         delete nodeArray;
     }
 private:
-    void setNode(node* parent) {
+    void setNode(listNode* parent) {
         if (parent==0)
             return;
         nodeArray[j] = parent;
@@ -298,6 +297,7 @@ public:
  
 };
 
+#undef listNode 
 
 
 #endif //DATASTRUCTURES_CPP_LIST_H

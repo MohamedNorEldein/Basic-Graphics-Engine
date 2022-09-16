@@ -11,7 +11,7 @@ cbuffer lightSource
 
 cbuffer material
 {
-    float3 color;
+    float3 color ;
 };
 
 

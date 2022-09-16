@@ -133,8 +133,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="headers\AssModel.h" />
     <ClInclude Include="headers\App.h" />
+    <ClInclude Include="headers\ObjModel.h" />
     <ClInclude Include="headers\AugmantedTree.h" />
     <ClInclude Include="headers\Bindable.h" />
     <ClInclude Include="headers\CBuffer.h" />
@@ -143,14 +143,15 @@
     <ClInclude Include="headers\DoubleLinkedList.h" />
     <ClInclude Include="headers\Drawable.h" />
     <ClInclude Include="headers\Events.h" />
-    <ClInclude Include="headers\Gobject.h" />
     <ClInclude Include="headers\Graphics.h" />
     <ClInclude Include="headers\IndexBuffer.h" />
     <ClInclude Include="headers\InputLayout.h" />
     <ClInclude Include="headers\List.h" />
     <ClInclude Include="headers\mndErrors.h" />
     <ClInclude Include="headers\mndWindow.h" />
+    <ClInclude Include="Headers\mstring.h" />
     <ClInclude Include="headers\PixelShader.h" />
+    <ClInclude Include="headers\Prism.h" />
     <ClInclude Include="headers\SingleLinkedList.h" />
     <ClInclude Include="headers\VertexBuffer.h" />
     <ClInclude Include="headers\VertexShader.h" />
@@ -164,8 +165,15 @@
     <ClInclude Include="ImGui\imstb_textedit.h" />
     <ClInclude Include="ImGui\imstb_truetype.h" />
     <ClInclude Include="headers\Light.h" />
+    <ClInclude Include="headers\PrimativeTopology.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Prism.cpp" />
+    <ClCompile Include="src\App.cpp" />
+    <ClCompile Include="src\ObjModel.cpp" />
+    <ClCompile Include="src\Drawable.cpp" />
+    <ClCompile Include="src\mstring.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
     <ClCompile Include="ImGui\imgui_demo.cpp" />
     <ClCompile Include="ImGui\imgui_draw.cpp" />
@@ -175,8 +183,6 @@
     <ClCompile Include="ImGui\imgui_widgets.cpp" />
     <ClCompile Include="src\Light.cpp" />
     <ClCompile Include="src\AgumantedTree.cpp" />
-    <ClCompile Include="src\App.cpp" />
-    <ClCompile Include="src\AssModel.cpp" />
     <ClCompile Include="src\DataStructures.cpp" />
     <ClCompile Include="src\DoubleLinkedList.cpp" />
     <ClCompile Include="src\Errors.cpp" />
@@ -211,14 +217,6 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
     </FxCompile>
-    <FxCompile Include="shaders\PrismPixelShader.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.1</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.1</ShaderModel>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
-    </FxCompile>
     <FxCompile Include="shaders\VertexShader1.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.1</ShaderModel>
@@ -227,9 +225,6 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
     </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="x64\Debug\assimp-vc143-mtd.lib" />
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui.ini" />

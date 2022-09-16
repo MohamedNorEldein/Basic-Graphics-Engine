@@ -7,7 +7,7 @@
 #include "CBuffer.h"
 #include "VertexBuffer.h"
 #include "VertexShader.h"
-
+#include "IndexBuffer.h"
 
 template<class T>
 class Gobject :

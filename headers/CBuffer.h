@@ -29,7 +29,7 @@ private:
 
 public:
 	TransformCBuffer(Graphics& gfx, UINT Slot =0u)
-		:vcb(gfx, Slot), drawableParent(nullptr)
+		:vcb(gfx, Slot), drawableParent(nullptr),Bindable(_TransforCBuffer)
 	{
 	}
 
