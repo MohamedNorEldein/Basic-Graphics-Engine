@@ -36,27 +36,31 @@ private:
 	DirectX::XMFLOAT3 theta, scale, pos;
 	Graphics& gfx;
 public:
-	PixelConstantBuffer<color> *pPCbuff;
+	PixelConstantBuffer<color>* pPCbuff;
 
 public:
 	DirectX::XMMATRIX GetTransform() override;
 
-	void GuiControl() {
+	void GuiControl(const char* name) {
 
-		if (ImGui::Begin("model")) {
+		if (ImGui::Begin(name)) {
+			
+			ImGui::SliderFloat3("model Position:", (float*)&pos, -5000.0f, +5000.0f);
+			ImGui::SliderFloat3("model Rotation:", (float*)&theta, -5.0f, +5.0f);
 
-			ImGui::SliderFloat3("camera Rotation:", (float*) & theta, -5.0f, +5.0f);
 
 			if (ImGui::Button("reset", ImVec2(50, 25))) {
 				theta.x = { 0 };
 				theta.y = { 0 };
 				theta.z = { 0 };
-
+				pos.x = { 0 };
+				pos.y = { 0 };
+				pos.z = { 0 };
+				
 			}
-
-			ImGui::End();
-
+			
 		}
+		ImGui::End();
 	}
 
 
@@ -75,16 +79,18 @@ public:
 public:
 
 	ObjModel(Graphics& gfx, GCLASS& gclass)
-		:Drawable(&gclass), gfx(gfx), pPCbuff(0), theta(0,0,0), scale(1.0,1.0,1.0),pos(0,0,0)
+		:Drawable(gclass), gfx(gfx), pPCbuff(0), theta(0, 0, 0), scale(1.0, 1.0, 1.0), pos(0, 0, 0)
 	{
 	}
 
-	ObjModel(Graphics& gfx):
-		gfx(gfx), Drawable(nullptr), theta(0, 0, 0), scale(1.0, 1.0, 1.0), pos(0, 0, 0)
+	ObjModel(Graphics& gfx) :
+		gfx(gfx), Drawable(), pPCbuff(0), theta(0, 0, 0), scale(1.0, 1.0, 1.0), pos(0, 0, 0)
 	{
 	}
 
-	~ObjModel() = default;
+	virtual ~ObjModel() {
+		std::cout << "delete objModel at :" << this << '\n';
+	};
 };
 
 

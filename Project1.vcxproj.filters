@@ -111,9 +111,6 @@
     <ClInclude Include="headers\PixelShader.h">
       <Filter>Bindable</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="headers\ObjModel.h">
       <Filter>Drawable\header</Filter>
     </ClInclude>
@@ -203,7 +200,7 @@
     <ClCompile Include="src\mstring.cpp">
       <Filter>DataStructure</Filter>
     </ClCompile>
-    <ClCompile Include="Prism.cpp">
+    <ClCompile Include="src\Prism.cpp">
       <Filter>Drawable\source</Filter>
     </ClCompile>
   </ItemGroup>
@@ -212,12 +209,6 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="shaders\AssVertexShader.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="shaders\PixelShader1.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="shaders\VertexShader1.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

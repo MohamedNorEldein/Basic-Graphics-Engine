@@ -3,7 +3,6 @@
 //
 #include <time.h>
 #include "App.h"
-#include "mstring.h"
 
 WPARAM App::go() {
 
@@ -31,23 +30,22 @@ WPARAM App::doFrame() {
 
 	window.Gfx().clearBuffer(0.5, 0.5, 0.5);
 	window.Gfx().BegainFrame();
-
+	
 	sun.bind(window.Gfx());
 	mouseHandeler();
-	model1.GuiControl();
+	
+	
+	model1.GuiControl("model 1");
 
-	/*App stuff*/
-
-	c = { 1.0f,0.0f,0.0f };
+	
 	model1.pPCbuff->update(window.Gfx(), c);
 	model1.Draw(window.Gfx());
 
 	c = { 0.0f,1.0f,0.0f };
 	model2.pPCbuff->update(window.Gfx(), c);
 	model2.Draw(window.Gfx());
-	cube.Draw(window.Gfx());
+	model2.GuiControl("model 2");
 	
-
 	/*ImGui stuff*/
 	updateView();
 
@@ -57,20 +55,21 @@ WPARAM App::doFrame() {
 	return 0;
 }
 
-App::App() : window(L"hello world", 1200, 600), sun(window.Gfx(), 0u)
-, model1(window.Gfx()), model2(window.Gfx()), cube(window.Gfx())
+App::App() : window(L"hello world", 1200, 600)
+	, sun(window.Gfx(), 0u)
+	, model1(window.Gfx()), model2(window.Gfx())
 {
 	 
 	window.Gfx().setProjection(
 		DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5, 10000.0f)
 	);
-
+	
 	//GCLASS* pMonkey_GCLASS = GenerateClassFromFile(window.Gfx(), "D:\\computer\\directX\\Project1\\Models\\monkey.obj");
-	GCLASS* pMonkey_GCLASS = GenerateClassFromFile(window.Gfx(), "Models\\monkey.obj");
-	GCLASS* pCube_GCLASS = GenerateCubeGCLASS(window.Gfx(), 4);
+	GCLASS* pMonkey_GCLASS = GenerateClassFromFile(window.Gfx(), "Models src data\\monkey.obj");
+	GCLASS* pCube_GCLASS = GenerateClassFromFile(window.Gfx(), "Models src data\\bugatti.obj");
 
-
-	model1.setGCLASS(pMonkey_GCLASS);
+	
+	model1.setGCLASS(pCube_GCLASS);
 	model1.pPCbuff = new PixelConstantBuffer<color>(window.Gfx(),c , 1u);
 	model1.getGCLASS().AddBindable(model1.pPCbuff);
 
@@ -82,17 +81,10 @@ App::App() : window(L"hello world", 1200, 600), sun(window.Gfx(), 0u)
 
 	model2.setDiminsion(100, 100, 100);
 	model2.setPos(500, 0, 1000);
-
-	cube.setGCLASS(pCube_GCLASS);
-	cube.setDiminsion(100, 100, 100);
-	cube.setPos(-500, 0, 1000);
-	cube.pPCbuff = model1.pPCbuff;
-	cube.getGCLASS().AddBindable(cube.pPCbuff);
-
-
-
-	sun.updateDir({ -10,-10,1.2 });
+	
+	sun.updateDir({ -10,10,0 });
 	sun.updateColor({ 1.0,0,0 });
+
 }
 
 void App::updateView()
@@ -111,12 +103,11 @@ void App::updateView()
 
 			u[0] = { 0 };
 			u[1] = { 0 };
+			
 		}
 
-		ImGui::End();
-
 	}
-
+	ImGui::End();
 }
 
 
@@ -126,10 +117,11 @@ void App::mouseHandeler() {
 
 }
 
+
 App::~App()
 {
 	std::cout << "delete app\n";
-
+	
 
 	return;
 }

@@ -15,46 +15,6 @@ private:
 
 	size_t vertexSize;
 public:
-	/*
-	size_t size(DXGI_FORMAT a) {
-		switch (a)
-		{
-		case DXGI_FORMAT_UNKNOWN:
-			return 0;
-		case DXGI_FORMAT_R32G32B32A32_TYPELESS:
-			return 0;
-		case DXGI_FORMAT_R32G32B32A32_FLOAT:
-			return 4 * sizeof(float);
-		case DXGI_FORMAT_R32G32B32A32_UINT:
-			return 4 * sizeof(UINT);
-		case DXGI_FORMAT_R32G32B32A32_SINT:
-			return 4 * sizeof(int);
-		case DXGI_FORMAT_R32G32B32_FLOAT:
-			return 3 * sizeof(float);
-		case DXGI_FORMAT_R32G32B32_UINT:
-			return 3 * sizeof(UINT);
-		case DXGI_FORMAT_R32G32B32_SINT:
-			return 3 * sizeof(int);
-		case DXGI_FORMAT_R32G32_FLOAT:
-			return 2 * sizeof(float);
-		case DXGI_FORMAT_R32G32_UINT:
-			return 2 * sizeof(UINT);
-		case DXGI_FORMAT_R32G32_SINT:
-			return 2 * sizeof(int);
-		case DXGI_FORMAT_D32_FLOAT:
-			return  sizeof(float);
-		case DXGI_FORMAT_R32_FLOAT:
-			return sizeof(float);
-		case DXGI_FORMAT_R32_UINT:
-			return  sizeof(UINT);
-		case DXGI_FORMAT_R32_SINT:
-			return  sizeof(int);
-		default:
-			return 0;
-		}
-	}
-	*/
-
 	
 
 public:
@@ -174,6 +134,7 @@ public:
 
 class InputLayout :
 	public Bindable
+	
 {
 private:
 	ID3D11InputLayout* pInputLayout;
@@ -206,12 +167,10 @@ public:
 
 	void bind(Graphics& gfx) {
 		GetContext(gfx)->IASetInputLayout(pInputLayout);
+		
+
 	}
 
-
-};
-
-class vertexData {
 
 };
 

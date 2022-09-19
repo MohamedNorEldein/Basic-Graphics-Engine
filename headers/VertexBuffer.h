@@ -103,6 +103,8 @@ public:
 
 	void bind(Graphics& gfx) override{
 		GetContext(gfx)->IASetVertexBuffers(0u, 1u, &pVertexBuffer, &stride, &offset);
+		
+
 	}
 
 	~VertexBuffer() {

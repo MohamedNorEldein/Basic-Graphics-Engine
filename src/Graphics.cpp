@@ -126,8 +126,12 @@ void Graphics::BegainFrame()
 
 void Graphics::EndFrame()
 {
+	
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+
+	ImGui::EndFrame();
 
 	// put buffer on screen;
 	CHECK(pswapChain->Present(1u, 0u));

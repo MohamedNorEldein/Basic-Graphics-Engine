@@ -4,7 +4,8 @@
 #include<windows.h>
 #include <iostream>
 #include <string>
-
+#include "List.h"
+#include "AugmantedTree.h"
 
 
 LRESULT CALLBACK EvetProtocol1(HWND handel, UINT msg, WPARAM w, LPARAM l);

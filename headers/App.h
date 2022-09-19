@@ -26,7 +26,7 @@ private:
     Window window;
   
     ObjModel model1, model2;
-    Prism cube;
+   
     UniformLight sun;
 
     float v[2] = { 0 }, u[2] = { 0 };

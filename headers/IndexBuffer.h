@@ -57,6 +57,8 @@ public:
 	void bind(Graphics& gfx)
 	{
 		GetContext(gfx)->IASetIndexBuffer(pindexBuffer, DXGI_FORMAT_R16_UINT, 0);
+		
+
 	}
 
 	unsigned int getIndecesNumber() {

@@ -1,8 +1,6 @@
 #include "Drawable.h"
 #include "IndexBuffer.h"
-#include "mstring.h"
-#include "List.h"
-#include "AugmantedTree.h"
+
 #include "CBuffer.h"
 
 
@@ -16,11 +14,7 @@ GCLASS::GCLASS(const char* className) :
 	for (int i = 0; i < _unspecified; ++i) {
 		cbv.push_back(0);
 	}
-	/*
-	AugmantedTree::strT<GCLASS*> st;
-	strcpy(st.key, className);
-	st.data = this;
-	*/
+	
 	Gmap.insert(className, this);
 
 }
@@ -53,6 +47,7 @@ void GCLASS::AddBindable(Bindable* bindable)
 
 GCLASS::~GCLASS()
 {
+	std::cout << "delete GCLASS at :" << this << '\n';
 	Gmap.remove(CLASS_NAME);
 }
 
@@ -90,20 +85,24 @@ void Drawable::Draw(Graphics& gfx) {
 		b->bind(gfx);
 	}
 
-	pGCLASS->getBindables()[0]->GetContext(gfx)->DrawIndexed(pGCLASS->getIndecesNumber(), 0, 0);
+	(* pGCLASS)[0]->GetContext(gfx)->DrawIndexed(pGCLASS->getIndecesNumber(), 0, 0);
 
 }
 
-Drawable::Drawable(std::string& className):
-	pGCLASS(Gmap[className.c_str()])
+Drawable::Drawable(const char* className):
+	pGCLASS(Gmap[className])
 {
 }
 
-Drawable::Drawable(GCLASS* pGCLASS) :
-	pGCLASS(pGCLASS)
+Drawable::Drawable(const GCLASS& pGCLASS) :
+	pGCLASS((GCLASS *)& pGCLASS)
+{
+}
+
+Drawable::Drawable() :
+	pGCLASS(nullptr)
 {
 
 }
-
 
 

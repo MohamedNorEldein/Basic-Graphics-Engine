@@ -23,6 +23,10 @@ public:
 
 	CBV& getBindables();
 
+	Bindable* operator[](int i) {
+		return cbv[i];
+	}
+
 	unsigned int getIndecesNumber();
 
 	void AddBindable(Bindable* bindable);
@@ -36,7 +40,7 @@ class Drawable
 {
 private:
 	GCLASS* pGCLASS;
-
+	
 public:
 	
 	void setGCLASS(GCLASS& gclass );
@@ -54,8 +58,15 @@ public:
 	virtual DirectX::XMMATRIX GetTransform() = 0;
 
 public:
-	Drawable(std::string& className);
-	Drawable(GCLASS* pGCLASS);
+	Drawable(const char* className);
+	Drawable(const GCLASS& pGCLASS);
+	Drawable();
+
+
+	virtual ~Drawable() {
+		std::cout << "delete Drawable at :" << this << '\n';
+
+	};
 };
 
 

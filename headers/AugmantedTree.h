@@ -55,7 +55,7 @@ namespace AugmantedTree {
 
         tree(hash_value(*hash_function)(void *, void *), size_t size, short array_length);
 
-        ~tree();
+        virtual ~tree();
 
 
         void ascending_read(void **p, void (*func)(void **));
@@ -220,6 +220,12 @@ namespace AugmantedTree {
 
         Map( short array_length = 5) :
                 tree(hash<keyType, DataType >, sizeof(T), array_length) {
+
+        }
+
+        ~Map() 
+        {
+            std::cout << "delete Map at :" << this << '\n';
 
         }
 

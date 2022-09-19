@@ -22,7 +22,7 @@ void ObjModel::setRotation(float x, float y, float z) {
 	theta.x = x;
 	theta.y = y;
 	theta.z = z;
-}
+} 
 
 void ObjModel::setDiminsion(float x, float y, float z) {
 	scale.x = x;
@@ -83,7 +83,7 @@ GCLASS* GenerateClassFromFile(Graphics& gfx, const char* pathToSrc) {
 
 	}
 
-
+	
 	GCLASS* pgclass = new GCLASS(pmesh->mName.C_Str());
 	VertexShader* vs = new VertexShader(gfx, L"AssVertexShader.cso");
 	pgclass->AddBindable(new VertexBuffer(gfx, vbd));
@@ -93,8 +93,6 @@ GCLASS* GenerateClassFromFile(Graphics& gfx, const char* pathToSrc) {
 	pgclass->AddBindable(new InputLayout(gfx, la, vs->getpBlob()));
 	pgclass->AddBindable(new PrimativeTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 	pgclass->AddBindable(new TransformCBuffer(gfx));
-
-	delete[] IBData;
 
 	return pgclass;
 }

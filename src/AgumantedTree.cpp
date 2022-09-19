@@ -344,6 +344,8 @@ namespace AugmantedTree {
 
 
     tree::~tree() {
+        std::cout << "delete tree at :" << this << '\n';
+
         delete_rec(tree_root);
     }
 
