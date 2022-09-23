@@ -97,7 +97,8 @@ class Array {
     __BUFFER::BUFFER_ARRAY buf;
 public:
 
-    explicit Array(short array_length) {
+    Array(short array_length) {
+
         buf.size = sizeof(TYPE);
         buf.array_length = array_length;
         buf.len = 0;
@@ -107,24 +108,41 @@ public:
     ~Array() {
         delete[] buf.data;
     }
-    TYPE operator[](int i){
-        return *(TYPE*)buf.data[i];
+
+    TYPE& operator[](int i){
+        
+        return *(TYPE*)(buf.data + i * buf.size);
     }
-    void push_head(TYPE item) {
+    void push_head(const TYPE& item) {
         __BUFFER::_push_head(buf, (byte *) (&item), buf.size, buf.array_length);
 //        std::cout << *(T*)(char *)(&item)<<'\t__'<< (item) << std::endl;
     }
 
-    TYPE pop_head() {
+    TYPE& pop_head() {
         return *(TYPE *) (__BUFFER::_pop_head(buf, buf.size));
     }
 
-    void push_tail(TYPE item) {
+    void push_tail(const TYPE& item) {
         __BUFFER::_push_tail(buf, (byte *) (&item), buf.size, buf.array_length);
     }
 
-    TYPE pop_tail() {
+    TYPE& pop_tail() {
         return *(TYPE *) (__BUFFER::_pop_tail(buf, buf.size, buf.array_length));
+    }
+
+    void clear() {
+        buf.len = 0;
+    }
+
+    int length() {
+        return  buf.len;
+    }
+
+    bool empty() {
+
+        if (!buf.len)
+            return true;
+        return false;
     }
 
 };

@@ -7,13 +7,13 @@ class LayoutStrucure {
 
 private:
 	typedef struct element {
-		size_t stride, size;
+		UINT stride, size;
 	}element;
 	
 	std::vector<D3D11_INPUT_ELEMENT_DESC> desc;
 	std::vector<element> descData;
 
-	size_t vertexSize;
+	UINT vertexSize;
 public:
 	
 
@@ -28,11 +28,11 @@ public:
 	
 	~LayoutStrucure() = default;
 
-	size_t size() {
+	UINT size() {
 		return vertexSize;
 	}
 
-	size_t count() {
+	UINT count() {
 		return desc.size();
 	}
 
@@ -58,7 +58,7 @@ public:
 
 	template<>
 	void Append<DirectX::XMFLOAT4>(const char* semantics) {
-		desc.push_back({ semantics, 0, DXGI_FORMAT::DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 });
+		desc.push_back({ semantics, 0, DXGI_FORMAT::DXGI_FORMAT_R32G32B32A32_FLOAT, 0, vertexSize, D3D11_INPUT_PER_VERTEX_DATA, 0 });
 		
 		UINT newSize = 4 * sizeof(float);
 		descData.push_back({ vertexSize,newSize });
@@ -67,7 +67,7 @@ public:
 
 	template<>
 	void Append<DirectX::XMFLOAT3>(const char* semantics) {
-		desc.push_back({ semantics, 0, DXGI_FORMAT::DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 });
+		desc.push_back({ semantics, 0, DXGI_FORMAT::DXGI_FORMAT_R32G32B32_FLOAT, 0, vertexSize, D3D11_INPUT_PER_VERTEX_DATA, 0 });
 		
 		UINT newSize = 3 * sizeof(float);
 		descData.push_back({ vertexSize,newSize });
@@ -76,7 +76,7 @@ public:
 
 	template<>
 	void Append<DirectX::XMFLOAT2>(const char* semantics) {
-		desc.push_back({ semantics, 0, DXGI_FORMAT::DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 });
+		desc.push_back({ semantics, 0, DXGI_FORMAT::DXGI_FORMAT_R32G32_FLOAT, 0, vertexSize, D3D11_INPUT_PER_VERTEX_DATA, 0 });
 
 		UINT newSize = 2 * sizeof(float);
 		descData.push_back({ vertexSize,newSize });
@@ -85,7 +85,7 @@ public:
 
 	template<>
 	void Append<float>(const char* semantics) {
-		desc.push_back({ semantics, 0, DXGI_FORMAT::DXGI_FORMAT_D32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 });
+		desc.push_back({ semantics, 0, DXGI_FORMAT::DXGI_FORMAT_D32_FLOAT, 0, vertexSize, D3D11_INPUT_PER_VERTEX_DATA, 0 });
 
 		UINT newSize =  sizeof(float);
 		descData.push_back({ vertexSize,newSize });
@@ -94,7 +94,7 @@ public:
 
 	template<>
 	void Append<int>(const char* semantics) {
-		desc.push_back({ semantics, 0, DXGI_FORMAT::DXGI_FORMAT_R32_SINT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 });
+		desc.push_back({ semantics, 0, DXGI_FORMAT::DXGI_FORMAT_R32_SINT, 0, vertexSize, D3D11_INPUT_PER_VERTEX_DATA, 0 });
 
 		UINT newSize = sizeof(int);
 		descData.push_back({ vertexSize,newSize });
@@ -103,7 +103,7 @@ public:
 
 	template<>
 	void Append<UINT>(const char* semantics) {
-		desc.push_back({ semantics, 0, DXGI_FORMAT::DXGI_FORMAT_R32_UINT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 });
+		desc.push_back({ semantics, 0, DXGI_FORMAT::DXGI_FORMAT_R32_UINT, 0, vertexSize, D3D11_INPUT_PER_VERTEX_DATA, 0 });
 
 		UINT newSize = sizeof(int);
 		descData.push_back({ vertexSize,newSize });
@@ -112,7 +112,7 @@ public:
 
 	template<>
 	void Append<DirectX::XMINT2>(const char* semantics) {
-		desc.push_back({ semantics, 0, DXGI_FORMAT::DXGI_FORMAT_R32G32_UINT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 });
+		desc.push_back({ semantics, 0, DXGI_FORMAT::DXGI_FORMAT_R32G32_UINT, 0, vertexSize, D3D11_INPUT_PER_VERTEX_DATA, 0 });
 
 		UINT newSize = 2 * sizeof(int);
 		descData.push_back({ vertexSize,newSize });
@@ -121,7 +121,7 @@ public:
 
 	template<>
 	void Append<DirectX::XMINT3>(const char* semantics) {
-		desc.push_back({ semantics, 0, DXGI_FORMAT::DXGI_FORMAT_R32G32B32_UINT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 });
+		desc.push_back({ semantics, 0, DXGI_FORMAT::DXGI_FORMAT_R32G32B32_UINT, 0, vertexSize, D3D11_INPUT_PER_VERTEX_DATA, 0 });
 
 		UINT newSize = 3 * sizeof(int);
 		descData.push_back({ vertexSize,newSize });

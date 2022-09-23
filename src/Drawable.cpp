@@ -1,21 +1,20 @@
 #include "Drawable.h"
 #include "IndexBuffer.h"
 
-#include "CBuffer.h"
+AugmantedTree::Map<const char*, GCLASS*> Gmap;
 
-
-AugmantedTree::Map<const char *, GCLASS*> Gmap;
-
+AugmantedTree::Map<const char*, GCLASS*>& GetGMAP()
+{
+	return Gmap;
+}
 
 GCLASS::GCLASS(const char* className) :
 	numIndeceies(0)
 {
 	strcpy(CLASS_NAME, className);
-	for (int i = 0; i < _unspecified; ++i) {
-		cbv.push_back(0);
-	}
-	
-	Gmap.insert(className, this);
+
+
+	Gmap.insert(CLASS_NAME, this);
 
 }
 
@@ -33,12 +32,9 @@ unsigned int GCLASS::getIndecesNumber() {
 
 void GCLASS::AddBindable(Bindable* bindable)
 {
-	if (bindable->getType() < _unspecified) {
-		cbv[bindable->getType()] = bindable;
-	}
-	else {
-		cbv.push_back(bindable);
-	}
+
+	cbv.push_back(bindable);
+
 	if (bindable->getType() == _Indexbuffer) {
 		numIndeceies = ((IndexBuffer*)bindable)->getIndecesNumber();
 	}
@@ -52,17 +48,21 @@ GCLASS::~GCLASS()
 }
 
 
-
-
 void Drawable::setGCLASS(GCLASS& gclass)
 {
-	pGCLASS = &gclass;
+	_setGCLASS(&gclass);
+}
+
+
+
+void Drawable::_setGCLASS(GCLASS* gclass) {
+	pGCLASS = gclass;
 }
 
 
 void Drawable::setGCLASS(GCLASS* gclass)
 {
-	pGCLASS = gclass;
+	_setGCLASS(gclass);
 }
 
 
@@ -73,29 +73,25 @@ GCLASS& Drawable::getGCLASS()
 
 void Drawable::setGCLASS(const char* className)
 {
-	pGCLASS = Gmap[className];
+	_setGCLASS(Gmap[className]);
 }
 
 void Drawable::Draw(Graphics& gfx) {
-
-	//updateAPI();
-	((TransformCBuffer*)pGCLASS->getBindables()[_TransforCBuffer])->setDrawableParent(this);
-
 	for (auto b : pGCLASS->getBindables()) {
 		b->bind(gfx);
 	}
 
-	(* pGCLASS)[0]->GetContext(gfx)->DrawIndexed(pGCLASS->getIndecesNumber(), 0, 0);
+	gfx.getcontext()->DrawIndexed(pGCLASS->getIndecesNumber(), 0, 0);
 
 }
 
-Drawable::Drawable(const char* className):
+Drawable::Drawable(const char* className) :
 	pGCLASS(Gmap[className])
 {
 }
 
 Drawable::Drawable(const GCLASS& pGCLASS) :
-	pGCLASS((GCLASS *)& pGCLASS)
+	pGCLASS((GCLASS*)&pGCLASS)
 {
 }
 

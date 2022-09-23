@@ -23,7 +23,7 @@ WPARAM App::go() {
 	return msg.wParam;
 
 }
-color c;
+COLOR c;
 
 WPARAM App::doFrame() {
 	/* window begain frame stuff*/
@@ -31,21 +31,16 @@ WPARAM App::doFrame() {
 	window.Gfx().clearBuffer(0.5, 0.5, 0.5);
 	window.Gfx().BegainFrame();
 	
-	sun.bind(window.Gfx());
+	lamp.bind(window.Gfx());
+	lamp.GuiControl();
+
 	mouseHandeler();
 	
-	
-	model1.GuiControl("model 1");
+	c = { 1.0,0.50,0.20 };
+	model1.GuiControl();
+	model1.pcb->update(window.Gfx(), c);
+	model1.Draw();
 
-	
-	model1.pPCbuff->update(window.Gfx(), c);
-	model1.Draw(window.Gfx());
-
-	c = { 0.0f,1.0f,0.0f };
-	model2.pPCbuff->update(window.Gfx(), c);
-	model2.Draw(window.Gfx());
-	model2.GuiControl("model 2");
-	
 	/*ImGui stuff*/
 	updateView();
 
@@ -56,34 +51,18 @@ WPARAM App::doFrame() {
 }
 
 App::App() : window(L"hello world", 1200, 600)
-	, sun(window.Gfx(), 0u)
-	, model1(window.Gfx()), model2(window.Gfx())
+	, lamp(window.Gfx(), 0u)
+	//, model1(window.Gfx())
+	, model1(window.Gfx(),"Models src data\\nanosuit.obj")
 {
 	 
-	window.Gfx().setProjection(
-		DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5, 10000.0f)
-	);
-	
-	//GCLASS* pMonkey_GCLASS = GenerateClassFromFile(window.Gfx(), "D:\\computer\\directX\\Project1\\Models\\monkey.obj");
-	GCLASS* pMonkey_GCLASS = GenerateClassFromFile(window.Gfx(), "Models src data\\monkey.obj");
-	GCLASS* pCube_GCLASS = GenerateClassFromFile(window.Gfx(), "Models src data\\bugatti.obj");
+	window.Gfx().setProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5, 10000.0f));
 
-	
-	model1.setGCLASS(pCube_GCLASS);
-	model1.pPCbuff = new PixelConstantBuffer<color>(window.Gfx(),c , 1u);
-	model1.getGCLASS().AddBindable(model1.pPCbuff);
-
+	model1.setPos(0, 0, 100);
 	model1.setDiminsion(100, 100, 100);
-	model1.setPos(0, 0, 1000);
-
-	model2.setGCLASS(pMonkey_GCLASS->getClassName());
-	model2.pPCbuff = model1.pPCbuff;
-
-	model2.setDiminsion(100, 100, 100);
-	model2.setPos(500, 0, 1000);
 	
-	sun.updateDir({ -10,10,0 });
-	sun.updateColor({ 1.0,0,0 });
+	lamp.updateDir({ -1.0,1.0,1.0 });
+	lamp.updateColor({ 1.0,0,0 });
 
 }
 

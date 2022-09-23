@@ -25,74 +25,121 @@
 #endif // _DEBUG
 
 __declspec(align(16))
-struct color {
+struct COLOR {
 	float r, b, g;
 };
 
-class ObjModel :
+class ObjMesh:
 	public Drawable
 {
 private:
 	DirectX::XMFLOAT3 theta, scale, pos;
-	Graphics& gfx;
-public:
-	PixelConstantBuffer<color>* pPCbuff;
+	char name[50];
 
-public:
-	DirectX::XMMATRIX GetTransform() override;
+private:
 
-	void GuiControl(const char* name) {
+	void updateAPI(Graphics& gfx, TransformCBuffer& tr,const DirectX::XMMATRIX& PTrMat);
 
-		if (ImGui::Begin(name)) {
-			
-			ImGui::SliderFloat3("model Position:", (float*)&pos, -5000.0f, +5000.0f);
-			ImGui::SliderFloat3("model Rotation:", (float*)&theta, -5.0f, +5.0f);
-
-
-			if (ImGui::Button("reset", ImVec2(50, 25))) {
-				theta.x = { 0 };
-				theta.y = { 0 };
-				theta.z = { 0 };
-				pos.x = { 0 };
-				pos.y = { 0 };
-				pos.z = { 0 };
-				
-			}
-			
-		}
-		ImGui::End();
-	}
-
-
-	virtual void setPos(float x, float y, float z);
-
-	virtual void setRotation(float x, float y, float z);
-
-	virtual void setDiminsion(float x, float y, float z);
-
-	virtual void updatePos(float x, float y, float z);
-
-	virtual void updateRotation(float x, float y, float z);
-
-	virtual void updateDiminsion(float x, float y, float z);
+	void _setGCLASS(GCLASS* gc);
 
 public:
 
-	ObjModel(Graphics& gfx, GCLASS& gclass)
-		:Drawable(gclass), gfx(gfx), pPCbuff(0), theta(0, 0, 0), scale(1.0, 1.0, 1.0), pos(0, 0, 0)
-	{
-	}
+	 void setPos(float x, float y, float z);
 
-	ObjModel(Graphics& gfx) :
-		gfx(gfx), Drawable(), pPCbuff(0), theta(0, 0, 0), scale(1.0, 1.0, 1.0), pos(0, 0, 0)
-	{
-	}
+	 void setRotation(float x, float y, float z);
 
-	virtual ~ObjModel() {
-		std::cout << "delete objModel at :" << this << '\n';
-	};
+	 void setDiminsion(float x, float y, float z);
+
+	 void updatePos(float x, float y, float z);
+
+	 void updateRotation(float x, float y, float z);
+
+	 void updateDiminsion(float x, float y, float z);
+	 
+	 void addBindable(Bindable* b) {
+		 getGCLASS().AddBindable(b);
+	 }
+
+	 const char* const getName() {
+		 return name;
+	 }
+
+public:
+	ObjMesh(const char* name);
+	ObjMesh(const char* name,GCLASS& gclass);
+	ObjMesh(const char* name,const char* gclassName);
+
+	~ObjMesh();
+
+	friend class ObjNode;
+};
+
+class ObjNode {
+private:
+	
+public :
+	char name[CHAR_MAX];
+	DirectX::XMFLOAT3 theta, pos, scale;
+	std::vector<ObjNode * > cheldren;
+	std::vector<ObjMesh * > meshs;
+public:
+	ObjNode(const char* name);
+	ObjNode(const char* name, const DirectX::XMFLOAT3& pos, const DirectX::XMFLOAT3& rotation);
+
+
+	/* offset */
+	void setTransilation(float x, float y, float z);
+
+	void setRotation(float x, float y, float z);
+
+	void setDiminsion(float x, float y, float z);
+
+	/* Add Mesh */
+	void attachMesh(const ObjMesh& mesh);
+	void attachMesh(ObjMesh* pmesh);
+	void attachMesh(const char* pmeshName);
+
+	/* Add Node */
+	void addNode(ObjNode* pNode);
+	void addNode(const ObjNode& Node);
+
+	/* Draw */
+	void Draw(Graphics& gfx, TransformCBuffer& tr, const DirectX::XMMATRIX& parentTransform);
+
+	/* Gui Control */
+	void GuiControl();
+
 };
 
 
-GCLASS* GenerateClassFromFile(Graphics& gfx, const char* pathToSrc);
+class ObjModel 
+{
+private:
+	ObjNode* root;
+	char name[50];
+	Graphics& gfx;
+	TransformCBuffer* tr;
+	std::vector<Bindable*> commonBindables;
+	std::vector<const char *> meshsNames;
+	int selectedmesh;
 
+public:
+	PixelConstantBuffer* pcb;
+
+	ObjModel(Graphics& gfx, const char* src);
+
+	void Draw();
+	void GuiControl();
+
+	/* position */
+	void setPos(float x, float y, float z);
+
+	void setRotation(float x, float y, float z);
+
+	void setDiminsion(float x, float y, float z);
+
+	
+};
+
+
+ 

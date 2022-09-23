@@ -14,13 +14,12 @@ private:
 	const UINT offset;
 	ID3D11Buffer* pVertexBuffer;
 
-
 public:
     template<typename T>
     VertexBuffer(Graphics& gfx,std::vector<T> vertecies) :stride(sizeof(T)), offset(0u), Bindable(_VertexBuffer)
 
 	{
-
+		printf("%d\n", sizeof(T));
 		D3D11_SUBRESOURCE_DATA vdata = { 0 };
 		vdata.pSysMem = vertecies.data();
 

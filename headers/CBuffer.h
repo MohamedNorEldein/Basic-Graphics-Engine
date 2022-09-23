@@ -12,7 +12,7 @@
 
 
 class TransformCBuffer :
-	public Bindable 
+	public Bindable
 {
 private:
 
@@ -23,34 +23,31 @@ private:
 		DirectX::XMMATRIX Tr;
 	};
 
+	VertexConstantBuffer vcb;
 	
-	VertexConstantBuffer<TransformMat> vcb;
-	Drawable *drawableParent;
 
 public:
-	TransformCBuffer(Graphics& gfx, UINT Slot =0u)
-		:vcb(gfx, Slot), drawableParent(nullptr),Bindable(_TransforCBuffer)
+	TransformCBuffer(Graphics& gfx, UINT Slot = 0u)
+		:vcb(gfx, Slot, sizeof(TransformMat)), Bindable(_TransforCBuffer)
 	{
 	}
 
-	void setDrawableParent(Drawable* _drawableParent) {
-		drawableParent = _drawableParent;
-	}
-
-	void bind(Graphics& gfx) {
-		vcb.update(gfx, { 
-
-				DirectX::XMMatrixTranspose(
-				drawableParent->GetTransform()
-		),
+	void update(Graphics& gfx,const DirectX::XMMATRIX& Tr) {
+		vcb.update(gfx, 
+		TransformMat{
+				DirectX::XMMatrixTranspose(Tr)
+			,
 			DirectX::XMMatrixTranspose(
-				drawableParent->GetTransform()
+				Tr
 				*
 				gfx.getCamera()
 				*
-				gfx.getProjection()
-		)
-			});
+				gfx.getProjection())
+		});
+	}
+
+	void bind(Graphics& gfx) {
+
 		vcb.bind(gfx);
 
 	}

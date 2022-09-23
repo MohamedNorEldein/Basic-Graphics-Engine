@@ -17,7 +17,7 @@ D3D11_INPUT_ELEMENT_DESC  ied[] = {
 
 
 Prism::Prism(Graphics& gfx) :
-	ObjModel(gfx)
+	ObjMesh(gfx)
 {
 }
 

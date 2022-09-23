@@ -4,7 +4,7 @@
 
 
 class Prism :
-    public ObjModel
+    public ObjMesh
 {
 public:
    

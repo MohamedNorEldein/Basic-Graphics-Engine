@@ -10,9 +10,9 @@
 
 enum  bindableType
 {
-	_Indexbuffer = 0, _VertexBuffer, _Layout, _PixelShader, _VertexShader, _PrimativeTopology, _TransforCBuffer //Basic members
+	_Indexbuffer = 0, _VertexBuffer,
+	_Layout, _PixelShader, _VertexShader, _PrimativeTopology, _TransforCBuffer ,  _PixelConstantBuffer, _VertexConstantBuffer ,_unspecified
 
-	,_unspecified,  _PixelConstantBuffer, _VertexConstantBuffer //addtional
 };
 
 

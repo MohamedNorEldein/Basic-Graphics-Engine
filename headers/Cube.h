@@ -1,141 +1,109 @@
 #pragma once
-#include "Gobject.h"
+#include "Drawable.h"
+
+#include "constantBuffer.h"
+#include "InputLayout.h"
+#include "PixelShader.h"
+#include "CBuffer.h"
+#include "VertexBuffer.h"
+#include "VertexShader.h"
+#include "IndexBuffer.h"
+#include "PrimativeTopology.h"
 
 
+//GCLASS* GenerateCubeGCLASS(Graphics& );
 
 class Cube :
-    public Gobject<Cube>
+	public Drawable
 {
-private:
-   
-    struct pixelCbuffData {
-        color c[6];
-        vertex normal[6];
-    };
+public:
 
-  
-private:
-    // data 
-    // vertex buffer data
-    std::vector<vertex> vBuffData = {
-    { -1.0f, -1.0f, -1.0f},
-    {  1.0f, -1.0f, -1.0f},
-    { -1.0f,  1.0f, -1.0f},
-    {  1.0f,  1.0f, -1.0f },
+	__declspec(align(16))
+		struct COLOR {
+		float r, b, g;
+	};
 
-    { -1.0f, -1.0f,  1.0f},
-    {  1.0f, -1.0f,  1.0f},
-    { -1.0f,  1.0f,  1.0f},
-    {  1.0f,  1.0f,  1.0f},
-    };
-
-    // index buffer data
-    std::vector<unsigned short> indeces =
-        {
-        
-        0,2,1,	2,3,1, //bottom
-        1,3,5,	3,7,5, // front
-        2,6,3,	3,6,7, //right
-        4,5,7,	4,7,6, // top
-        0,4,2,	2,4,6, //back
-        0,1,4,	1,5,4  //left
-    };
-
-    std::vector<D3D11_INPUT_ELEMENT_DESC> ied = {
-    {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0}
-    };
-
-    pixelCbuffData colorArray =
-    {
-        1.0f,0.0f,0.0f,
-        0.0f,1.0f,0.0f,
-        0,0,1,
-        1,1,0,
-        0,1,1,
-        1,0,1,
-    
-
-         0.0f,-1.0f, 0.0f, // Bottom Side
-         0.0f, -1.0f, 0.0f, // Bottom Side
-
-        0.0f, 0.0f, 1.0f, // front Side
-         0.0f, 0.0f, 1.0f, // front Side
-
-           1.0f, 0.0f, 0.0f, // right Side
-         1.0f, 0.0f, 0.0f, // right Side
-
-         0.0f, 1.0f, 0.0f, // top Side
-         0.0f, 1.0f, 0.0f, // top Side
-
-         0.0f, 0.0f, -1.0f, // Back Side
-         0.0f, 0.0f, -1.0f, // Back Side
-
-        -1.0f, 0.0f, 0.0f, // Left Side
-        -1.0f, 0.0f, 0.0f // Left Side
-
-    };
-   
+	struct vertex {
+		DirectX::XMFLOAT3 pos;
+		DirectX::XMFLOAT3 Normal;
+	};
 
 private:
-    void Init() {
-        
-        VertexShader* vs = new VertexShader(gfx, L"VertexShader1.cso");
-        AddBindable(new IndexBuffer(gfx,indeces),_Indexbuffer);
-        AddBindable(new VertexBuffer(gfx, vBuffData));
-
-        AddBindable(vs);
-        AddBindable(new PixelShader(gfx, L"PixelShader1.cso"));
-
-        AddBindable(new InputLayout(gfx, ied,vs->getpBlob()));
-
-        AddBindable(new PixelConstantBuffer(gfx, colorArray,0));
-        AddBindable(new TransformCBuffer(gfx),_TransforCBuffer);
-        setPrimativeTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-    }
+	DirectX::XMFLOAT3 pos, theta, scale;
+	COLOR c;
+	static GCLASS* CUBE_GCLASS;
+	Graphics& gfx;
+	TransformCBuffer* tr;
+	PixelConstantBuffer* pcp;
 
 public:
-    Cube(Graphics& gfx) :
-        Gobject<Cube>(gfx)
-    {
-        if (isNotInitialized()) {
-            Init();
-        }
-    }
+	Cube(Graphics& gfx);
 
-    void setPos(float x, float y, float z) {
-        pos.x = x;
-        pos.y = y;
-        pos.z = z;
-    }
+	void Draw();
 
-    void setRotation(float x, float y, float z) {
-        theta.x = x;
-        theta.y = y;
-        theta.z = z;
-    }
+	void setPos(float x, float y, float z) {
+		pos.x = x;
+		pos.y = y;
+		pos.z = z;
+	}
 
-    void setDiminsion(float x, float y, float z) {
-        scale.x = x;
-        scale.y = y;
-        scale.z = z;
-    }
+	void setRotation(float x, float y, float z) {
+		theta.x = x;
+		theta.y = y;
+		theta.z = z;
+	}
 
-    void updatePos(float x, float y, float z) {
-        pos.x += x;
-        pos.y += y;
-        pos.z += z;
-    }
+	void setDiminsion(float x, float y, float z) {
+		scale.x = x;
+		scale.y = y;
+		scale.z = z;
+	}
 
-    void updateRotation(float x, float y, float z) {
-        theta.x += x;
-        theta.y += y;
-        theta.z += z;
-    }
-    
-    void updateDiminsion(float x, float y, float z) {
-        scale.x = x;
-        scale.y = y;
-        scale.z = z;
-    }
+	void updatePos(float x, float y, float z) {
+		pos.x += x;
+		pos.y += y;
+		pos.z += z;
+	}
+
+	void updateRotation(float x, float y, float z) {
+		theta.x += x;
+		theta.y += y;
+		theta.z += z;
+	}
+
+	void updateDiminsion(float x, float y, float z) {
+		scale.x = x;
+		scale.y = y;
+		scale.z = z;
+	}
+
+	void GuiControl() {
+		/*	change parameters of the currently selected node */
+		ImGui::Text("Position");
+		ImGui::SliderFloat("position x", &pos.x, -5000.0f, +5000.0f);
+		ImGui::SliderFloat("position y", &pos.y, -5000.0f, +5000.0f);
+		ImGui::SliderFloat("position z", &pos.z, 0.0f, +5000.0f);
+
+		ImGui::Text("Rotation");
+		ImGui::SliderAngle("rotation x", &theta.x, -180.0f, +180.0f);
+		ImGui::SliderAngle("rotation y", &theta.y, -180.0f, +180.0f);
+		ImGui::SliderAngle("rotation z", &theta.z, -180.0f, +180.0f);
+
+		ImGui::Text("Scale");
+		ImGui::SliderFloat("scale x", &scale.x, 0.0f, +1000.0f);
+		ImGui::SliderFloat("scale y", &scale.y, 0.0f, +1000.0f);
+		ImGui::SliderFloat("scale z", &scale.z, 0.0f, +1000.0f);
+
+
+		if (ImGui::Button("reset", ImVec2(50, 25))) {
+			theta.x = { 0 };
+			theta.y = { 0 };
+			theta.z = { 0 };
+			pos.x = { 0 };
+			pos.y = { 0 };
+			pos.z = { 0 };
+
+		}
+	}
 };
 

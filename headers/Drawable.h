@@ -2,7 +2,6 @@
 
 #include "Bindable.h"
 #include <vector>
-#include "IndexBuffer.h"
 
 /* interface class
 * which only made of pure virtual functions
@@ -23,8 +22,12 @@ public:
 
 	CBV& getBindables();
 
-	Bindable* operator[](int i) {
-		return cbv[i];
+	Bindable* operator[](bindableType i) {
+		for (auto a: cbv) {
+			if (i == a->getType())
+				return a;
+		}
+		return nullptr;
 	}
 
 	unsigned int getIndecesNumber();
@@ -34,28 +37,28 @@ public:
 	~GCLASS();
 };
 
-
+AugmantedTree::Map<const char*, GCLASS*>& GetGMAP();
 
 class Drawable
 {
 private:
 	GCLASS* pGCLASS;
-	
-public:
-	
-	void setGCLASS(GCLASS& gclass );
+
+protected:
+	virtual	void _setGCLASS(GCLASS*);
+
+	void setGCLASS(GCLASS& gclass);
 
 	void setGCLASS(GCLASS* gclass);
 
+	void setGCLASS(const char* className);
+
 	GCLASS& getGCLASS();
 
-	void setGCLASS(const char* className);
+public:
 
 	void Draw(Graphics& gfx);
 
-public:
-	//virtual void updateAPI() = 0;
-	virtual DirectX::XMMATRIX GetTransform() = 0;
 
 public:
 	Drawable(const char* className);

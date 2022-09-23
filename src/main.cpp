@@ -14,7 +14,8 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		app.go();
 
 	}
-	
+
+		
 	
 	std::cin.get();
 	FreeConsole();

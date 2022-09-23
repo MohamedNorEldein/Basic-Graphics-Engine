@@ -132,8 +132,8 @@
     <ClInclude Include="headers\SingleLinkedList.h">
       <Filter>DataStructure</Filter>
     </ClInclude>
-    <ClInclude Include="headers\Prism.h">
-      <Filter>Drawable\header</Filter>
+    <ClInclude Include="headers\Cube.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -200,19 +200,19 @@
     <ClCompile Include="src\mstring.cpp">
       <Filter>DataStructure</Filter>
     </ClCompile>
-    <ClCompile Include="src\Prism.cpp">
-      <Filter>Drawable\source</Filter>
+    <ClCompile Include="src\cube.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="shaders\AssPixelShader.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
+    <None Include="imgui.ini" />
+  </ItemGroup>
+  <ItemGroup>
     <FxCompile Include="shaders\AssVertexShader.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="imgui.ini" />
+    <FxCompile Include="shaders\AssPixelShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
