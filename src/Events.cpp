@@ -5,7 +5,7 @@
 #include "imgui_impl_win32.h"
 
 
-void KeyBoardMessage::pushCharMsg(WPARAM wparam) {
+void KeyBoardEvent::pushCharMsg(WPARAM wparam) {
     if (wparam == VK_BACK) {
 
         string.pop_back();
@@ -13,55 +13,59 @@ void KeyBoardMessage::pushCharMsg(WPARAM wparam) {
     string += (wchar_t(wparam));
 }
 
-void KeyBoardMessage::clearCharBuffer() {
+void KeyBoardEvent::clearCharBuffer() {
     string.clear();
 }
 
-void KeyBoardMessage::pushKeyDownMsg(WPARAM wparam) {
+void KeyBoardEvent::pushKeyDownMsg(WPARAM wparam) {
     keyState[wparam] = true;
 }
 
-void KeyBoardMessage::pushKeyUpMsg(WPARAM wparam) {
+void KeyBoardEvent::pushKeyUpMsg(WPARAM wparam) {
     keyState[wparam] = 0;
 }
 
-void KeyBoardMessage::clear() {
+void KeyBoardEvent::clear() {
     string.clear();
     keyState = 0;
 }
 
-wchar_t KeyBoardMessage::popChar() {
+wchar_t KeyBoardEvent::popChar() {
     wchar_t a = string[string.length()];
     string.pop_back();
     return a;
 }
 
-bool KeyBoardMessage::bufferIsEmpty() {
+bool KeyBoardEvent::bufferIsEmpty() {
     return string.empty();
 }
 
-size_t KeyBoardMessage::bufferLength() {
+size_t KeyBoardEvent::bufferLength() {
     return string.length();
 }
 
-bool KeyBoardMessage::isDown(keyCode key) {
-    if (keyState[key])
+bool KeyBoardEvent::isDown(keyCode key) {
+ 
+    //printf("%d", bool(keyState[key]));
+    if (bool(keyState[key])) {
+
         return true;
+    }
     return false;
 }
 
-bool KeyBoardMessage::keyEmpty() {
+bool KeyBoardEvent::keyEmpty() {
     if (keyState.count())
         return false;
     return true;
 }
 
-void KeyBoardMessage::clearKey() {
+void KeyBoardEvent::clearKey() {
     keyState = 0;
 }
 
 
-const wchar_t *KeyBoardMessage::getCharBuffer() {
+const wchar_t *KeyBoardEvent::getCharBuffer() {
     return string.c_str();
 }
 
@@ -69,7 +73,8 @@ const wchar_t *KeyBoardMessage::getCharBuffer() {
 
 void MouseEvents::onWheelPress(int _x, int _y,unsigned int s)
 {
-   
+    dx = _x - x;
+    dy = y -_y;
     x = _x;
     y = _y;
     wheelMove = 0;
@@ -78,23 +83,31 @@ void MouseEvents::onWheelPress(int _x, int _y,unsigned int s)
 
 }
 
-void MouseEvents::onWheelRelease(int _x, int _y) {
+void MouseEvents::onWheelRelease(int _x, int _y,unsigned int s) {
+    dx = _x - x;
+    dy = y - _y;
     x = _x;
     y = _y;
     wheelMove = 0;
     type = WM_MBUTTONUP;
-    state = 0;
+    state = s;
 }
 
-void MouseEvents::onMove(int _x, int _y) {
+void MouseEvents::onMove(int _x, int _y , unsigned int s) {
+
+    dx = _x - x;
+    dy = y - _y;
     x = _x;
     y = _y;
     wheelMove = 0;
     type = 0;
-    state = 0;
+    state = s;
 }
 
 void MouseEvents::onRightPress(int _x, int _y, unsigned int s ) {
+    dx = _x - x;
+    dy = y - _y;
+
     x = _x;
     y = _y;
     wheelMove = 0;
@@ -104,6 +117,9 @@ void MouseEvents::onRightPress(int _x, int _y, unsigned int s ) {
 }
 
 void MouseEvents::onLeftPress(int _x, int _y, unsigned int s ) {
+    dx = _x - x;
+    dy = y - _y;
+
     x = _x;
     y = _y;
     wheelMove = 0;
@@ -112,29 +128,35 @@ void MouseEvents::onLeftPress(int _x, int _y, unsigned int s ) {
 
 }
 
-void MouseEvents::onRightRelease(int _x, int _y) {
+void MouseEvents::onRightRelease(int _x, int _y, unsigned int s) {
+    dx = _x - x;
+    dy = y - _y;
     x = _x;
     y = _y;
     wheelMove = 0;
     type = WM_RBUTTONUP;
-    state = 0;
+    state = s;
 
 }
-void MouseEvents::onLeftRelease(int _x, int _y) {
+void MouseEvents::onLeftRelease(int _x, int _y, unsigned int s) {
+    dx = _x - x;
+    dy = y - _y;
     x = _x;
     y = _y;
     wheelMove = 0;
     type = WM_LBUTTONUP;
-    state = 0;
+    state = s;
 
 }
 
-void MouseEvents::onWheelMove(int _x, int _y, int _wheel_move) {
+void MouseEvents::onWheelMove(int _x, int _y, int _wheel_move, unsigned int s) {
+    dx = _x - x;
+    dy = y - _y;
     x = _x;
     y = _y;
     wheelMove = _wheel_move;
     type = WM_MOUSEWHEEL;
-    state = 0;
+    state = s;
 
 }
 

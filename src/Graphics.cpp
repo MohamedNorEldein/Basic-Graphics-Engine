@@ -4,11 +4,14 @@
 
 #include <Graphics.h>
 
+#pragma comment(lib, "user32")
+#pragma comment(lib, "d3d11")
+#pragma comment(lib, "d3dcompiler")
+
 
 
 Graphics::Graphics(HWND windowHandel,int width, int height)
-	:	CameraPosition(0,0,128),
-	cameraRotation(0,0,1),
+	:	
 	width(width),
 	height(height)
 
@@ -158,210 +161,166 @@ void Graphics::setViewPort(int x, int y, int width, int height)
 	pcontext->RSSetViewports(1, &vp);
 }
 
-// test 
+void Graphics::setProjection(const DirectX::XMMATRIX& mat) {
+	projection = mat;
+}
 
-struct constBuffer2 {
-	float r, g, b, a;
-};
-
-struct constBuffer
-{
-	DirectX::XMMATRIX Tmat;
-
-};
-
-
-
-void Graphics::CreatetestTriangle() {
-
-	// IA
-	// vertex buffer
-
-	struct Vertex {
-		
-			float x, y, z;
-		
-	};
-
-	const Vertex vertexBufferData[] =
-	{
-
-	{ -3.0f, -3.0f, -3.0f},
-	{ 3.0f, -3.0f, -3.0f},
-
-	{ -3.0f, 3.0f, -3.0f},
-	{ 3.0f, 3.0f, -3.0f },
-
-	{ -3.0f, -3.0f, 3.0f},
-	{ 3.0f, -3.0f, 3.0f},
-
-	{ -3.0f, 3.0f, 3.0f},
-	{ 3.0f, 3.0f, 3.0f},
-
-	};
-
-	D3D11_SUBRESOURCE_DATA vdata = { 0 };
-	vdata.pSysMem = vertexBufferData;
-
-	D3D11_BUFFER_DESC BufferDesc = { 0 };
-
-	BufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	BufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	 
-	BufferDesc.CPUAccessFlags = 0u;
-	BufferDesc.MiscFlags = 0u;
-
-	BufferDesc.StructureByteStride = sizeof(Vertex);
-	BufferDesc.ByteWidth = sizeof(vertexBufferData);
-
-
-	ID3D11Buffer* pVertexBuffer=0;
- 
-	CHECK(pdevice->CreateBuffer(&BufferDesc, &vdata, &pVertexBuffer));
-
-	const UINT stride = sizeof(Vertex); 
-	const UINT offset = 0u;
-
-	pcontext->IASetVertexBuffers(0u, 1u, &pVertexBuffer, &stride, &offset);
-
-
-	//-----------------------------------------------------
-	//index buffer 
-	unsigned short indexBufferData[] = {
-		0,2,1,	2,3,1,
-		1,3,5,	3,7,5,
-		2,6,3,	3,6,7,
-		4,5,7,	4,7,6,
-		0,4,2,	2,4,6,
-		0,1,4,	1,5,4
-	};
-
-	ID3D11Buffer* pindexBuffer = 0;
-	D3D11_SUBRESOURCE_DATA idata = { 0 };
-	D3D11_BUFFER_DESC indexBufferDesc = { 0 };
-
-	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-
-	indexBufferDesc.ByteWidth = sizeof(indexBufferData);
-	cout(sizeof(indexBufferData) / sizeof(unsigned short));
-	indexBufferDesc.StructureByteStride = sizeof(unsigned short);
-
-	indexBufferDesc.CPUAccessFlags = 0u;
-	indexBufferDesc.MiscFlags = 0u;
-
-	idata.pSysMem = indexBufferData;
-	
-	pdevice->CreateBuffer(&indexBufferDesc, &idata, &pindexBuffer);
-	pcontext->IASetIndexBuffer(pindexBuffer,DXGI_FORMAT_R16_UINT,0);
-
-
-	pcontext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-
-
-	//-----------------------------
-	// pixel shader
-	ID3D11PixelShader* pPixelShaders[1] ={0};
-	ID3DBlob* pBlob;
-
-	//ID3DBlob* 
-	CHECK(D3DReadFileToBlob(L"PixelShader1.cso", &pBlob));
-	CHECK(pdevice->CreatePixelShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), 0, pPixelShaders));
-	pcontext->PSSetShader(pPixelShaders[0], 0, 0);
-
-	//--------------------------
-	//vertex shader 
-	ID3D11VertexShader* pvertexShaders[1]={0};
-
-	CHECK(D3DReadFileToBlob(L"VertexShader1.cso", &pBlob));
-
-	CHECK(pdevice->CreateVertexShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(),0,pvertexShaders));
-	pcontext->VSSetShader(pvertexShaders[0], 0, 0);
-	
-
-	//--------------------------------
-	// vertex input layout object
-	ID3D11InputLayout* pInputLayout;
-	const D3D11_INPUT_ELEMENT_DESC ied[] =
-	{ 
-	//	 name		symantic index	formate					slot =0		ofsset	input type					step rate
-		{"POSITION",0,	DXGI_FORMAT_R32G32B32_FLOAT		,0,			0,		D3D11_INPUT_PER_VERTEX_DATA,	0},
-	//	{"COLOR",	0,	DXGI_FORMAT_R8G8B8A8_UNORM		,0,		12u,		D3D11_INPUT_PER_VERTEX_DATA,	0}
-
-	};
-
-	CHECK(pdevice->CreateInputLayout(ied, std::size(ied), pBlob->GetBufferPointer(), pBlob->GetBufferSize(), &pInputLayout));
-	
-	pcontext->IASetInputLayout(pInputLayout);
-
-
-	//-------------------------
-	//render target
-	
-	pcontext->OMSetRenderTargets(1u, &pTarget, nullptr);
-
-	//--------------------
-	//veiw port
-	D3D11_VIEWPORT vp = { };
-	vp.Width = 640;
-	vp.Height = 480;
-	vp.MaxDepth = 1;
-	vp.TopLeftX = 0;
-	vp.TopLeftY = 0;
-
-	pcontext->RSSetViewports(1, &vp);
-
-	
-	//out(L"all done");
-
+ IDXGISwapChain* Graphics::getswapChain() {
+	return pswapChain;
+}
+ ID3D11DeviceContext* Graphics::getcontext() {
+	return pcontext;
+}
+ ID3D11RenderTargetView* Graphics::getTarget() {
+	return pTarget;
+}
+ ID3D11Device* Graphics::getdevice() {
+	return pdevice;
 }
 
 
-DirectX::XMMATRIX Graphics::getProjection() {
 
-	using namespace DirectX;
+DirectX::XMMATRIX& Graphics::getProjection() {
 
 	return projection;
 }
 
-DirectX::XMMATRIX Graphics::getCamera()
+DirectX::XMMATRIX Graphics::getCameraProjection()
 {
 	using namespace DirectX;
 
+	return camera.getCameraProjection();
+}
+
+FirstPearsonPerspective& Graphics::getCamera()
+{
+	return camera;
+}
+
+
+float FirstPearsonPerspective::cx = 0, FirstPearsonPerspective::cy = 0, FirstPearsonPerspective::cz = 0, FirstPearsonPerspective::rx = 0, FirstPearsonPerspective::ry = 0;
+
+
+FirstPearsonPerspective::FirstPearsonPerspective() :
+	CameraPosition(0, 0, 0),
+	cameraRotation(0, 0, 0)
+{
+
+}
+
+DirectX::XMMATRIX FirstPearsonPerspective::getCameraProjection()
+{
+	using namespace DirectX;
 
 	return
-		DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat3(&CameraPosition))
+		DirectX::XMMatrixTranslation(-CameraPosition.x, -CameraPosition.y, -CameraPosition.z)
 		*
-		DirectX::XMMatrixRotationRollPitchYaw(-cameraRotation.y, -cameraRotation.x, 0);
+		DirectX::XMMatrixRotationRollPitchYaw(0.0f, -cameraRotation.y, 0.0)
+		*
+		DirectX::XMMatrixRotationRollPitchYaw(-cameraRotation.x, 0, 0.0);
 }
 
 
-void Graphics::updatePosition(float z) {
-	CameraPosition.z += z;
-}
-
-void Graphics::updateScale(float z)
+void FirstPearsonPerspective::updateCameraPosition(float x, float y, float z)
 {
-	cameraRotation.z += 100 * z;
+	using namespace DirectX;
+	XMVECTOR vin = XMVectorSet(x, y, z, 0.0f), pos = XMLoadFloat3(&CameraPosition);
+	pos += XMVector3Transform(vin, XMMatrixRotationRollPitchYaw(cameraRotation.x, cameraRotation.y, 0));
+	XMStoreFloat3(&CameraPosition, pos);
 }
 
-void Graphics::updateCameraRotation(float x, float y) {
-	cameraRotation.x = x;
-	cameraRotation.y = y;
-
-}
-
-
-void Graphics::updateCameraRotation(int x, int y) 
+void FirstPearsonPerspective::FirstPearsonPerspective::updateCameraRotation(float x, float y)
 {
-	
-	updateCameraRotation(float(x)*0.1f / width, float(y)*0.1f / height);
-}
-
-void Graphics::updateCameraPosition(float x, float y) {
-	CameraPosition.x = x;
-	CameraPosition.y = y;
+	cameraRotation.x += x;
+	cameraRotation.y += y;
 
 }
+
+
+void FirstPearsonPerspective::CameraMouseControl(MouseEvents& mouseEvent) {
+	cx = 0;
+	cy = 0;
+	cz = 0;
+	rx = 0;
+	ry = 0;
+
+	cz = CameraScorollingSpeed * float(mouseEvent.getWheelMove());
+
+
+	if (mouseEvent.getState() == (MK_MBUTTON | MK_SHIFT))
+	{
+		cx -= CameraTransilationSpeed * float(mouseEvent.get_dx());
+		cy -= CameraTransilationSpeed * float(mouseEvent.get_dy());
+
+		mouseEvent.handeled();
+	}
+
+	if (mouseEvent.getState() & MK_MBUTTON)
+	{
+		ry -= CameraRotationSpeed * float(mouseEvent.get_dx());
+		rx += CameraRotationSpeed * float(mouseEvent.get_dy());
+		mouseEvent.handeled();
+
+	}
+
+	updateCameraPosition(cx, cy, cz);
+	updateCameraRotation(rx, ry);
+}
+
+void FirstPearsonPerspective::CameraKeyboardCotrol(KeyBoardEvent keyBoardEvent) {
+
+	cx = 0;
+	cy = 0;
+	cz = 0;
+	rx = 0;
+	ry = 0;
+
+	if (keyBoardEvent.isDown('W'))
+	{
+		cy = CameraTransilationSpeed;
+
+	}
+	if (keyBoardEvent.isDown('S'))
+	{
+		cy = -CameraTransilationSpeed;
+
+	}
+	if (keyBoardEvent.isDown('A'))
+	{
+		cx = -CameraTransilationSpeed;
+
+	}
+	if (keyBoardEvent.isDown('D'))
+	{
+		cx = CameraTransilationSpeed;
+
+	}
+
+	if (keyBoardEvent.isDown(VK_UP))
+	{
+		rx = -CameraRotationSpeed;
+
+	}
+	if (keyBoardEvent.isDown(VK_DOWN))
+	{
+		rx = CameraRotationSpeed;
+
+	}
+	if (keyBoardEvent.isDown(VK_RIGHT))
+	{
+		ry = CameraRotationSpeed;
+
+	}
+	if (keyBoardEvent.isDown(VK_LEFT))
+	{
+		ry = -CameraRotationSpeed;
+
+	}
+
+	updateCameraPosition(cx, cy, cz);
+	updateCameraRotation(rx, ry);
+}
+
+
+
 

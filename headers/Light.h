@@ -12,11 +12,11 @@ struct lightData {
 
 
 	lightData() {
-		lightDir = { 0,0,0 };
+		lightDir = { 1.0,0,0 };
 		lightColor = { 1.0,1.0,1.0 };
-		ambient = { 0.15,0.15,0.15 };
-		diffuseIntensity = 0.50;
-		ambientIntensity = 0.1;
+		ambient = { 1.0,1.0,1.0 };
+		diffuseIntensity = 0.1050;
+		ambientIntensity = 0.4;
 }
 };
 
@@ -54,7 +54,8 @@ public:
 			ImGui::SliderFloat3("position", (float*)&li.lightDir, -1.0, +1.0);
 			ImGui::SliderFloat3("ambient", (float*)&li.ambient, 0, +1.0);
 			ImGui::SliderFloat3("diffuse color", (float*)&li.lightColor, 0.0, +1.0);
-
+			ImGui::SliderFloat("Diffuse Intenisty", (float*)&li.diffuseIntensity, 0, 1.0f);
+			ImGui::SliderFloat("Ampient Intenisty", (float*)&li.ambientIntensity, 0, 1.0f);
 
 		}
 		ImGui::End();

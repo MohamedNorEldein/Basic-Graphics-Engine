@@ -24,11 +24,11 @@ enum mouseEvetType {
 class App {
 private:
     Window window;
-    ObjModel model1;
+    Cube model1, model2, model3 , model4;
     UniformLight lamp;
-
-    float v[2] = { 0 }, u[2] = { 0 };
-    int d1 = 0;
+    
+private:
+    FirstPearsonPerspective& cameraRef;
 
 public:
     App();
@@ -37,9 +37,6 @@ public:
 
 private:
     WPARAM doFrame();
-
-    void updateView();
-    void mouseHandeler();
 
 };
 

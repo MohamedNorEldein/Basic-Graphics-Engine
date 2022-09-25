@@ -1,12 +1,6 @@
 #pragma once
 #include "mndWindow.h"
-
-
-
-#include "Events.h"
 #include "Graphics.h"
-#include "Bindable.h"
-
 
 class Window
 {
@@ -19,12 +13,13 @@ private:
 	wchar_t titel[100] = { 0 };
 	int width, height;
 	HWND windowhandel;
+	byte rawBuffer[8];
 public:
 	//events
-	KeyBoardMessage keyBoardEvent;
+	KeyBoardEvent keyBoardEvent;
     MouseEvents mouseEvent;
 
-	int lastMousX, lastMouseY, lastState;
+	int lastMouseX, lastMouseY, lastState;
 public:
      void setClassName(const wchar_t* data);
 private:

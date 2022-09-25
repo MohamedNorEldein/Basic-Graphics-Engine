@@ -34,7 +34,9 @@ private:
 	static GCLASS* CUBE_GCLASS;
 	Graphics& gfx;
 	TransformCBuffer* tr;
-	PixelConstantBuffer* pcp;
+
+public:
+	static PixelConstantBuffer* pcb;
 
 public:
 	Cube(Graphics& gfx);

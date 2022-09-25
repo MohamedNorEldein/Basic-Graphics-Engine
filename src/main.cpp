@@ -8,7 +8,6 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	freopen("CONOUT$", "w", stdout);
 	freopen("CONIN$", "r", stdin);
 
-	
 	{
 		App app;
 		app.go();

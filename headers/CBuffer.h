@@ -33,6 +33,7 @@ public:
 	}
 
 	void update(Graphics& gfx,const DirectX::XMMATRIX& Tr) {
+		using namespace DirectX;
 		vcb.update(gfx, 
 		TransformMat{
 				DirectX::XMMatrixTranspose(Tr)
@@ -40,9 +41,10 @@ public:
 			DirectX::XMMatrixTranspose(
 				Tr
 				*
-				gfx.getCamera()
+				gfx.getCameraProjection()
 				*
-				gfx.getProjection())
+				gfx.getProjection()
+			)
 		});
 	}
 

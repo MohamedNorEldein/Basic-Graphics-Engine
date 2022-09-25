@@ -14,7 +14,7 @@
  */
 typedef unsigned char keyCode;
 
-class KeyBoardMessage {
+class KeyBoardEvent {
 public:
     std::bitset<256> keyState;
     std::wstring string;
@@ -57,7 +57,7 @@ public:
 
 public:
     //constructor
-    inline KeyBoardMessage() :string(),keyState() {
+    inline KeyBoardEvent() :string(),keyState() {
         a = 0;
      
     };
@@ -74,9 +74,10 @@ struct  MouseMassege {
 };
 
 class MouseEvents {
-    unsigned long type, state;
+    unsigned int type, state;
 
     int x, y,wheelMove;
+    int dx, dy;
 public:
     MouseEvents() = default;
 
@@ -89,14 +90,25 @@ public:
     int getY() const {
         return y;
     }
-    unsigned long getType() {
+
+    int get_dx() const {
+        return dx;
+    }
+
+    int get_dy() const {
+        return dy;
+    }
+
+     int getType() {
         return type;
     }
-    unsigned long getState() {
+     int getState() {
         return state;
     }
     int getWheelMove() {
-        return wheelMove/120;
+        int a = wheelMove/120;
+        wheelMove = 0;
+        return a;
     }
     void handeled() {
         type = { 0 };
@@ -109,19 +121,19 @@ private:
 
     void onWheelPress(int x, int y, unsigned int s);
 
-    void onWheelRelease(int x, int y);
+    void onWheelRelease(int x, int y, unsigned int s);
 
-    void onMove(int x, int y);
+    void onMove(int x, int y, unsigned int s);
 
     void onRightPress(int x, int y,unsigned int s );
 
     void onLeftPress(int x, int y, unsigned int s );
 
-    void onRightRelease(int x, int y);
+    void onRightRelease(int x, int y, unsigned int s);
 
-    void onLeftRelease(int x, int y);
+    void onLeftRelease(int x, int y, unsigned int s);
 
-    void onWheelMove(int x, int y, int _wheel_move);
+    void onWheelMove(int x, int y, int _wheel_move, unsigned int s);
 
 public:
    

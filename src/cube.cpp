@@ -55,12 +55,14 @@ GCLASS* GenerateCubeGCLASS(Graphics& gfx) {
 
 	GCLASS* pgclass = new GCLASS("CUBE_CLASS");
 	VertexShader* vs = new VertexShader(gfx, L"shaders\\AssVertexShader.cso");
+	Cube::pcb = new PixelConstantBuffer(gfx, 1u, sizeof(Cube::COLOR));
+
 	pgclass->AddBindable(new IndexBuffer(gfx, indeces));
 	pgclass->AddBindable(new VertexBuffer(gfx, vBuffData));
 	pgclass->AddBindable(vs);
 	pgclass->AddBindable(new PixelShader(gfx, L"shaders\\AssPixelShader.cso"));
 	pgclass->AddBindable(new InputLayout(gfx, ied, vs->getpBlob()));
-	pgclass->AddBindable(new PixelConstantBuffer(gfx, 1u, sizeof(Cube::COLOR)));
+	pgclass->AddBindable(Cube::pcb);
 	pgclass->AddBindable(new TransformCBuffer(gfx));
 	pgclass->AddBindable(new PrimativeTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 
@@ -77,7 +79,7 @@ Cube::Cube(Graphics& gfx) :
 	}
 	_setGCLASS(CUBE_GCLASS);
 	tr = (TransformCBuffer*)(*CUBE_GCLASS)[_TransforCBuffer];
-	pcp = (PixelConstantBuffer*)(*CUBE_GCLASS)[_PixelConstantBuffer];
+	//pcb = (PixelConstantBuffer*)(*CUBE_GCLASS)[_PixelConstantBuffer];
 }
 
 void Cube::Draw()
@@ -89,8 +91,10 @@ void Cube::Draw()
 		XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&theta))
 		*
 		XMMatrixTranslationFromVector(XMLoadFloat3(&pos)));
-	pcp->update(gfx, c);
+	//pcb->update(gfx, c);
 
 	((Drawable*)this)->Draw(gfx);
 
 }
+
+PixelConstantBuffer* Cube::pcb;
