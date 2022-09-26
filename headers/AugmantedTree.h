@@ -1,6 +1,8 @@
-//
-// Created by m7mdn on 7/25/2022.
-//
+/*
+* an AVL tree based system with
+* last edit in 26 septemper 2022
+* 
+*/
 
 #include "DataStructures.h"
 #include "SingleLinkedList.h"
@@ -12,77 +14,59 @@
 namespace AugmantedTree {
     using namespace __BUFFER;
 
-    typedef struct tree_leaf : BUFFER {
-        bool leaf;
-    } tree_leaf;
-
-    typedef struct tree_node : tree_leaf {
+    typedef struct tree_node : BUFFER {
         tree_node *left;
         tree_node *right;
         int height;
+        
     } tree_node;
 
     typedef SingleLinkedList::stack<node_ptr> stack;
 
-    template<typename T>
-    class treeIterator;
-
     class tree {
+
+    private:
+        /* per member data */
         size_t size;
         short array_length;
+    private:
+        /* per class data */
+        static void* data ;
+        static Array<tree_node*> arrayptr;
 
-        bool (*condition)(void *);
-
-        tree_node *insert_func(tree_node *parent, void *data);
+    private:
+        /* private methods */
+        tree_node* _findNode(tree_node* parent);
+        void* _findData();
+        void AVLtree();
+        tree_node* newNode();
+        void attachNode(tree_node* parent, tree_node* child);
+        void killNode();
+        void* _insert(tree_node* parent);
+        void _remove(tree_node* parent);
+        node_ptr min_item(node_ptr parent);
+        node_ptr max_item(node_ptr parent);
 
     protected:
-        tree_node *tree_root;
+        tree_node *root;
         int len;
-
-        hash_value
-        (*hash_function)(void *, void *);  // return true if the first item is greeter than the second argument
-
-        tree_node *read_node(tree_node *parent, void *data, void **p, node_ptr(*func_found)(node_ptr, void **),
-                             node_ptr(*func_not_found)(node_ptr, void **));
-
-        void *read_item(tree_node *parent, void *data, void **p, void *(*func_found)(void **),
-                        void *(*func_not_found)(void **));
-
+        hash_value (*hash_function)(void *, void *);  // return true if the first item is greeter than the second argument
         void descending_read(void **p, node_ptr(*func)(void **));
 
-
     public:
-
         tree(hash_value(*hash_function)(void *, void *), size_t size, short array_length);
-
         virtual ~tree();
-
-
         void ascending_read(void **p, void (*func)(void **));
-
         void conditional_read(void **p, void (*func)(void **), bool (*condition)(void *));
-
-
         void *_find(void *data);
-
         void _print();
-
         void _insert(void *data);
-
         void _remove(void *data);
-
         node_ptr copy(node_ptr parent);
 
 // friend functions ............
         friend void read_buf(BUFFER *buffer, void **p, void (*func)(void **));
-
         friend void des_read_buf(BUFFER *buffer, void **p, node_ptr(*func)(void **));
-
-        friend tree_node *removeFound(node_ptr parent, void **p);
-
-        friend void c_read_buf(BUFFER *buffer, void **p, void (*func)(void **));
-
-        friend tree_node *remove_rec(tree_node *parent, void **p);
     };
 
     template<typename T>
@@ -93,10 +77,13 @@ namespace AugmantedTree {
  * a Tree is a non-Ordered data structure as each item dont have an index to define them.
  */
     template<typename T>
+    class treeIterator;
+
+    template<typename T>
     class Tree : protected tree {
     private:
         node_ptr getroot() {
-            return tree_root;
+            return root;
         }
 
     public:
@@ -129,6 +116,10 @@ namespace AugmantedTree {
         }
         void print() {
             _print();
+        }
+
+        int length() {
+            return this->len;
         }
 
         friend treeIterator<T>;
@@ -207,7 +198,7 @@ namespace AugmantedTree {
     {
     private:
         node_ptr getroot() {
-            return tree_root;
+            return root;
         }
 
         struct T {
@@ -265,7 +256,7 @@ namespace AugmantedTree {
     {
     private:
         node_ptr getroot() {
-            return tree_root;
+            return root;
         }
 
         struct strT {

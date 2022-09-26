@@ -20,10 +20,6 @@ class NotFound : std::exception {
 };
 
 class ItemDoseExist : std::exception {
-public:
-    void *ptr;
-
-    explicit ItemDoseExist(void *ptr) : ptr(ptr) {}
 };
 
 class EmptyTree : std::exception {
@@ -40,11 +36,16 @@ class ListIsEmpty : std::exception {
 typedef float hash_value;
 typedef unsigned char byte;
 
+#define TREE_DATA(x,i) ((x)->data + (i) * size)
+#define buf(x) (buf->data + (x) * size)
+
+//#define pbuf(x) *(int*)(buf->data + (x) * size)
+
 namespace __BUFFER {
 
     typedef struct BUFFER {
         int len;
-        byte *data;
+        byte* data;
     } BUFFER;
 
     typedef struct BUFFER_ARRAY : BUFFER {
@@ -79,14 +80,9 @@ namespace __BUFFER {
 
     byte *_read_head(BUFFER *buf, size_t size);
 
-
-
-#define buf(x) (buf->data + (x) * size)
-#define pbuf(x) *(int*)(buf->data + (x) * size)
-
     void *find(BUFFER *buf, void *data, int start, int end, size_t size, hash_value(*hash_function)(void *, void *));
 
-    void ordered_insert(BUFFER *buf, void *data, size_t size, short array_length,
+    void* ordered_insert(BUFFER *buf, void *data, size_t size, short array_length,
                         hash_value(*hash_function)(void *, void *));
 
     void ordered_delete(BUFFER *buf, void *data, size_t size, hash_value(*hash_function)(void *, void *));
