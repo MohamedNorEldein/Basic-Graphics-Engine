@@ -6,7 +6,7 @@
 #include "Light.h"
 #include "ObjModel.h"
 #include "cube.h"
-
+#include "ComputeShader.h"
 
 #ifndef MAIN_CPP_APP_H
 #define MAIN_CPP_APP_H
@@ -25,10 +25,9 @@ class App {
 private:
     Window window;
     Cube model1, model2, model3 , model4;
+    ObjModel objModel;
     UniformLight lamp;
-    
-private:
-    FirstPearsonPerspective& cameraRef;
+
 
 public:
     App();

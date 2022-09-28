@@ -10,11 +10,11 @@
 
 #include <iostream>
 #include <cstring>
-#include <valarray>
+
 
 #define break_line     std::cout<<"------------------------------------------------------------------------------------------------------------"<<'\n';
 
-#define node_ptr tree_node*
+#define node_ptr AugmantedTree::tree_node*
 
 class NotFound : std::exception {
 };
@@ -88,55 +88,198 @@ namespace __BUFFER {
     void ordered_delete(BUFFER *buf, void *data, size_t size, hash_value(*hash_function)(void *, void *));
 }
 
-template<typename TYPE>
-class Array {
-    __BUFFER::BUFFER_ARRAY buf;
+typedef unsigned int UINT;
+template<typename TYPE, UINT ARRAY_LENGTH = 0u>
+class Array 
+{
+protected:
+    UINT len;
+    TYPE data[ARRAY_LENGTH];
+
+protected:
+    virtual int find(TYPE& item, UINT start, UINT end) {
+        if (end == start) {
+            return start;
+        }
+        int v = item - data[int((start + end) / 2)];
+        if (v > 0) {
+            return find(item, (start + end) / 2 + 1, end);
+        }
+        if (v < 0) {
+            return find(item, start, (start + end) / 2);
+        }
+        return ((start + end) / 2);
+    }
+
 public:
 
-    Array(short array_length) {
-
-        buf.size = sizeof(TYPE);
-        buf.array_length = array_length;
-        buf.len = 0;
-        buf.data = (byte *) (new TYPE[array_length]);
+    Array()
+        :len(0)
+    {
     }
 
     ~Array() {
-        delete[] buf.data;
     }
 
     TYPE& operator[](int i){
         
-        return *(TYPE*)(buf.data + i * buf.size);
+        return data[i];
     }
     void push_head(const TYPE& item) {
-        __BUFFER::_push_head(buf, (byte *) (&item), buf.size, buf.array_length);
-//        std::cout << *(T*)(char *)(&item)<<'\t__'<< (item) << std::endl;
+        if (len < ARRAY_LENGTH) {
+            data[len] = item;
+            len++;
+            return;
+        }
+        throw ArrayIsFilled();
     }
 
     TYPE& pop_head() {
-        return *(TYPE *) (__BUFFER::_pop_head(buf, buf.size));
+        if (len < ARRAY_LENGTH) {
+            len--;
+            return data[len];
+        }
+        throw ArrayIsEmpty();
     }
 
     void push_tail(const TYPE& item) {
-        __BUFFER::_push_tail(buf, (byte *) (&item), buf.size, buf.array_length);
+        memcpy(data, data + 1, sizeof(TYPE) * len);
+        data[0] = item;
+        len++;
     }
 
     TYPE& pop_tail() {
-        return *(TYPE *) (__BUFFER::_pop_tail(buf, buf.size, buf.array_length));
+        TYPE item = data[0];
+        len--;
+        memcpy(data + 1, data, sizeof(TYPE) * len);
+        return item;
+    }
+
+
+
+    virtual TYPE& find(TYPE& item) {
+        return data[find(item, 0u, len)];
+    }
+
+    void insert(TYPE& item) {
+        UINT pos = find(item, 0u, len);
+        memcpy(data + pos, pos + data + 1, sizeof(TYPE) * len);
+        data[pos] = item;
+        len++;
+        
     }
 
     void clear() {
-        buf.len = 0;
+        len = 0;
     }
 
     int length() {
-        return  buf.len;
+        return  len;
     }
 
     bool empty() {
 
-        if (!buf.len)
+        if (!len)
+            return true;
+        return false;
+    }
+
+};
+
+
+template<typename TYPE >
+class Array<TYPE,0u>
+{
+protected:
+    UINT ARRAY_LENGTH, len;
+    TYPE* data;
+
+protected:
+    virtual int find(TYPE& item, UINT start, UINT end) {
+        if (end == start) {
+            return start;
+        }
+        int v = item - data[int((start + end) / 2)];
+        if (v > 0) {
+            return find(item, (start + end) / 2 + 1, end);
+        }
+        if (v < 0) {
+            return find(item, start, (start + end) / 2);
+        }
+        return ((start + end) / 2);
+    }
+
+public:
+
+    Array( UINT ARRAY_LENGTH)
+        :len(0), ARRAY_LENGTH(ARRAY_LENGTH)
+    {
+        data = (TYPE*)malloc(ARRAY_LENGTH * sizeof(TYPE));
+    }
+
+    ~Array() {
+        delete[] data;
+    }
+
+    TYPE& operator[](int i) {
+
+        return data[i];
+    }
+
+    void push_head(const TYPE& item) {
+        if (len < ARRAY_LENGTH) {
+            data[len] = item;
+            len++;
+            return;
+        }
+        throw ArrayIsFilled();
+    }
+
+    TYPE& pop_head() {
+        if (len < ARRAY_LENGTH) {
+            len--;
+            return data[len];
+        }
+        throw ArrayIsEmpty();
+    }
+
+    void push_tail(const TYPE& item) {
+        memcpy(data, data + 1, sizeof(TYPE) * len);
+        data[0] = item;
+        len++;
+    }
+
+    TYPE& pop_tail() {
+        TYPE item = data[0];
+        len--;
+        memcpy(data + 1, data, sizeof(TYPE) * len);
+        return item;
+    }
+
+
+
+    virtual TYPE& find(TYPE& item) {
+        return data[find(item, 0u, len)];
+    }
+
+    virtual void insert(TYPE& item) {
+        UINT pos = find(item, 0u, len);
+        memcpy(data + pos, pos + data + 1, sizeof(TYPE) * len);
+        data[pos] = item;
+        len++;
+    }
+
+    void clear() {
+        len = 0;
+    }
+
+    int length() {
+        return  len;
+    }
+
+    bool empty() {
+
+        if (!len)
             return true;
         return false;
     }

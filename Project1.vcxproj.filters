@@ -132,8 +132,11 @@
     <ClInclude Include="headers\SingleLinkedList.h">
       <Filter>DataStructure</Filter>
     </ClInclude>
+    <ClInclude Include="headers\ComputeShader.h">
+      <Filter>Bindable</Filter>
+    </ClInclude>
     <ClInclude Include="headers\Cube.h">
-      <Filter>Header Files</Filter>
+      <Filter>Drawable\header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -201,7 +204,7 @@
       <Filter>DataStructure</Filter>
     </ClCompile>
     <ClCompile Include="src\cube.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Drawable\source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

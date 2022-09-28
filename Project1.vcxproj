@@ -133,6 +133,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="headers\ComputeShader.h" />
     <ClInclude Include="headers\App.h" />
     <ClInclude Include="headers\Cube.h" />
     <ClInclude Include="headers\ObjModel.h" />

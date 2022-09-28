@@ -33,12 +33,14 @@ WPARAM App::doFrame() {
 
 	window.Gfx().clearBuffer(0.5, 0.5, 0.5);
 	window.Gfx().BegainFrame();
+	window.Gfx().getCamera().GUIcontrol();
 
 	lamp.bind(window.Gfx());
 	lamp.GuiControl();
 
 
 	c = { 1,0,0 };
+	
 	model1.pcb->update(window.Gfx(), c);
 	model1.Draw();
 
@@ -53,10 +55,14 @@ WPARAM App::doFrame() {
 	c = { 0,1,1 };
 	model4.pcb->update(window.Gfx(), c);
 	model4.Draw();
-
+	
+	objModel.pcb->update(window.Gfx(), c);
+	objModel.Draw();
+	objModel.GuiControl();
+	
 	/* scene control */
-	cameraRef.CameraMouseControl(window.mouseEvent);
-	cameraRef.CameraKeyboardCotrol(window.keyBoardEvent);
+	window.Gfx().getCamera().CameraMouseControl(window.mouseEvent);
+	window.Gfx().getCamera().CameraKeyboardCotrol(window.keyBoardEvent);
 	/*window end frame stuff */
 	window.Gfx().EndFrame();
 	return 0;
@@ -68,7 +74,7 @@ App::App() : window(L"hello world", 1200, 600)
 , model2(window.Gfx())
 , model3(window.Gfx())
 , model4(window.Gfx())
-,cameraRef(window.Gfx().getCamera())
+,objModel(window.Gfx(), "Models src data\\moonkey.glb")
 {
 
 	window.Gfx().setProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5, 10000.0f));
@@ -85,8 +91,8 @@ App::App() : window(L"hello world", 1200, 600)
 	model4.setPos(-100, 0, -100);
 	model4.setDiminsion(50, 50, 50);
 
-	
-
+	objModel.setPos(0, 0, 100);
+	objModel.setDiminsion(10,10,10);
 
 	lamp.updateDir({ -1.0,1.0,1.0 });
 

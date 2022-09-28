@@ -28,46 +28,24 @@ __declspec(align(16))
 struct COLOR {
 	float r, b, g;
 };
+class ObjModel;
 
 class ObjMesh:
 	public Drawable
 {
 private:
-	DirectX::XMFLOAT3 theta, scale, pos;
 	char name[50];
-
 private:
-
-	void updateAPI(Graphics& gfx, TransformCBuffer& tr,const DirectX::XMMATRIX& PTrMat);
-
-	void _setGCLASS(GCLASS* gc);
-
+	void updateAPI(Graphics& gfx, TransformCBuffer& tr,DirectX::XMMATRIX PTrMat);
 public:
-
-	 void setPos(float x, float y, float z);
-
-	 void setRotation(float x, float y, float z);
-
-	 void setDiminsion(float x, float y, float z);
-
-	 void updatePos(float x, float y, float z);
-
-	 void updateRotation(float x, float y, float z);
-
-	 void updateDiminsion(float x, float y, float z);
-	 
-	 void addBindable(Bindable* b) {
-		 getGCLASS().AddBindable(b);
-	 }
-
 	 const char* const getName() {
 		 return name;
 	 }
 
+	 // void loadMesh();
+
 public:
 	ObjMesh(const char* name);
-	ObjMesh(const char* name,GCLASS& gclass);
-	ObjMesh(const char* name,const char* gclassName);
 
 	~ObjMesh();
 
@@ -79,20 +57,22 @@ private:
 	
 public :
 	char name[CHAR_MAX];
-	DirectX::XMFLOAT3 theta, pos, scale;
-	std::vector<ObjNode * > cheldren;
+	DirectX::XMMATRIX transformation;
+	std::vector<ObjNode * > children;
 	std::vector<ObjMesh * > meshs;
 public:
 	ObjNode(const char* name);
-	ObjNode(const char* name, const DirectX::XMFLOAT3& pos, const DirectX::XMFLOAT3& rotation);
+	ObjNode(aiNode* nodeptr, ObjModel* GrandParent);
 
-
+	
 	/* offset */
+	
 	void setTransilation(float x, float y, float z);
 
 	void setRotation(float x, float y, float z);
 
 	void setDiminsion(float x, float y, float z);
+	
 
 	/* Add Mesh */
 	void attachMesh(const ObjMesh& mesh);
@@ -104,7 +84,7 @@ public:
 	void addNode(const ObjNode& Node);
 
 	/* Draw */
-	void Draw(Graphics& gfx, TransformCBuffer& tr, const DirectX::XMMATRIX& parentTransform);
+	void Draw(Graphics& gfx, TransformCBuffer& tr, DirectX::XMMATRIX parentTransform);
 
 	/* Gui Control */
 	void GuiControl();
@@ -121,7 +101,12 @@ private:
 	TransformCBuffer* tr;
 	std::vector<Bindable*> commonBindables;
 	std::vector<const char *> meshsNames;
+	std::vector<ObjMesh*> AllMeshs;
 	int selectedmesh;
+	DirectX::XMFLOAT3 pos, scale, rot;
+
+private:
+	void loadModelFromFile(const char* srcFileName);
 
 public:
 	PixelConstantBuffer* pcb;
@@ -138,6 +123,7 @@ public:
 
 	void setDiminsion(float x, float y, float z);
 
+	friend class ObjNode;
 	
 };
 

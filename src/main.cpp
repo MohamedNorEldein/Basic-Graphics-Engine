@@ -1,9 +1,6 @@
 
 #include <App.h>
 
-#include <Windows.h>
-#include "AugmantedTree.h"
-
 
 int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 
@@ -15,9 +12,8 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		App app;
 		app.go();
 
+
 	}
-	
-	
 	std::cin.get();
 	FreeConsole();
 	return 0;

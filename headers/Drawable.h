@@ -1,72 +1,70 @@
 #pragma once
 
 #include "Bindable.h"
+
 #include <vector>
 
 /* interface class
 * which only made of pure virtual functions
 */
 
-typedef std::vector<Bindable*> CBV;
+//typedef std::vector<Bindable*> CBV;
 
-class GCLASS{
+class BV:
+	public Array<Bindable*,16>
+{
 private:
-	char CLASS_NAME[50] = { 0 };
-	CBV cbv; // class bindable vector
-	unsigned int numIndeceies;
-
-public:
-	GCLASS(const char* className);
-
-	const char* getClassName();
-
-	CBV& getBindables();
-
-	Bindable* operator[](bindableType i) {
-		for (auto a: cbv) {
-			if (i == a->getType())
-				return a;
+	UINT find(bindableType type, short start, short end) {
+		if (end == start) {
+			return start;
 		}
-		return nullptr;
+		UINT v = type - data[(start + end) / 2]->getType();
+
+		if (v > 0) {
+			return find(type, (start + end) / 2 + 1, end);
+		}
+		if (v < 0) {
+			return find(type, start, (start + end) / 2);
+		}
+		return ((start + end) / 2);
 	}
 
-	unsigned int getIndecesNumber();
+public:
+	BV() :
+		Array()
+	{
+	}
 
-	void AddBindable(Bindable* bindable);
+	Bindable* find(bindableType type) {
+		return data[find(type, 0, this->len - 1)];
+	}
 
-	~GCLASS();
+	void insert(Bindable* item){
+		UINT pos = find(item->getType(), 0u, len);
+		memcpy(data + pos, pos + data + 1, sizeof(void*) * len);
+		data[pos] = item;
+		len++;
+	}
+
 };
-
-AugmantedTree::Map<const char*, GCLASS*>& GetGMAP();
 
 class Drawable
 {
 private:
-	GCLASS* pGCLASS;
-
-protected:
-	virtual	void _setGCLASS(GCLASS*);
-
-	void setGCLASS(GCLASS& gclass);
-
-	void setGCLASS(GCLASS* gclass);
-
-	void setGCLASS(const char* className);
-
-	GCLASS& getGCLASS();
+	BV cbv; // class bindable vector
+	unsigned int numIndeceies;
 
 public:
-
+	BV& getBindables();
+	Bindable* operator[](bindableType i);
+	unsigned int getIndecesNumber();
+	void AddBindable(Bindable* bindable);
 	void Draw(Graphics& gfx);
 
-
 public:
-	Drawable(const char* className);
-	Drawable(const GCLASS& pGCLASS);
 	Drawable();
-
-
 	virtual ~Drawable() {
+		
 		std::cout << "delete Drawable at :" << this << '\n';
 
 	};

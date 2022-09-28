@@ -2,7 +2,9 @@
 #include "Cube.h"
 
 
-GCLASS* Cube::CUBE_GCLASS = nullptr;
+bool Cube::init = false;
+Drawable Cube::dc;
+
 
 std::vector<Cube::vertex> vBuffData = {
 
@@ -50,36 +52,30 @@ std::vector<D3D11_INPUT_ELEMENT_DESC> ied = {
 
 };
 
-
-GCLASS* GenerateCubeGCLASS(Graphics& gfx) {
-
-	GCLASS* pgclass = new GCLASS("CUBE_CLASS");
+void Cube::generate() {
+	printf("loading static bindables across all the cube class\n");
 	VertexShader* vs = new VertexShader(gfx, L"shaders\\AssVertexShader.cso");
 	Cube::pcb = new PixelConstantBuffer(gfx, 1u, sizeof(Cube::COLOR));
-
-	pgclass->AddBindable(new IndexBuffer(gfx, indeces));
-	pgclass->AddBindable(new VertexBuffer(gfx, vBuffData));
-	pgclass->AddBindable(vs);
-	pgclass->AddBindable(new PixelShader(gfx, L"shaders\\AssPixelShader.cso"));
-	pgclass->AddBindable(new InputLayout(gfx, ied, vs->getpBlob()));
-	pgclass->AddBindable(Cube::pcb);
-	pgclass->AddBindable(new TransformCBuffer(gfx));
-	pgclass->AddBindable(new PrimativeTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
-
-	return pgclass;
+	dc.AddBindable(new IndexBuffer(gfx, indeces));
+	dc.AddBindable(new VertexBuffer(gfx, vBuffData));
+	dc.AddBindable(vs);
+	dc.AddBindable(new PixelShader(gfx, L"shaders\\AssPixelShader.cso"));
+	dc.AddBindable(new InputLayout(gfx, ied, vs->getpBlob()));
+	dc.AddBindable(Cube::pcb);
+	dc.AddBindable(new TransformCBuffer(gfx));
+	dc.AddBindable(new PrimativeTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+	dc.AddBindable(new PixelConstantBuffer(gfx, 1u, sizeof(c)));
 }
 
-
 Cube::Cube(Graphics& gfx) :
-	gfx(gfx), pos(0, 0, 0), theta(0, 0, 0), scale(1, 1, 1), c({ 1,1,1 }), Drawable()
+	gfx(gfx), pos(0, 0, 0), theta(0, 0, 0), scale(1, 1, 1), c({ 1,1,1 })
 {
-	if (!CUBE_GCLASS)
-	{
-		CUBE_GCLASS = GenerateCubeGCLASS(gfx);
+	if (!init) {
+		generate();
+		init = !init;
 	}
-	_setGCLASS(CUBE_GCLASS);
-	tr = (TransformCBuffer*)(*CUBE_GCLASS)[_TransforCBuffer];
-	//pcb = (PixelConstantBuffer*)(*CUBE_GCLASS)[_PixelConstantBuffer];
+	tr = (TransformCBuffer*)(dc[_TransforCBuffer]);
+	pcb = (PixelConstantBuffer*)(dc[_PixelConstantBuffer]);
 }
 
 void Cube::Draw()
@@ -93,7 +89,7 @@ void Cube::Draw()
 		XMMatrixTranslationFromVector(XMLoadFloat3(&pos)));
 	//pcb->update(gfx, c);
 
-	((Drawable*)this)->Draw(gfx);
+	dc.Draw(gfx);
 
 }
 

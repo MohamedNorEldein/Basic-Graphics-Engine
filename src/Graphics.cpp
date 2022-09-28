@@ -198,12 +198,13 @@ FirstPearsonPerspective& Graphics::getCamera()
 }
 
 
-float FirstPearsonPerspective::cx = 0, FirstPearsonPerspective::cy = 0, FirstPearsonPerspective::cz = 0, FirstPearsonPerspective::rx = 0, FirstPearsonPerspective::ry = 0;
+float FirstPearsonPerspective::cx = 0, FirstPearsonPerspective::cy = 0, FirstPearsonPerspective::cz = 0, FirstPearsonPerspective::rx = 0, FirstPearsonPerspective::ry = 0, FirstPearsonPerspective::rz = 0;
 
 
 FirstPearsonPerspective::FirstPearsonPerspective() :
 	CameraPosition(0, 0, 0),
-	cameraRotation(0, 0, 0)
+	cameraRotation(0, 0, 0),
+	CameraTransilationSpeed(1)
 {
 
 }
@@ -220,7 +221,6 @@ DirectX::XMMATRIX FirstPearsonPerspective::getCameraProjection()
 		DirectX::XMMatrixRotationRollPitchYaw(-cameraRotation.x, 0, 0.0);
 }
 
-
 void FirstPearsonPerspective::updateCameraPosition(float x, float y, float z)
 {
 	using namespace DirectX;
@@ -229,13 +229,12 @@ void FirstPearsonPerspective::updateCameraPosition(float x, float y, float z)
 	XMStoreFloat3(&CameraPosition, pos);
 }
 
-void FirstPearsonPerspective::FirstPearsonPerspective::updateCameraRotation(float x, float y)
+void FirstPearsonPerspective::FirstPearsonPerspective::updateCameraRotation(float x, float y,float z)
 {
 	cameraRotation.x += x;
 	cameraRotation.y += y;
 
 }
-
 
 void FirstPearsonPerspective::CameraMouseControl(MouseEvents& mouseEvent) {
 	cx = 0;
@@ -243,9 +242,14 @@ void FirstPearsonPerspective::CameraMouseControl(MouseEvents& mouseEvent) {
 	cz = 0;
 	rx = 0;
 	ry = 0;
+	rz = 0;
 
-	cz = CameraScorollingSpeed * float(mouseEvent.getWheelMove());
-
+	if (mouseEvent.getState()&MK_SHIFT) {
+		rz = CameraScorollingSpeed * float(mouseEvent.getWheelMove());
+	}
+	else {
+		cz = CameraScorollingSpeed * float(mouseEvent.getWheelMove());
+	}
 
 	if (mouseEvent.getState() == (MK_MBUTTON | MK_SHIFT))
 	{
@@ -264,7 +268,7 @@ void FirstPearsonPerspective::CameraMouseControl(MouseEvents& mouseEvent) {
 	}
 
 	updateCameraPosition(cx, cy, cz);
-	updateCameraRotation(rx, ry);
+	updateCameraRotation(rx, ry,rz);
 }
 
 void FirstPearsonPerspective::CameraKeyboardCotrol(KeyBoardEvent keyBoardEvent) {
@@ -318,9 +322,56 @@ void FirstPearsonPerspective::CameraKeyboardCotrol(KeyBoardEvent keyBoardEvent) 
 	}
 
 	updateCameraPosition(cx, cy, cz);
-	updateCameraRotation(rx, ry);
+	updateCameraRotation(rx, ry, rz);
 }
 
+ThirdPearsonPerspective::ThirdPearsonPerspective() :
+	FirstPearsonPerspective()
+{
 
+}
 
+void ThirdPearsonPerspective::updateCameraPosition(float x, float y, float z) {
+	using namespace DirectX;
+	XMVECTOR vin = XMVectorSet(x, y, z, 0.0f), pos = XMLoadFloat3(&CameraPosition);
+	pos += XMVector3Transform(vin, XMMatrixRotationY(cameraRotation.y) * XMMatrixRotationX(cameraRotation.x));
+	XMStoreFloat3(&CameraPosition, pos);
+	
+}					   
+
+void ThirdPearsonPerspective::updateCameraRotation(float _lattude, float _departure,float nr) {
+	
+	cameraRotation.z += nr;
+	if (cameraRotation.z < 0) {
+		cameraRotation.z = 0.0f;
+	}
+
+	using namespace DirectX;
+	XMVECTOR R = XMVectorSet(0, 0, cameraRotation.z, 0.0f), pos = XMLoadFloat3(&CameraPosition);
+	auto M = XMMatrixRotationX(_lattude) * XMMatrixRotationY(_departure) ;
+	auto CRM = XMMatrixRotationX(cameraRotation.x)* XMMatrixRotationY(cameraRotation.y) ;
+	auto s = XMVector4Transform(R, 
+		(M - XMMatrixIdentity()) * CRM
+	);
+	pos += s;
+	cameraRotation.x -= _lattude;
+	cameraRotation.y -= _departure;
+	XMStoreFloat3(&CameraPosition, pos);
+}
+
+void FirstPearsonPerspective::GUIcontrol() {
+	
+	if (ImGui::Begin("camera")) {
+		ImGui::Text("For Camera Transilation speed in System control");
+		ImGui::SliderFloat("cammera speed", &CameraTransilationSpeed, 0, 10);
+		ImGui::Text("Camera GUIcontrol");
+		ImGui::SliderFloat3("cammera Position", &CameraPosition.x, -1000.0f, 1000.0f);
+		ImGui::SliderAngle("cammera Lattiude", &cameraRotation.x, -180.0f, 180.0f);
+		ImGui::SliderAngle("cammera Departure", &cameraRotation.y, -180.0f, 180.0f);
+		ImGui::SliderFloat("cammera Radius", &cameraRotation.z, 0.0f, 1000.0f);
+
+	}
+	ImGui::End();
+	
+}
 

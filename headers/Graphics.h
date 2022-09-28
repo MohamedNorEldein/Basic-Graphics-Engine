@@ -18,36 +18,52 @@
 
 #include "imgui_impl_win32.h"
 
-#define CameraTransilationSpeed 0.10f
+
 #define CameraScorollingSpeed 10.0f
 #define CameraRotationSpeed		MATH_PI / (200.0f)
 
 #ifndef WINDOW_CPP_GRAPHICS_H
 #define WINDOW_CPP_GRAPHICS_H
 
+int printf(const DirectX::XMVECTOR& v);
+int printf(const DirectX::XMMATRIX& mat);
+
 
 class FirstPearsonPerspective
 {
-private:
+protected:
     DirectX::XMFLOAT3 CameraPosition, cameraRotation;
-    static float cx, cy, cz, rx, ry;
-
+    static float cx, cy, cz, rx, ry, rz;
+    float CameraTransilationSpeed;
 public:
 
     FirstPearsonPerspective();
 
+    virtual ~FirstPearsonPerspective() = default;
+
     DirectX::XMMATRIX getCameraProjection();
 
-    void updateCameraPosition(float x, float y, float z);
+    virtual void updateCameraPosition(float x, float y, float z);
 
-    void updateCameraRotation(float x, float y);
+    virtual void updateCameraRotation(float x, float y,float z);
 
     void CameraMouseControl(MouseEvents& mouseEvent);
 
     void CameraKeyboardCotrol(KeyBoardEvent keyBoardEvent);
 
+    void GUIcontrol();
+
 };
 
+class ThirdPearsonPerspective :
+    public FirstPearsonPerspective {
+    
+public:
+    ThirdPearsonPerspective();
+    void updateCameraPosition(float x, float y, float z);
+    void updateCameraRotation(float _departure, float _lattude, float r);
+    ~ThirdPearsonPerspective() = default;
+};
 
 class Graphics{
 private:
@@ -62,7 +78,7 @@ private:
 
     ID3D11DepthStencilView* pdsv;
 private:
-    FirstPearsonPerspective camera;
+    ThirdPearsonPerspective camera;
     DirectX::XMMATRIX projection;
     int width, height;
 

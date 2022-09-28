@@ -13,9 +13,7 @@
 
 //GCLASS* GenerateCubeGCLASS(Graphics& );
 
-class Cube :
-	public Drawable
-{
+class Cube {
 public:
 
 	__declspec(align(16))
@@ -28,12 +26,16 @@ public:
 		DirectX::XMFLOAT3 Normal;
 	};
 
+	void generate();
+
 private:
 	DirectX::XMFLOAT3 pos, theta, scale;
 	COLOR c;
-	static GCLASS* CUBE_GCLASS;
 	Graphics& gfx;
 	TransformCBuffer* tr;
+	static bool init;
+	static Drawable dc;
+
 
 public:
 	static PixelConstantBuffer* pcb;
