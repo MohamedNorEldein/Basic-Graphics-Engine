@@ -11,7 +11,7 @@ BV& Drawable::getBindables() {
 	return cbv;
 }
 
-Bindable* Drawable::operator[](bindableType type) {
+Bindable* Drawable::operator[](BINDABLE_TYPE type) {
 	auto b= cbv.find(type);
 	if (b->getType() == type) {
 		return b;
@@ -27,16 +27,16 @@ void Drawable::AddBindable(Bindable* bindable) {
 
 	cbv.insert(bindable);
 
-	if (bindable->getType() == _Indexbuffer) {
+	if (bindable->getType() == BINDABLE_TYPE::INDEX_BUFFER) {
 		numIndeceies = ((IndexBuffer*)bindable)->getIndecesNumber();
 	}
 }
 
 
 void Drawable::Draw(Graphics& gfx) {
-	for (int i = 0; i < cbv.length(); i++)
+	for (auto a : cbv)
 	{
-		cbv[i]->bind(gfx);
+		a->bind(gfx);
 	}
 	gfx.getcontext()->DrawIndexed(numIndeceies, 0, 0);
 }

@@ -17,20 +17,21 @@ typedef unsigned char keyCode;
 class KeyBoardEvent {
 public:
     std::bitset<256> keyState;
-    std::wstring string;
+    Array<wchar_t,128> string;
     int a;
+    UINT type;
 private:
     // windows Api functions
     // char
 private:
-    void pushCharMsg(WPARAM wparam);
+    void pushCharMsg(WPARAM wparam, UINT msg);
 
     void clearCharBuffer();
 
     // keys
-    void pushKeyDownMsg(WPARAM wparam);
+    void pushKeyDownMsg(WPARAM wparam, UINT msg);
 
-    void pushKeyUpMsg(WPARAM wparam);
+    void pushKeyUpMsg(WPARAM wparam, UINT msg);
 
     void clear();
 
@@ -78,6 +79,8 @@ class MouseEvents {
 
     int x, y,wheelMove;
     int dx, dy;
+    bool rawInputEnable;
+   
 public:
     MouseEvents() = default;
 
@@ -99,6 +102,10 @@ public:
         return dy;
     }
 
+    bool IsRawInputEnable() {
+        return rawInputEnable;
+    }
+
      int getType() {
         return type;
     }
@@ -117,7 +124,12 @@ public:
 
     }
 
+    void EnableRawMouse();
+
+    void DisableRawMouse();
+
 private:
+    
 
     void onWheelPress(int x, int y, unsigned int s);
 

@@ -8,20 +8,31 @@
 
 
 
-enum  bindableType
+enum  BINDABLE_TYPE
 {
-	_Indexbuffer = 0, _VertexBuffer,_Layout, _PixelShader, _VertexShader, _PrimativeTopology,
-	_TransforCBuffer ,  _PixelConstantBuffer, _VertexConstantBuffer,_ComputeShader ,_unspecified
-
+	INDEX_BUFFER = 0,
+	VERTEX_BUFFER,
+	LAYOUT,
+	PIXEL_SHADER,
+	VERTEX_SHADER,
+	TOPOLOGY,
+	TRANSFORMCBUFFER,
+	PIXEL_CONSTANT_BUFFER,
+	VERTEX_CONSTANT_BUFFER,
+	COMPUTE_SHADER,
+	TEXTURE,
+	SAMPLER,
+	UNSPECIFIED
 };
 
 
 class Bindable
 {
 private:
-	bindableType BT;
+	BINDABLE_TYPE BT;
+	UINT referenceCount;
 public:
-	Bindable(bindableType BT) :BT(BT) 
+	Bindable(BINDABLE_TYPE BT) :BT(BT) , referenceCount(1)
 	{
 	}
 
@@ -29,11 +40,28 @@ public:
 
 	virtual ~Bindable() = default;
 
-	bindableType getType() { return BT; }
+	Bindable* AddRefrance() {
+		referenceCount++;
+		return this;
+	}
+
+	Bindable* release() {
+		using namespace std;
+		referenceCount--;
+
+		if (referenceCount==0)
+		{
+			delete this;
+			return nullptr;
+		}
+		return this;
+	}
+
+	BINDABLE_TYPE getType() { return BT; }
 
 public:
-	static ID3D11DeviceContext* GetContext(Graphics& gfx) {return gfx.pcontext;}
-	static ID3D11Device* GetDevice(Graphics& gfx) {return gfx.pdevice;}
+	static ID3D11DeviceContext* GetContext(Graphics& gfx) {return gfx.getcontext(); }
+	static ID3D11Device* GetDevice(Graphics& gfx) {return gfx.getdevice(); }
 
 };
 

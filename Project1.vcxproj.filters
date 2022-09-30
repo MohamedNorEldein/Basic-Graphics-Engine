@@ -138,6 +138,42 @@
     <ClInclude Include="headers\Cube.h">
       <Filter>Drawable\header</Filter>
     </ClInclude>
+    <ClInclude Include="headers\Texture.h">
+      <Filter>Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="dxtex\include\dxtex\scoped.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dxtex\include\dxtex\BC.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dxtex\include\dxtex\BCDirectCompute.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dxtex\include\dxtex\d3dx12.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dxtex\include\dxtex\DDS.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dxtex\include\dxtex\DirectXTex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dxtex\include\dxtex\DirectXTexP.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dxtex\include\dxtex\filters.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\Sampler.h">
+      <Filter>Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\ImageFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\WICTextur.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Events.cpp">
@@ -206,15 +242,30 @@
     <ClCompile Include="src\cube.cpp">
       <Filter>Drawable\source</Filter>
     </ClCompile>
+    <ClCompile Include="src\ImageFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\WICTextur.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui.ini" />
+    <None Include="dxtex\include\dxtex\DirectXTex.inl">
+      <Filter>Header Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shaders\AssVertexShader.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="shaders\AssPixelShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\CubePixelShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\CubeVertexShader.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

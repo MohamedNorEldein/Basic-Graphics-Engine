@@ -1,6 +1,7 @@
 
 #include "mndWindow.h"
 #include "WindowClass.h"
+#include "Graphics.h"
 
 wchar_t Window::windowClassName[100] = { L"WindowClass" };
 
@@ -21,7 +22,7 @@ LRESULT CALLBACK setProtocol(HWND handel, unsigned int msg, WPARAM w, LPARAM l) 
 }
 
 Window::Window(const wchar_t* titel1, int width, int height)
-	: width(width), height(height), keyBoardEvent(), mouseEvent(), hInstance(GetModuleHandleA(0)), lastMouseX(0), lastMouseY(0), lastState(0)
+	: width(width), height(height), keyBoardEvent(), mouseEvent(), hInstance(GetModuleHandleA(0))
 {
 	cout(this->keyBoardEvent.a);
 
@@ -47,31 +48,25 @@ Window::Window(const wchar_t* titel1, int width, int height)
 	ShowWindow(windowhandel, SW_SHOW);
 
 	//creating graphics object
-	pgfx = new Graphics(windowhandel, width, height);
 
-	ImGui::CreateContext();
-	ImGui::StyleColorsDark();
-	ImGui_ImplDX11_Init(pgfx->getdevice(), pgfx->getcontext());
-	ImGui_ImplWin32_Init(windowhandel);
+	// register mouse raw input device
 	/*
-	RAWINPUTDEVICE rawInputMouseDevice;
-	rawInputMouseDevice.usUsagePage = 0x01;
-	rawInputMouseDevice.usUsage = 0x02;
-	rawInputMouseDevice.dwFlags = 0;
-	rawInputMouseDevice.hwndTarget = nullptr;
-
-	RegisterRawInputDevices(&rawInputMouseDevice, 1, sizeof(rawInputMouseDevice));
+	RAWINPUTDEVICE rid;
+	rid.usUsagePage = 0x01; // mouse page
+	rid.usUsage = 0x02; // mouse usage
+	rid.dwFlags = 0;
+	rid.hwndTarget = nullptr;
+	if (RegisterRawInputDevices(&rid, 1, sizeof(rid)) == FALSE)
+	{
+		ERROR;
+	}
 	*/
-
 }
 
 Window::~Window()
 {
-	ImGui_ImplWin32_Shutdown();
-	ImGui_ImplDX11_Shutdown();
-	ImGui::DestroyContext();
+	
 
-	delete pgfx;
 	UnregisterClass(windowClassName, hInstance);
 	DestroyWindow(windowhandel);
 }
@@ -129,21 +124,23 @@ LRESULT CALLBACK Window::EvetProtocol(HWND handel, unsigned int msg, WPARAM wp, 
 			return 0;
 		}
 
-		keyBoardEvent.pushKeyDownMsg(wp);
+		keyBoardEvent.pushKeyDownMsg(wp,msg);
 		break;
 	case WM_KEYUP:
 
-		keyBoardEvent.pushKeyUpMsg(wp);
+		keyBoardEvent.pushKeyUpMsg(wp, msg);
 		break;
 	case WM_CHAR:
 
 		if (wp != VK_BACK)
-			keyBoardEvent.pushCharMsg(wp);
+			keyBoardEvent.pushCharMsg(wp, msg);
 		break;
 		//------------------------------------------------------------------------
 					 // mouse
 	case WM_MOUSEMOVE:
 		p = MAKEPOINTS(lp);
+
+
 
 		if (p.x <= getWidth() and p.y <= getHeight() and p.x >= 0 and p.y >= 0) {
 			mouseEvent.onMove(p.x, p.y,wp);
@@ -195,21 +192,36 @@ LRESULT CALLBACK Window::EvetProtocol(HWND handel, unsigned int msg, WPARAM wp, 
 		mouseEvent.onWheelRelease(p.x, p.y, wp);
 		break;
 		//--------------------------------------------------------------
-/*
+
 	case WM_INPUT:
 	{
-		break;
-		UINT rbufsize = 8;
-		GetRawInputData((HRAWINPUT)lp, RID_INPUT, rawBuffer, &rbufsize, sizeof(RAWINPUTHEADER));
-		ri = (RAWINPUT*)rawBuffer;
-		if (ri->header.dwSize == RIM_TYPEMOUSE && (ri->data.mouse.lLastX != 0 || ri->data.mouse.lLastY != 0)) {
-			mouseEvent.row_dx = ri->data.mouse.lLastX;
-			mouseEvent.row_dy = ri->data.mouse.lLastY;
+		if(!mouseEvent.IsRawInputEnable())
+		{
+			break;
 		}
-
+		UINT size = 48u;
+	
+		// read in the input data
+		if (GetRawInputData(
+			(HRAWINPUT)(lp),
+			RID_INPUT,
+			rawBuffer,
+			&size,
+			sizeof(RAWINPUTHEADER)) != size)
+		{
+			// bail msg processing if error
+			break;
+		}
+		// process the raw input data
+		auto ri = (RAWINPUT*)(rawBuffer);
+		if (ri->header.dwType == RIM_TYPEMOUSE)
+		{
+			mouseEvent.dx = ri->data.mouse.lLastX;
+			mouseEvent.dy = ri->data.mouse.lLastY;
+		}
 		break;
 	}
-	*/
+	
 	default:
 		return DefWindowProc(handel, msg, wp, lp);
 

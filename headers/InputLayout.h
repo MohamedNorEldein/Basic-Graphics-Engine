@@ -141,21 +141,21 @@ private:
 public:
 
 	InputLayout(Graphics& gfx, std::vector<D3D11_INPUT_ELEMENT_DESC >& layOuts, ID3DBlob* pvertexShaderBlob) :
-		Bindable(_Layout)
+		Bindable(BINDABLE_TYPE::LAYOUT)
 	{
 
 		GetDevice(gfx)->CreateInputLayout(layOuts.data(), layOuts.size(), pvertexShaderBlob->GetBufferPointer(), pvertexShaderBlob->GetBufferSize(), &pInputLayout);
 	}
 
 	InputLayout(Graphics& gfx, D3D11_INPUT_ELEMENT_DESC* layOuts,UINT count, ID3DBlob* pvertexShaderBlob) :
-		Bindable(_Layout)
+		Bindable(BINDABLE_TYPE::LAYOUT)
 	{
 
 		GetDevice(gfx)->CreateInputLayout(layOuts, count, pvertexShaderBlob->GetBufferPointer(), pvertexShaderBlob->GetBufferSize(), &pInputLayout);
 	}
 
 	InputLayout(Graphics& gfx, LayoutStrucure& layOuts, ID3DBlob* pvertexShaderBlob) :
-		Bindable(_Layout)
+		Bindable(BINDABLE_TYPE::LAYOUT)
 	{
 
 		GetDevice(gfx)->CreateInputLayout(layOuts.data(), layOuts.count(), pvertexShaderBlob->GetBufferPointer(), pvertexShaderBlob->GetBufferSize(), &pInputLayout);
@@ -208,6 +208,15 @@ public:
 
 	void print() {
 		size_t stride = 0;
+		
+		for (auto& l : layout.desc) {
+			printf("\n[%s] = < %u  >\n",
+				l.SemanticName,
+				l.AlignedByteOffset);
+
+			stride += 3 * sizeof(float);
+		}
+
 		for (UINT i = 0u; (i < count)&&(i<50); ++i) {
 			stride = 0;
 			for (auto& l : layout.desc) {

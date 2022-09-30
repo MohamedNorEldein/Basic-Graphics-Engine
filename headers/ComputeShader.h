@@ -12,7 +12,7 @@ private:
 
 public:
 	ComputeShader(Graphics& gfx, const wchar_t* src,bool compiled=true)
-		:Bindable(_ComputeShader)
+		:Bindable(BINDABLE_TYPE::COMPUTE_SHADER)
 	{
 		
 		if (compiled) {

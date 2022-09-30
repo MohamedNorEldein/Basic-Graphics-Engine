@@ -23,11 +23,18 @@ enum mouseEvetType {
 
 class App {
 private:
+    // Basic D3D stuff
     Window window;
+    Graphics gfx;
+
+private:
+    // models
     Cube model1, model2, model3 , model4;
     ObjModel objModel;
+private:
+    // camera and light
+    FirstPearsonPerspective camera;
     UniformLight lamp;
-
 
 public:
     App();

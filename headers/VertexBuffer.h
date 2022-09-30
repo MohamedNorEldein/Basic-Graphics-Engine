@@ -16,7 +16,7 @@ private:
 
 public:
     template<typename T>
-    VertexBuffer(Graphics& gfx,std::vector<T> vertecies) :stride(sizeof(T)), offset(0u), Bindable(_VertexBuffer)
+    VertexBuffer(Graphics& gfx,std::vector<T> vertecies) :stride(sizeof(T)), offset(0u), Bindable(BINDABLE_TYPE::VERTEX_BUFFER)
 
 	{
 		printf("%d\n", sizeof(T));
@@ -38,7 +38,7 @@ public:
     }
 
 	template<typename T>
-	VertexBuffer(Graphics& gfx, T* vertecies, int count) :stride(sizeof(T)), offset(0u), Bindable(_VertexBuffer)
+	VertexBuffer(Graphics& gfx, T* vertecies, int count) :stride(sizeof(T)), offset(0u), Bindable(BINDABLE_TYPE::VERTEX_BUFFER)
 
 	{
 		cout(vertecies);
@@ -59,7 +59,7 @@ public:
 		CHECK(GetDevice(gfx)->CreateBuffer(&BufferDesc, &vdata, &pVertexBuffer));
 	}
 
-	VertexBuffer(Graphics& gfx, void* vertecies, int count, size_t sizeofVertex) :stride(sizeofVertex), offset(0u), Bindable(_VertexBuffer)
+	VertexBuffer(Graphics& gfx, void* vertecies, int count, size_t sizeofVertex) :stride(sizeofVertex), offset(0u), Bindable(BINDABLE_TYPE::VERTEX_BUFFER)
 
 	{
 		cout(vertecies);
@@ -80,7 +80,7 @@ public:
 		CHECK(GetDevice(gfx)->CreateBuffer(&BufferDesc, &vdata, &pVertexBuffer));
 	}
 
-	VertexBuffer(Graphics& gfx, vertexBufferData& vbd) : stride(vbd.getSizeOfVertex()), offset(0u), Bindable(_VertexBuffer)
+	VertexBuffer(Graphics& gfx, vertexBufferData& vbd) : stride(vbd.getSizeOfVertex()), offset(0u), Bindable(BINDABLE_TYPE::VERTEX_BUFFER)
 	{
 		D3D11_SUBRESOURCE_DATA vdata = { 0 };
 		vdata.pSysMem = vbd.Data();

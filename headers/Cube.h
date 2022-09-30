@@ -1,14 +1,6 @@
 #pragma once
 #include "Drawable.h"
-
-#include "constantBuffer.h"
-#include "InputLayout.h"
-#include "PixelShader.h"
 #include "CBuffer.h"
-#include "VertexBuffer.h"
-#include "VertexShader.h"
-#include "IndexBuffer.h"
-#include "PrimativeTopology.h"
 
 
 //GCLASS* GenerateCubeGCLASS(Graphics& );
@@ -24,6 +16,7 @@ public:
 	struct vertex {
 		DirectX::XMFLOAT3 pos;
 		DirectX::XMFLOAT3 Normal;
+		DirectX::XMFLOAT2 Texture;
 	};
 
 	void generate();
@@ -32,13 +25,13 @@ private:
 	DirectX::XMFLOAT3 pos, theta, scale;
 	COLOR c;
 	Graphics& gfx;
-	TransformCBuffer* tr;
+	static TransformCBuffer *tr;
 	static bool init;
 	static Drawable dc;
 
 
 public:
-	static PixelConstantBuffer* pcb;
+//	static PixelConstantBuffer* pcb;
 
 public:
 	Cube(Graphics& gfx);

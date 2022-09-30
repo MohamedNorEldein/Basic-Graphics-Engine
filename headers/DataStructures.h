@@ -97,20 +97,7 @@ protected:
     TYPE data[ARRAY_LENGTH];
 
 protected:
-    virtual int find(TYPE& item, UINT start, UINT end) {
-        if (end == start) {
-            return start;
-        }
-        int v = item - data[int((start + end) / 2)];
-        if (v > 0) {
-            return find(item, (start + end) / 2 + 1, end);
-        }
-        if (v < 0) {
-            return find(item, start, (start + end) / 2);
-        }
-        return ((start + end) / 2);
-    }
-
+   
 public:
 
     Array()
@@ -118,7 +105,8 @@ public:
     {
     }
 
-    ~Array() {
+    ~Array()
+    {
     }
 
     TYPE& operator[](int i){
@@ -156,19 +144,6 @@ public:
     }
 
 
-
-    virtual TYPE& find(TYPE& item) {
-        return data[find(item, 0u, len)];
-    }
-
-    void insert(TYPE& item) {
-        UINT pos = find(item, 0u, len);
-        memcpy(data + pos, pos + data + 1, sizeof(TYPE) * len);
-        data[pos] = item;
-        len++;
-        
-    }
-
     void clear() {
         len = 0;
     }
@@ -184,6 +159,9 @@ public:
         return false;
     }
 
+    TYPE const* get() {
+        return data;
+    }
 };
 
 
@@ -218,6 +196,8 @@ public:
     }
 
     ~Array() {
+        printf("delete heap Ram Buffer\n");
+
         delete[] data;
     }
 
@@ -284,6 +264,9 @@ public:
         return false;
     }
 
+    TYPE const* get() {
+        return data;
+    }
 };
 
 

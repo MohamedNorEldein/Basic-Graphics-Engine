@@ -10,12 +10,17 @@
 
 
 
-Graphics::Graphics(HWND windowHandel,int width, int height)
-	:	
-	width(width),
-	height(height)
+void initImGui(Graphics* pgfx, HWND windowhandel) {
+	ImGui::CreateContext();
+	ImGui::StyleColorsDark();
+	ImGui_ImplDX11_Init(pgfx->getdevice(), pgfx->getcontext());
+	ImGui_ImplWin32_Init(windowhandel);
+}
 
+void Graphics::init(HWND windowHandel, int _width, int _height)
 {
+	width = _width;
+	height = _height;
 
 	DXGI_SWAP_CHAIN_DESC sd = { 0 };
 	// buffer
@@ -27,20 +32,20 @@ Graphics::Graphics(HWND windowHandel,int width, int height)
 	sd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 	sd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 
- 	sd.BufferCount = 1;
+	sd.BufferCount = 1;
 	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 
 	sd.SampleDesc.Count = 1;
 	sd.SampleDesc.Quality = 0;
-	  
+
 	sd.Windowed = true;
 	sd.OutputWindow = windowHandel;
 
 	sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-	
-	sd.Flags = 0; 
 
+	sd.Flags = 0;
 
+#ifdef _DEBUG
 	CHECK(D3D11CreateDeviceAndSwapChain(
 		nullptr,
 		D3D_DRIVER_TYPE_HARDWARE,
@@ -51,13 +56,26 @@ Graphics::Graphics(HWND windowHandel,int width, int height)
 		D3D11_SDK_VERSION, &sd,
 		&pswapChain, &pdevice,
 		nullptr, &pcontext));
-	
+#else
+	CHECK(D3D11CreateDeviceAndSwapChain(
+		nullptr,
+		D3D_DRIVER_TYPE_HARDWARE,
+		nullptr,
+		D3D11_CREATE_DEVICE_DEBUG,
+		NULL,
+		0,
+		D3D11_SDK_VERSION, &sd,
+		&pswapChain, &pdevice,
+		nullptr, &pcontext));
+
+#endif
+
 	// create target buffer
 	ID3D11Resource* pbackBuffer;
-	CHECK(pswapChain->GetBuffer(0, __uuidof(ID3D11Resource), (void**) & pbackBuffer));
-	
+	CHECK(pswapChain->GetBuffer(0, __uuidof(ID3D11Resource), (void**)&pbackBuffer));
+
 	CHECK(pdevice->CreateRenderTargetView(pbackBuffer, nullptr, &pTarget));
-	
+
 	CHECK(pbackBuffer->Release());
 
 
@@ -73,10 +91,10 @@ Graphics::Graphics(HWND windowHandel,int width, int height)
 	dDesc.DepthEnable = true;
 	dDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 	dDesc.DepthFunc = D3D11_COMPARISON_LESS;
-	
+
 
 	pdevice->CreateDepthStencilState(&dDesc, &pdepth);
-	pcontext->OMSetDepthStencilState(pdepth,1u);
+	pcontext->OMSetDepthStencilState(pdepth, 1u);
 
 	ID3D11Texture2D* pdepthTex = 0;
 	D3D11_TEXTURE2D_DESC texDesc = { 0 };
@@ -92,7 +110,7 @@ Graphics::Graphics(HWND windowHandel,int width, int height)
 
 	pdevice->CreateTexture2D(&texDesc, 0, &pdepthTex);
 
-	
+
 	D3D11_DEPTH_STENCIL_VIEW_DESC dsvSDesc = {};
 
 	dsvSDesc.Format = DXGI_FORMAT_D32_FLOAT;
@@ -102,11 +120,29 @@ Graphics::Graphics(HWND windowHandel,int width, int height)
 	pdevice->CreateDepthStencilView(pdepthTex, &dsvSDesc, &pdsv);
 
 	pcontext->OMSetRenderTargets(1u, &pTarget, pdsv);
+
+	initImGui(this, windowHandel);
+}
+
+Graphics::Graphics(HWND windowHandel,int width, int height)
+
+{
+	init(windowHandel, width, height);
 	
 }
 
+Graphics::Graphics(Window& window) :
+	Graphics::Graphics(window.GetHandel(), window.width, window.height)
+{
+}
+
+
 Graphics::~Graphics()
 {
+	ImGui_ImplWin32_Shutdown();
+	ImGui_ImplDX11_Shutdown();
+	ImGui::DestroyContext();
+
 	if (!pTarget)
 		pTarget->Release();
 	if (!pswapChain)
@@ -187,26 +223,24 @@ DirectX::XMMATRIX& Graphics::getProjection() {
 
 DirectX::XMMATRIX Graphics::getCameraProjection()
 {
-	using namespace DirectX;
-
-	return camera.getCameraProjection();
+	return camera->getCameraProjection();
 }
 
-FirstPearsonPerspective& Graphics::getCamera()
+void Graphics::setCamera(FirstPearsonPerspective* _camera)
 {
-	return camera;
+	camera = _camera;
 }
 
 
 float FirstPearsonPerspective::cx = 0, FirstPearsonPerspective::cy = 0, FirstPearsonPerspective::cz = 0, FirstPearsonPerspective::rx = 0, FirstPearsonPerspective::ry = 0, FirstPearsonPerspective::rz = 0;
+using namespace DirectX;
 
-
-FirstPearsonPerspective::FirstPearsonPerspective() :
-	CameraPosition(0, 0, 0),
-	cameraRotation(0, 0, 0),
+FirstPearsonPerspective::FirstPearsonPerspective(Graphics& gfx) :
+	CameraPosition({0,0,0,0}),
+	cameraRotation({0,0,0,0}),
 	CameraTransilationSpeed(1)
 {
-
+	gfx.setCamera(this);
 }
 
 DirectX::XMMATRIX FirstPearsonPerspective::getCameraProjection()
@@ -214,25 +248,22 @@ DirectX::XMMATRIX FirstPearsonPerspective::getCameraProjection()
 	using namespace DirectX;
 
 	return
-		DirectX::XMMatrixTranslation(-CameraPosition.x, -CameraPosition.y, -CameraPosition.z)
+		DirectX::XMMatrixTranslationFromVector(CameraPosition)
 		*
-		DirectX::XMMatrixRotationRollPitchYaw(0.0f, -cameraRotation.y, 0.0)
+		DirectX::XMMatrixRotationRollPitchYaw(0.0f, -cameraRotation.m128_f32[1], 0.0)
 		*
-		DirectX::XMMatrixRotationRollPitchYaw(-cameraRotation.x, 0, 0.0);
+		DirectX::XMMatrixRotationRollPitchYaw(-cameraRotation.m128_f32[0], 0, 0.0);
 }
 
 void FirstPearsonPerspective::updateCameraPosition(float x, float y, float z)
 {
-	using namespace DirectX;
-	XMVECTOR vin = XMVectorSet(x, y, z, 0.0f), pos = XMLoadFloat3(&CameraPosition);
-	pos += XMVector3Transform(vin, XMMatrixRotationRollPitchYaw(cameraRotation.x, cameraRotation.y, 0));
-	XMStoreFloat3(&CameraPosition, pos);
+	XMVECTOR vin = XMVectorSet(x, y, z, 0.0f);
+	CameraPosition += XMVector3Transform(vin, XMMatrixRotationRollPitchYawFromVector(cameraRotation));
 }
 
 void FirstPearsonPerspective::FirstPearsonPerspective::updateCameraRotation(float x, float y,float z)
 {
-	cameraRotation.x += x;
-	cameraRotation.y += y;
+	cameraRotation += XMVectorSet(x, y, z, 0.0f);
 
 }
 
@@ -261,7 +292,7 @@ void FirstPearsonPerspective::CameraMouseControl(MouseEvents& mouseEvent) {
 
 	if (mouseEvent.getState() & MK_MBUTTON)
 	{
-		ry -= CameraRotationSpeed * float(mouseEvent.get_dx());
+		ry += CameraRotationSpeed * float(mouseEvent.get_dx());
 		rx += CameraRotationSpeed * float(mouseEvent.get_dy());
 		mouseEvent.handeled();
 
@@ -325,38 +356,36 @@ void FirstPearsonPerspective::CameraKeyboardCotrol(KeyBoardEvent keyBoardEvent) 
 	updateCameraRotation(rx, ry, rz);
 }
 
-ThirdPearsonPerspective::ThirdPearsonPerspective() :
-	FirstPearsonPerspective()
+ThirdPearsonPerspective::ThirdPearsonPerspective(Graphics& camera) :
+	FirstPearsonPerspective(camera)
 {
 
 }
 
 void ThirdPearsonPerspective::updateCameraPosition(float x, float y, float z) {
 	using namespace DirectX;
-	XMVECTOR vin = XMVectorSet(x, y, z, 0.0f), pos = XMLoadFloat3(&CameraPosition);
-	pos += XMVector3Transform(vin, XMMatrixRotationY(cameraRotation.y) * XMMatrixRotationX(cameraRotation.x));
-	XMStoreFloat3(&CameraPosition, pos);
+	XMVECTOR vin = XMVectorSet(x, y, z, 0.0f);
+	CameraPosition += XMVector3Transform(vin, XMMatrixRotationY(cameraRotation.m128_f32[1]) * XMMatrixRotationX(cameraRotation.m128_f32[0]));
 	
 }					   
 
 void ThirdPearsonPerspective::updateCameraRotation(float _lattude, float _departure,float nr) {
 	
-	cameraRotation.z += nr;
-	if (cameraRotation.z < 0) {
-		cameraRotation.z = 0.0f;
+	cameraRotation.m128_f32[2] += nr;
+	if (cameraRotation.m128_f32[2] < 0) {
+		cameraRotation.m128_f32[2] = 0.0f;
 	}
 
 	using namespace DirectX;
-	XMVECTOR R = XMVectorSet(0, 0, cameraRotation.z, 0.0f), pos = XMLoadFloat3(&CameraPosition);
+	XMVECTOR R = XMVectorSet(0, 0, cameraRotation.m128_f32[2], 0.0f);
 	auto M = XMMatrixRotationX(_lattude) * XMMatrixRotationY(_departure) ;
-	auto CRM = XMMatrixRotationX(cameraRotation.x)* XMMatrixRotationY(cameraRotation.y) ;
+	auto CRM = XMMatrixRotationX(cameraRotation.m128_f32[0])* XMMatrixRotationY(cameraRotation.m128_f32[1]) ;
 	auto s = XMVector4Transform(R, 
 		(M - XMMatrixIdentity()) * CRM
 	);
-	pos += s;
-	cameraRotation.x -= _lattude;
-	cameraRotation.y -= _departure;
-	XMStoreFloat3(&CameraPosition, pos);
+	CameraPosition += s;
+	cameraRotation.m128_f32[0] -= _lattude;
+	cameraRotation.m128_f32[1] -= _departure;
 }
 
 void FirstPearsonPerspective::GUIcontrol() {
@@ -365,10 +394,10 @@ void FirstPearsonPerspective::GUIcontrol() {
 		ImGui::Text("For Camera Transilation speed in System control");
 		ImGui::SliderFloat("cammera speed", &CameraTransilationSpeed, 0, 10);
 		ImGui::Text("Camera GUIcontrol");
-		ImGui::SliderFloat3("cammera Position", &CameraPosition.x, -1000.0f, 1000.0f);
-		ImGui::SliderAngle("cammera Lattiude", &cameraRotation.x, -180.0f, 180.0f);
-		ImGui::SliderAngle("cammera Departure", &cameraRotation.y, -180.0f, 180.0f);
-		ImGui::SliderFloat("cammera Radius", &cameraRotation.z, 0.0f, 1000.0f);
+		ImGui::SliderFloat3("cammera Position", CameraPosition.m128_f32, -1000.0f, 1000.0f);
+		ImGui::SliderAngle("cammera Lattiude", &cameraRotation.m128_f32[0], -180.0f, 180.0f);
+		ImGui::SliderAngle("cammera Departure", &cameraRotation.m128_f32[1], -180.0f, 180.0f);
+		ImGui::SliderFloat("cammera Radius", &cameraRotation.m128_f32[2], 0.0f, 1000.0f);
 
 	}
 	ImGui::End();

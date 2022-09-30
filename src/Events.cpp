@@ -5,35 +5,46 @@
 #include "imgui_impl_win32.h"
 
 
-void KeyBoardEvent::pushCharMsg(WPARAM wparam) {
+void KeyBoardEvent::pushCharMsg(WPARAM wparam, UINT msg) {
     if (wparam == VK_BACK) {
-
-        string.pop_back();
+        string.pop_head();
     }
-    string += (wchar_t(wparam));
+    type = msg;
+    try {
+        string.push_head(wchar_t(wparam));
+    }
+    catch (ArrayIsFilled&) {
+        string.pop_tail();
+        string.push_head(wchar_t(wparam));
+
+    }
 }
 
 void KeyBoardEvent::clearCharBuffer() {
     string.clear();
 }
 
-void KeyBoardEvent::pushKeyDownMsg(WPARAM wparam) {
+void KeyBoardEvent::pushKeyDownMsg(WPARAM wparam, UINT msg) {
     keyState[wparam] = true;
+    type = msg;
+
 }
 
-void KeyBoardEvent::pushKeyUpMsg(WPARAM wparam) {
+void KeyBoardEvent::pushKeyUpMsg(WPARAM wparam, UINT msg) {
     keyState[wparam] = 0;
+    type = msg;
+
 }
 
 void KeyBoardEvent::clear() {
     string.clear();
     keyState = 0;
+
 }
 
 wchar_t KeyBoardEvent::popChar() {
-    wchar_t a = string[string.length()];
-    string.pop_back();
-    return a;
+    
+    return string.pop_head();
 }
 
 bool KeyBoardEvent::bufferIsEmpty() {
@@ -66,15 +77,26 @@ void KeyBoardEvent::clearKey() {
 
 
 const wchar_t *KeyBoardEvent::getCharBuffer() {
-    return string.c_str();
+    return string.get();
 }
 
 //------------------------------------------------------
 
+void MouseEvents::EnableRawMouse()
+{
+    rawInputEnable = true;
+}
+
+void MouseEvents::DisableRawMouse()
+{
+    rawInputEnable = false;
+}
+
 void MouseEvents::onWheelPress(int _x, int _y,unsigned int s)
 {
     dx = _x - x;
-    dy = y -_y;
+    dy = _y - y;
+
     x = _x;
     y = _y;
     wheelMove = 0;
@@ -84,8 +106,10 @@ void MouseEvents::onWheelPress(int _x, int _y,unsigned int s)
 }
 
 void MouseEvents::onWheelRelease(int _x, int _y,unsigned int s) {
+   
     dx = _x - x;
-    dy = y - _y;
+    dy = _y - y;
+
     x = _x;
     y = _y;
     wheelMove = 0;
@@ -94,9 +118,10 @@ void MouseEvents::onWheelRelease(int _x, int _y,unsigned int s) {
 }
 
 void MouseEvents::onMove(int _x, int _y , unsigned int s) {
+   
+    dx = _x-x;
+    dy = _y-y;
 
-    dx = _x - x;
-    dy = y - _y;
     x = _x;
     y = _y;
     wheelMove = 0;
@@ -105,8 +130,9 @@ void MouseEvents::onMove(int _x, int _y , unsigned int s) {
 }
 
 void MouseEvents::onRightPress(int _x, int _y, unsigned int s ) {
+
     dx = _x - x;
-    dy = y - _y;
+    dy = _y - y;
 
     x = _x;
     y = _y;
@@ -117,8 +143,9 @@ void MouseEvents::onRightPress(int _x, int _y, unsigned int s ) {
 }
 
 void MouseEvents::onLeftPress(int _x, int _y, unsigned int s ) {
+ 
     dx = _x - x;
-    dy = y - _y;
+    dy = _y - y;
 
     x = _x;
     y = _y;
@@ -129,8 +156,9 @@ void MouseEvents::onLeftPress(int _x, int _y, unsigned int s ) {
 }
 
 void MouseEvents::onRightRelease(int _x, int _y, unsigned int s) {
+ 
     dx = _x - x;
-    dy = y - _y;
+    dy = _y - y;
     x = _x;
     y = _y;
     wheelMove = 0;
@@ -140,7 +168,7 @@ void MouseEvents::onRightRelease(int _x, int _y, unsigned int s) {
 }
 void MouseEvents::onLeftRelease(int _x, int _y, unsigned int s) {
     dx = _x - x;
-    dy = y - _y;
+    dy = _y - y;
     x = _x;
     y = _y;
     wheelMove = 0;
@@ -151,7 +179,7 @@ void MouseEvents::onLeftRelease(int _x, int _y, unsigned int s) {
 
 void MouseEvents::onWheelMove(int _x, int _y, int _wheel_move, unsigned int s) {
     dx = _x - x;
-    dy = y - _y;
+    dy = _y - y;
     x = _x;
     y = _y;
     wheelMove = _wheel_move;

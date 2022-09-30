@@ -31,53 +31,65 @@ COLOR c = { 1.0,0.50,0.20 };
 WPARAM App::doFrame() {
 	/* window begain frame stuff*/
 
-	window.Gfx().clearBuffer(0.5, 0.5, 0.5);
-	window.Gfx().BegainFrame();
-	window.Gfx().getCamera().GUIcontrol();
+	gfx.clearBuffer(0.5, 0.5, 0.5);
+	gfx.BegainFrame();
+	camera.GUIcontrol();
 
-	lamp.bind(window.Gfx());
+	lamp.bind(gfx);
 	lamp.GuiControl();
 
+	if (window.keyBoardEvent.isDown(VK_TAB) && window.keyBoardEvent.type == WM_KEYDOWN) {
 
+		if (window.mouseEvent.IsRawInputEnable()) {
+			window.mouseEvent.DisableRawMouse();
+			printf("raw Mouse input disable\n");
+
+		}
+		else {
+			window.mouseEvent.EnableRawMouse();
+			printf("raw Mouse input enable\n");
+		}
+	}
 	c = { 1,0,0 };
 	
-	model1.pcb->update(window.Gfx(), c);
+	//model1.pcb->update(gfx, c);
 	model1.Draw();
 
 	c = { 0,1.0,0 };
-	model2.pcb->update(window.Gfx(), c);
+	//model2.pcb->update(gfx, c);
 	model2.Draw();
 
 	c = { 0,0,1 };
-	model3.pcb->update(window.Gfx(), c);
+	//model3.pcb->update(gfx, c);
 	model3.Draw();
 
 	c = { 0,1,1 };
-	model4.pcb->update(window.Gfx(), c);
+	//model4.pcb->update(gfx, c);
 	model4.Draw();
 	
-	objModel.pcb->update(window.Gfx(), c);
+	objModel.pcb->update(gfx, c);
 	objModel.Draw();
 	objModel.GuiControl();
 	
 	/* scene control */
-	window.Gfx().getCamera().CameraMouseControl(window.mouseEvent);
-	window.Gfx().getCamera().CameraKeyboardCotrol(window.keyBoardEvent);
+	camera.CameraMouseControl(window.mouseEvent);
+	camera.CameraKeyboardCotrol(window.keyBoardEvent);
 	/*window end frame stuff */
-	window.Gfx().EndFrame();
+	gfx.EndFrame();
 	return 0;
 }
 
-App::App() : window(L"hello world", 1200, 600)
-, lamp(window.Gfx(), 0u)
-, model1(window.Gfx())
-, model2(window.Gfx())
-, model3(window.Gfx())
-, model4(window.Gfx())
-,objModel(window.Gfx(), "Models src data\\moonkey.glb")
+App::App() : window(L"hello world", 1200, 600), gfx(window)
+, objModel(gfx, "Models src data\\nanosuit.obj")
+, lamp(gfx, 0u)
+, model1(gfx)
+, model2(gfx)
+, model3(gfx)
+, model4(gfx)
+,camera(gfx)
 {
 
-	window.Gfx().setProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5, 10000.0f));
+	gfx.setProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5, 10000.0f));
 	
 	model1.setPos(-100, 0, 100);
 	model1.setDiminsion(50, 50, 50);

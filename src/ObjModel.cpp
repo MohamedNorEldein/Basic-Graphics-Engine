@@ -1,5 +1,6 @@
 
 #include "ObjModel.h"
+#include <string>
 
 
 DirectX::XMFLOAT3 GUItheta;
@@ -8,6 +9,16 @@ DirectX::XMFLOAT3 GUIScale;
 
 ObjNode* selectedNode = 0;
 bool nodeChange;
+
+const wchar_t* wstr(const char* str, size_t length) {
+
+	wchar_t* _wstr = new wchar_t(length);
+	for (int i = 0; i < length;++i) {
+		_wstr[i] = wchar_t(str[i]);
+	}
+	wprintf(_wstr);
+	return _wstr;
+}
 
 int printf(const DirectX::XMMATRIX& mat) {
 	using namespace DirectX;
@@ -46,8 +57,10 @@ ObjMesh::ObjMesh(const char* _name) :
 {
 	memcpy(name, _name, strlen(name));
 }
-ObjMesh::~ObjMesh() {
-	std::cout << "delete objModel at :" << this << '\n';
+
+ObjMesh::~ObjMesh() 
+{
+	printf( "delete mesh %s at %x \n", name, this);	
 };
 
 ObjNode::ObjNode(const char* _name)
@@ -71,6 +84,15 @@ ObjNode::ObjNode(aiNode* nodeptr, ObjModel* GrandParent) :
 
 	for (int i = 0; i < nodeptr->mNumChildren; ++i) {
 		children.push_back(new ObjNode(nodeptr->mChildren[i], GrandParent));
+	}
+}
+
+ObjNode::~ObjNode()
+{
+	printf("delete node : '%s'\n", name);
+	
+	for (auto a : children) {
+		delete a;
 	}
 }
 
@@ -147,6 +169,8 @@ void ObjNode::GuiControl() {
 
 }
 
+
+
 void ObjModel::loadModelFromFile( const char *srcFileName)
 {
 	Assimp::Importer imp;
@@ -157,38 +181,40 @@ void ObjModel::loadModelFromFile( const char *srcFileName)
 	memcpy(name, pmodel->mName.C_Str(), pmodel->mName.length);
 
 	/* Layout definesion */
-	LayoutStrucure la;
-	la.Append<DirectX::XMFLOAT3>("POSITION");
-	la.Append<DirectX::XMFLOAT3>("NORMAL");
+	LayoutStrucure la1, la2;
+	la1.Append<DirectX::XMFLOAT3>("POSITION");
+	la1.Append<DirectX::XMFLOAT3>("NORMAL");
+
+	la2.Append<DirectX::XMFLOAT3>("POSITION");
+	la2.Append<DirectX::XMFLOAT3>("NORMAL");
+	la2.Append<DirectX::XMFLOAT2>("TEXCOORD");
 
 	aiMesh* pmesh;
 
 	/* creating common data*/
 	VertexShader* vs = new VertexShader(gfx, L"shaders\\AssVertexShader.hlsl", false);
+	VertexShader* vsT = new VertexShader(gfx, L"shaders\\CubeVertexShader.hlsl", false);
 	PixelShader* ps = new PixelShader(gfx, L"shaders\\AssPixelShader.hlsl", false);
-	InputLayout* Il = new InputLayout(gfx, la, vs->getpBlob());
+	PixelShader* psT = new PixelShader(gfx, L"shaders\\CubePixelShader.hlsl", false);
+
+	InputLayout* Il1 = new InputLayout(gfx, la1, vs->getpBlob());
+	InputLayout* IlT = new InputLayout(gfx, la2, vs->getpBlob());
+
 	PrimativeTopology* pt = new PrimativeTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	tr = new TransformCBuffer(gfx);
 	pcb = new PixelConstantBuffer(gfx, 1u, sizeof(COLOR));
 
+	printf("\n");
 	/* saving common data*/
-	commonBindables.push_back(vs);
-	commonBindables.push_back(ps);
-	commonBindables.push_back(Il);
-	commonBindables.push_back(pt);
-	commonBindables.push_back(tr);
-	commonBindables.push_back(pcb);
-
-	/* creating root */
-
+	commonBindables.insert(pt);
+	commonBindables.insert(tr);
+	commonBindables.insert(pcb);
+	
+	/* loading aiMeshs */
 	for (int i = 0; i < pmodel->mNumMeshes; ++i) {
-		/* creating mesh */
+		/* creating objmesh */
 		pmesh = pmodel->mMeshes[i];
-		vertexBufferData vbd(la, pmesh->mNumVertices);
-
-		vbd.addData("POSITION", pmesh->mVertices);
-		vbd.addData("NORMAL", pmesh->mNormals);
-
+		
 		unsigned short* IBData = new unsigned short[pmesh->mNumFaces * 3];
 
 		for (int i = 0; i < pmesh->mNumFaces; i++)
@@ -200,17 +226,64 @@ void ObjModel::loadModelFromFile( const char *srcFileName)
 
 		std::printf("loading mesh %s\n", (pmesh->mName.C_Str()));
 		AllMeshs.push_back(new ObjMesh(pmesh->mName.C_Str()));
-		AllMeshs[AllMeshs.size() - 1]->AddBindable(new VertexBuffer(gfx, vbd));
-		AllMeshs[AllMeshs.size() - 1]->AddBindable(new IndexBuffer(gfx, IBData, pmesh->mNumFaces * 3));
 
 
+		if (pmesh->HasTextureCoords(0)) {
+			
+			vertexBufferData vbd(la2, pmesh->mNumVertices);
+			vbd.addData("TEXCOORD", pmesh->mTextureCoords[0]);
+			vbd.addData("POSITION", pmesh->mVertices);
+			vbd.addData("NORMAL", pmesh->mNormals);
+			vbd.print();
+			auto material = pmodel->mMaterials[pmesh->mMaterialIndex];
+			
+			aiString str;
+			material->GetTexture(aiTextureType_DIFFUSE, 0, &str);
+			wchar_t fileName[500] = L"Models src data\\";
+
+			//wsprintf(fileName,L"%s\\%s", folderName, str.C_Str());
+
+			mbstowcs(&fileName[16], str.C_Str(), strlen(str.C_Str()));
+			wprintf(L"texture count %d at %s \n", material->GetTextureCount(aiTextureType_DIFFUSE),fileName);
+
+			AllMeshs.back()->AddBindable(new Sampler(gfx, 0u));
+			AllMeshs.back()->AddBindable(new VertexBuffer(gfx, vbd));
+			AllMeshs.back()->AddBindable(new IndexBuffer(gfx, IBData, pmesh->mNumFaces * 3));
+			AllMeshs.back()->AddBindable(IlT->AddRefrance());
+			AllMeshs.back()->AddBindable(vsT->AddRefrance());
+			AllMeshs.back()->AddBindable(psT->AddRefrance());
+			AllMeshs.back()->AddBindable(new Texture(gfx, (const wchar_t*)fileName));
+
+		}
+		else {
+			vertexBufferData vbd(la1, pmesh->mNumVertices);
+
+			vbd.addData("POSITION", pmesh->mVertices);
+			vbd.addData("NORMAL", pmesh->mNormals);
+
+			AllMeshs.back()->AddBindable(new VertexBuffer(gfx, vbd));
+			AllMeshs.back()->AddBindable(new IndexBuffer(gfx, IBData, pmesh->mNumFaces * 3));
+			AllMeshs.back()->AddBindable(Il1->AddRefrance());
+			AllMeshs.back()->AddBindable(vs->AddRefrance());
+			AllMeshs.back()->AddBindable(vs->AddRefrance());
+
+		}
+		
 		meshsNames.push_back(pmesh->mName.C_Str());
 		sprintf((char*)meshsNames[meshsNames.size() - 1], "%s\000", pmesh->mName.C_Str());
 
 	}
 
+	
+	/* creating Nodes using the common data recursively */
 	root = new ObjNode(pmodel->mRootNode, this);
 
+
+}
+
+ObjModel* ObjModel::copy()
+{
+	return nullptr;
 }
 
 ObjModel::ObjModel(Graphics& gfx, const char* src)
@@ -220,10 +293,31 @@ ObjModel::ObjModel(Graphics& gfx, const char* src)
 	
 }
 
-void ObjModel::Draw() {
-	for (auto a : commonBindables) {
-		a->bind(gfx);
+ObjModel::~ObjModel()
+{
+	printf("\n\ndelete model %s\n", name);
+	printf("delete common bindables");
+	//........ member data deletion
+	commonBindables.Release();
+
+	printf("\ndelete Connected nodes ............................\n");
+	//...........nodes
+	delete root;
+
+
+	printf("\ndelete Conected meshes .............................\n");
+
+	//...........meshes
+	for (auto a : AllMeshs) {
+		delete a;
 	}
+	
+
+	
+}
+
+void ObjModel::Draw() {
+	commonBindables.bind(gfx);
 	using namespace DirectX;
 	root->Draw(gfx, *tr,
 		DirectX::XMMatrixScaling(scale.x, scale.y, scale.z)

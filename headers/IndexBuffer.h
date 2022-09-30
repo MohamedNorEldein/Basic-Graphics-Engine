@@ -9,7 +9,7 @@ private:
 
 public:
 	IndexBuffer(Graphics& gfx, std::vector<unsigned short> indecies) 
-		:count(indecies.size()), Bindable(_Indexbuffer)
+		:count(indecies.size()), Bindable(BINDABLE_TYPE::INDEX_BUFFER)
 
 	{
 		D3D11_SUBRESOURCE_DATA idata = { 0 };
@@ -30,7 +30,7 @@ public:
 	}
 
 	IndexBuffer(Graphics& gfx, unsigned short* indecies, int count)
-		:count(count), Bindable(_Indexbuffer)
+		:count(count), Bindable(BINDABLE_TYPE::INDEX_BUFFER)
 
 	{
 		D3D11_SUBRESOURCE_DATA idata = { 0 };
@@ -57,8 +57,7 @@ public:
 	void bind(Graphics& gfx)
 	{
 		GetContext(gfx)->IASetIndexBuffer(pindexBuffer, DXGI_FORMAT_R16_UINT, 0);
-		
-
+	
 	}
 
 	unsigned int getIndecesNumber() {

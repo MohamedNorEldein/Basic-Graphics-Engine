@@ -14,7 +14,7 @@ protected:
 
 public:
 
-    DynamicInputCBuffer(Graphics& gfx , void* cb, unsigned int Slot, size_t size, bindableType BT = _unspecified):
+    DynamicInputCBuffer(Graphics& gfx , void* cb, unsigned int Slot, size_t size, BINDABLE_TYPE BT = BINDABLE_TYPE::UNSPECIFIED):
         Slot(Slot),Bindable(BT)
     {
         D3D11_SUBRESOURCE_DATA TmatData = { 0 };
@@ -35,7 +35,7 @@ public:
     }
 
   
-    DynamicInputCBuffer(Graphics& gfx, UINT Slot , size_t size, bindableType BT = _unspecified ):
+    DynamicInputCBuffer(Graphics& gfx, UINT Slot , size_t size, BINDABLE_TYPE BT = BINDABLE_TYPE::UNSPECIFIED):
     Slot(Slot), Bindable(BT)
     {
         
@@ -88,11 +88,11 @@ class PixelConstantBuffer :
 public:
 
     template <class T>
-    PixelConstantBuffer(Graphics& gfx,const T& cb, UINT Slot ): DynamicInputCBuffer( gfx,(void*)& cb, Slot, sizeof(T),_PixelConstantBuffer)
+    PixelConstantBuffer(Graphics& gfx,const T& cb, UINT Slot ): DynamicInputCBuffer( gfx,(void*)& cb, Slot, sizeof(T), BINDABLE_TYPE::PIXEL_CONSTANT_BUFFER)
     {
     }
 
-    PixelConstantBuffer(Graphics& gfx, UINT Slot, size_t size) :DynamicInputCBuffer(gfx,Slot, size, _PixelConstantBuffer)
+    PixelConstantBuffer(Graphics& gfx, UINT Slot, size_t size) :DynamicInputCBuffer(gfx,Slot, size, BINDABLE_TYPE::PIXEL_CONSTANT_BUFFER)
     {
        
     }
@@ -111,11 +111,11 @@ class VertexConstantBuffer :
 
 public:
     template <class T>
-    VertexConstantBuffer(Graphics& gfx,const T& cb, UINT Slot) : DynamicInputCBuffer( gfx, &cb, Slot, sizeof(T))
+    VertexConstantBuffer(Graphics& gfx,const T& cb, UINT Slot) : DynamicInputCBuffer( gfx, &cb, Slot, sizeof(T), BINDABLE_TYPE::VERTEX_CONSTANT_BUFFER)
     {
     }
 
-    VertexConstantBuffer(Graphics& gfx, UINT Slot, size_t size) : DynamicInputCBuffer(gfx,Slot, size)
+    VertexConstantBuffer(Graphics& gfx, UINT Slot, size_t size) : DynamicInputCBuffer(gfx,Slot, size, BINDABLE_TYPE::VERTEX_CONSTANT_BUFFER)
     {
     }
 
@@ -158,7 +158,7 @@ protected:
 
 public:
 
-    DynamicOutputCBuffer(Graphics& gfx, void* cb, unsigned int Slot, size_t size, bindableType BT = _unspecified) :
+    DynamicOutputCBuffer(Graphics& gfx, void* cb, unsigned int Slot, size_t size, BINDABLE_TYPE BT = BINDABLE_TYPE::UNSPECIFIED) :
         Slot(Slot), Bindable(BT)
     {
         D3D11_SUBRESOURCE_DATA TmatData = { 0 };
@@ -179,7 +179,7 @@ public:
     }
 
 
-    DynamicOutputCBuffer(Graphics& gfx, UINT Slot, size_t size, bindableType BT = _unspecified) :
+    DynamicOutputCBuffer(Graphics& gfx, UINT Slot, size_t size, BINDABLE_TYPE BT = BINDABLE_TYPE::UNSPECIFIED) :
         Slot(Slot), Bindable(BT)
     {
 

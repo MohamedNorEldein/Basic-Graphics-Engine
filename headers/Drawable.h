@@ -11,39 +11,73 @@
 //typedef std::vector<Bindable*> CBV;
 
 class BV:
-	public Array<Bindable*,16>
+	public std::vector<Bindable*>
 {
 private:
-	UINT find(bindableType type, short start, short end) {
-		if (end == start) {
+	UINT find(BINDABLE_TYPE type, UINT start, UINT end) {
+		if (end == start + 1) {
 			return start;
 		}
-		UINT v = type - data[(start + end) / 2]->getType();
-
-		if (v > 0) {
-			return find(type, (start + end) / 2 + 1, end);
-		}
+		int v = type - (*this)[(start + end) / 2]->getType();
 		if (v < 0) {
-			return find(type, start, (start + end) / 2);
+			return find(type,start, (start + end) / 2);
 		}
-		return ((start + end) / 2);
+		return find(type, (start + end) / 2,end);
 	}
 
 public:
 	BV() :
-		Array()
+		std::vector<Bindable*>()
 	{
 	}
 
-	Bindable* find(bindableType type) {
-		return data[find(type, 0, this->len - 1)];
+	~BV()
+	{
+		printf("delete BV\n");
+	}
+
+	Bindable* find(BINDABLE_TYPE type) {
+		return (*this)[find(type, 0, size())];
 	}
 
 	void insert(Bindable* item){
-		UINT pos = find(item->getType(), 0u, len);
-		memcpy(data + pos, pos + data + 1, sizeof(void*) * len);
-		data[pos] = item;
-		len++;
+		
+		if (size() == 0) {
+			push_back(item);
+			return;
+		}
+		UINT i = size();
+		push_back(0);
+
+		while ((i>0) && (item->getType()< (*this)[i-1]->getType()))
+		{
+			printf("%d->%d\n", i - 1, i);
+			(*this)[i] = (*this)[i - 1];
+			i--;
+		}
+		(*this)[i] = item;
+		
+	}
+
+	void print() {
+		for (auto a: (*this))
+		{
+			printf("(%d, %X) ", a->getType(), a);
+		}
+	}
+
+	void bind( Graphics &gfx) {
+		for (auto a : (*this))
+		{
+			a->bind(gfx);
+		}
+	}
+
+	void Release() {
+		for (auto a : (*this))
+		{
+			a->release();
+		}
 	}
 
 };
@@ -56,7 +90,7 @@ private:
 
 public:
 	BV& getBindables();
-	Bindable* operator[](bindableType i);
+	Bindable* operator[](BINDABLE_TYPE i);
 	unsigned int getIndecesNumber();
 	void AddBindable(Bindable* bindable);
 	void Draw(Graphics& gfx);
@@ -67,6 +101,10 @@ public:
 		
 		std::cout << "delete Drawable at :" << this << '\n';
 
+		for (auto a : cbv)
+		{
+			a->release();
+		}
 	};
 };
 

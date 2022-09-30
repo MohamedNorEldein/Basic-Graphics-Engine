@@ -9,8 +9,8 @@
 #include "VertexShader.h"
 #include "IndexBuffer.h"
 #include "PrimativeTopology.h"
-
-
+#include "Texture.h"
+#include "Sampler.h"
 #include "assimp/Importer.hpp"
 #include "assimp/postprocess.h"
 #include "assimp/scene.h"
@@ -41,9 +41,10 @@ public:
 	 const char* const getName() {
 		 return name;
 	 }
-
-	 // void loadMesh();
-
+/*
+	 void loadMesh(Graphics& gfx,ObjModel* model,aiMesh* pmesh);
+	 void loadMaterial();
+	 */
 public:
 	ObjMesh(const char* name);
 
@@ -54,16 +55,20 @@ public:
 
 class ObjNode {
 private:
-	
-public :
+		// stack
 	char name[CHAR_MAX];
 	DirectX::XMMATRIX transformation;
+
+private:
+	//heap
 	std::vector<ObjNode * > children;
+
+	// owned by the parent model
 	std::vector<ObjMesh * > meshs;
 public:
 	ObjNode(const char* name);
 	ObjNode(aiNode* nodeptr, ObjModel* GrandParent);
-
+	~ObjNode();
 	
 	/* offset */
 	
@@ -95,23 +100,31 @@ public:
 class ObjModel 
 {
 private:
-	ObjNode* root;
+	// stack data
 	char name[50];
 	Graphics& gfx;
 	TransformCBuffer* tr;
-	std::vector<Bindable*> commonBindables;
-	std::vector<const char *> meshsNames;
-	std::vector<ObjMesh*> AllMeshs;
-	int selectedmesh;
+		int selectedmesh;
 	DirectX::XMFLOAT3 pos, scale, rot;
+private:
+	// heap data
+	ObjNode* root;
+	BV commonBindables;
+	std::vector<const char*> meshsNames;
+	std::vector<ObjMesh*> AllMeshs;
+
+
 
 private:
 	void loadModelFromFile(const char* srcFileName);
+
+	ObjModel* copy();
 
 public:
 	PixelConstantBuffer* pcb;
 
 	ObjModel(Graphics& gfx, const char* src);
+	~ObjModel();
 
 	void Draw();
 	void GuiControl();
@@ -124,7 +137,7 @@ public:
 	void setDiminsion(float x, float y, float z);
 
 	friend class ObjNode;
-	
+	friend class ObjMesh;
 };
 
 

@@ -28,7 +28,7 @@ private:
 
 public:
 	TransformCBuffer(Graphics& gfx, UINT Slot = 0u)
-		:vcb(gfx, Slot, sizeof(TransformMat)), Bindable(_TransforCBuffer)
+		:vcb(gfx, Slot, sizeof(TransformMat)), Bindable(BINDABLE_TYPE::TRANSFORMCBUFFER)
 	{
 	}
 

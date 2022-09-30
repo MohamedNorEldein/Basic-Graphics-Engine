@@ -10,7 +10,7 @@ private:
 
 public:
     PrimativeTopology(D3D11_PRIMITIVE_TOPOLOGY pt):
-        pt(pt), Bindable(_PrimativeTopology)
+        pt(pt), Bindable(BINDABLE_TYPE::TOPOLOGY)
     {
     }
 
