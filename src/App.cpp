@@ -30,13 +30,12 @@ COLOR c = { 1.0,0.50,0.20 };
 
 WPARAM App::doFrame() {
 	/* window begain frame stuff*/
+	ImGui::SetNextWindowBgAlpha(0.7f);
 
 	gfx.clearBuffer(0.5, 0.5, 0.5);
 	gfx.BegainFrame();
-	camera.GUIcontrol();
-
+	
 	lamp.bind(gfx);
-	lamp.GuiControl();
 
 	if (window.keyBoardEvent.isDown(VK_TAB) && window.keyBoardEvent.type == WM_KEYDOWN) {
 
@@ -69,20 +68,26 @@ WPARAM App::doFrame() {
 	
 	objModel.pcb->update(gfx, c);
 	objModel.Draw();
-	objModel.GuiControl();
-	
+
 	/* scene control */
 	camera.CameraMouseControl(window.mouseEvent);
 	camera.CameraKeyboardCotrol(window.keyBoardEvent);
+	/* Imgui */
+	ImGui::SetNextWindowBgAlpha(0.7f);
+	camera.GUIcontrol();
+	lamp.GuiControl();
+	objModel.GuiControl();
+
+
 	/*window end frame stuff */
 	gfx.EndFrame();
 	return 0;
 }
 
 App::App() : window(L"hello world", 1200, 600), gfx(window)
-, objModel(gfx, "Models src data\\nanosuit.obj")
 , lamp(gfx, 0u)
-
+, objModel(gfx, "Models src data\\gvv1e7u547-Borderlands 2 - Maya\\Borderlands 2 - Maya\\maya.obj", _countof("Models src data\\gvv1e7u547 - Borderlands 2 - Maya\\Borderlands 2 - Maya\\"))
+//, objModel(gfx, "Models src data\\Man_with_suit.obj", _countof("Models src data\\"))
 , model1(gfx)
 , model2(gfx)
 , model3(gfx)

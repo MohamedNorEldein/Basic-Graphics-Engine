@@ -169,44 +169,42 @@ void ObjNode::GuiControl() {
 
 }
 
+struct ModelMaterialCbufferData
+{
+	DirectX::XMFLOAT3 MaterialDiffuse;
+	DirectX::XMFLOAT3 MaterialAmpient;
+};
 
 
-void ObjModel::loadModelFromFile( const char *srcFileName)
+void ObjModel::loadModelFromFile( const char* file)
 {
 	Assimp::Importer imp;
-	auto pmodel = imp.ReadFile(srcFileName, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
+
+	auto pmodel = imp.ReadFile(file, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
 	printf(imp.GetErrorString());
 
 	/* Name */
 	memcpy(name, pmodel->mName.C_Str(), pmodel->mName.length);
 
 	/* Layout definesion */
-	LayoutStrucure la1, la2;
-	la1.Append<DirectX::XMFLOAT3>("POSITION");
-	la1.Append<DirectX::XMFLOAT3>("NORMAL");
+	LayoutStrucure  la2;
 
 	la2.Append<DirectX::XMFLOAT3>("POSITION");
 	la2.Append<DirectX::XMFLOAT3>("NORMAL");
-	la2.Append<DirectX::XMFLOAT2>("TEXCOORD");
+	la2.Append<DirectX::XMFLOAT3>("TEXCOORD");
 
 	aiMesh* pmesh;
 
 	/* creating common data*/
 
 	// textured
-	VertexShader* vsT = new VertexShader(gfx, L"shaders\\CubeVertexShader.hlsl", false);
-	PixelShader* psT = new PixelShader(gfx, L"shaders\\CubePixelShader.hlsl", false);
+	VertexShader* vsT = new VertexShader(gfx, L"shaders\\AssVertexShader.hlsl", false);
+	PixelShader* psT = new PixelShader(gfx, L"shaders\\AssPixelShader.hlsl", false);
 	InputLayout* IlT = new InputLayout(gfx, la2, vsT->getpBlob());
-
-
-	// non textured
-	VertexShader* vs = new VertexShader(gfx, L"shaders\\AssVertexShader.hlsl", false);
-	PixelShader* ps = new PixelShader(gfx, L"shaders\\AssPixelShader.hlsl", false);
-	InputLayout* Il1 = new InputLayout(gfx, la1, vs->getpBlob());
 
 	PrimativeTopology* pt = new PrimativeTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	tr = new TransformCBuffer(gfx);
-	pcb = new PixelConstantBuffer(gfx, 1u, sizeof(COLOR));
+	pcb = new CBuffer(gfx, 1u, sizeof(COLOR),PIXEL_SHADER_STAGE);
 
 	printf("\n");
 	/* saving common data*/
@@ -218,7 +216,7 @@ void ObjModel::loadModelFromFile( const char *srcFileName)
 	for (int i = 0; i < pmodel->mNumMeshes; ++i) {
 		/* creating objmesh */
 		pmesh = pmodel->mMeshes[i];
-		
+
 		unsigned short* IBData = new unsigned short[pmesh->mNumFaces * 3];
 
 		for (int i = 0; i < pmesh->mNumFaces; i++)
@@ -232,44 +230,47 @@ void ObjModel::loadModelFromFile( const char *srcFileName)
 		AllMeshs.push_back(new ObjMesh(pmesh->mName.C_Str()));
 
 
-		if (pmesh->HasTextureCoords(0)) {
-			
-			vertexBufferData vbd(la2, pmesh->mNumVertices);
-			vbd.addData("TEXCOORD", pmesh->mTextureCoords[0]);
-			vbd.addData("POSITION", pmesh->mVertices);
-			vbd.addData("NORMAL", pmesh->mNormals);
-			auto material = pmodel->mMaterials[pmesh->mMaterialIndex];
-			
-			aiString str;
-			material->GetTexture(aiTextureType_DIFFUSE, 0, &str);
-			wchar_t fileName[500] = L"Models src data\\";
 
-			mbstowcs(&fileName[16], str.C_Str(), strlen(str.C_Str()));
-			wprintf(L"texture count %d at %s \n", material->GetTextureCount(aiTextureType_DIFFUSE),fileName);
+		vertexBufferData vbd(la2, pmesh->mNumVertices);
+		vbd.addData("TEXCOORD", pmesh->mTextureCoords[0]);
+		vbd.addData("POSITION", pmesh->mVertices);
+		vbd.addData("NORMAL", pmesh->mNormals);
+		auto material = pmodel->mMaterials[pmesh->mMaterialIndex];
 
-			AllMeshs.back()->AddBindable(new Sampler(gfx, 0u));
-			AllMeshs.back()->AddBindable(new VertexBuffer(gfx, vbd));
-			AllMeshs.back()->AddBindable(new IndexBuffer(gfx, IBData, pmesh->mNumFaces * 3));
-			AllMeshs.back()->AddBindable(IlT->AddRefrance());
-			AllMeshs.back()->AddBindable(vsT->AddRefrance());
-			AllMeshs.back()->AddBindable(psT->AddRefrance());
-			AllMeshs.back()->AddBindable(new Texture(gfx, (const wchar_t*)fileName));
-
+		auto data = (float*)vbd.Data() ;
+		/*
+		for (UINT i = 0u; i < 50; i++) {
+			printf("ass[i]: %f %f %f\n", pmesh->mTextureCoords[0][i][0], pmesh->mTextureCoords[0][i][1], pmesh->mTextureCoords[0][i][2]);
+			printf("vbd[i]: %f %f %f\n",vbd[i].Data<DirectX::XMFLOAT3>(2u).x, vbd[i].Data<DirectX::XMFLOAT3>(2u).y, vbd[i].Data<DirectX::XMFLOAT3>(2u).z);
 		}
-		else {
-			vertexBufferData vbd(la1, pmesh->mNumVertices);
+		*/
 
-			vbd.addData("POSITION", pmesh->mVertices);
-			vbd.addData("NORMAL", pmesh->mNormals);
+		aiString str;
+		mbstowcs(fileName, file, strlen(file));
 
-			AllMeshs.back()->AddBindable(new VertexBuffer(gfx, vbd));
-			AllMeshs.back()->AddBindable(new IndexBuffer(gfx, IBData, pmesh->mNumFaces * 3));
-			AllMeshs.back()->AddBindable(Il1->AddRefrance());
-			AllMeshs.back()->AddBindable(vs->AddRefrance());
-			AllMeshs.back()->AddBindable(vs->AddRefrance());
+		for (UINT i = aiTextureType_DIFFUSE; i < aiTextureType_EMISSIVE; i += 1)
+		{
+			for (short i = 0; i < material->GetTextureCount((aiTextureType)i); i++)
+			{
 
+				material->GetTexture((aiTextureType)i, 0, &str);
+				mbstowcs(fileName + lenFolder - 1, str.C_Str(), str.length);
+				fileName[lenFolder + str.length - 1] = '\000';
+				//wsprintf(fileName,L"%s\\%s\000",file,str.C_Str());
+				wprintf(L"texture count %d at %s \n", lenFolder + str.length, fileName);
+				AllMeshs.back()->AddBindable(new Texture(gfx, fileName, i - 1));
+
+			}
 		}
-		
+
+
+		AllMeshs.back()->AddBindable(new Sampler(gfx, 0u));
+		AllMeshs.back()->AddBindable(new VertexBuffer(gfx, vbd));
+		AllMeshs.back()->AddBindable(new IndexBuffer(gfx, IBData, pmesh->mNumFaces * 3));
+		AllMeshs.back()->AddBindable(IlT->AddRefrance());
+		AllMeshs.back()->AddBindable(vsT->AddRefrance());
+		AllMeshs.back()->AddBindable(psT->AddRefrance());
+
 		meshsNames.push_back(pmesh->mName.C_Str());
 		sprintf((char*)meshsNames[meshsNames.size() - 1], "%s\000", pmesh->mName.C_Str());
 
@@ -287,11 +288,10 @@ ObjModel* ObjModel::copy()
 	return nullptr;
 }
 
-ObjModel::ObjModel(Graphics& gfx, const char* src)
-	:gfx(gfx), scale(1,1,1),rot(0,0,0),pos(0,0,0)
+ObjModel::ObjModel(Graphics& gfx, const char* folder, UINT lenFolder)
+	:gfx(gfx), scale(1,1,1),rot(0,0,0),pos(0,0,0), lenFile(0), lenFolder(lenFolder)
 {
-	loadModelFromFile(src);
-	
+	loadModelFromFile(folder);
 }
 
 ObjModel::~ObjModel()

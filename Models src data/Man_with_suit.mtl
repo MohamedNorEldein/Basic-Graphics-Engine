@@ -1,0 +1,109 @@
+# Blender MTL File: 'Man_with_suit.blend'
+# Material Count: 9
+
+newmtl eyebrow
+Ns 4.999997
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Kd textures\\eyebrow012.png
+map_d textures\\eyebrow012.png
+
+newmtl eyes
+Ns 10.000005
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Kd textures\\brown_eye.png
+map_d textures\\brown_eye.png
+
+newmtl gun
+Ns 10.000005
+Ka 1.000000 1.000000 1.000000
+Kd 0.882900 0.882900 0.882900
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Kd textures\\black.png
+map_d textures\\black.png
+
+newmtl hair
+Ns 9.600003
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Kd textures\\male02_diffuse_black.png
+map_d textures\\male02_diffuse_black.png
+
+newmtl male_elegant_suit
+Ns 0.999999
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Kd textures\\male_elegantsuit01_diffuse.png
+map_d textures\\male_elegantsuit01_diffuse.png
+
+newmtl man_with_suit
+Ns 4.999997
+Ka 1.000000 1.000000 1.000000
+Kd 0.500000 0.500000 0.500000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Kd textures\\old_darkskinned_male_diffuse.png
+
+newmtl shoes_oxford_male
+Ns 1.960998
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Bump textures\\Shoes_Oxford_NRM.png
+map_Kd textures\\Shoes_Oxford.png
+map_d textures\\Shoes_Oxford.png
+
+newmtl teeth
+Ns 8.000002
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Kd textures\\teeth.png
+map_d textures\\teeth.png
+
+newmtl tongue
+Ns 1.960998
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Kd textures\\tongue01_diffuse.png

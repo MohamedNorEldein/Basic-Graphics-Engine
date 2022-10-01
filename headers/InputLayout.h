@@ -47,6 +47,8 @@ public:
 		return desc.data();
 	}
 
+	friend class Vertex;
+
 public:
 	template<typename T>
 	void Append(const char* semantics) {};
@@ -172,6 +174,22 @@ public:
 
 	}
 
+};
+
+class Vertex {
+private:
+	byte* data;
+	LayoutStrucure& layout;
+public:
+	Vertex(byte* data, LayoutStrucure& layout):
+		data(data), layout(layout)
+	{
+	}
+
+	template<typename T>
+	T Data (UINT i) {
+		return *(T*)(data + layout.desc[i].AlignedByteOffset);
+	}
 
 };
 
@@ -190,7 +208,6 @@ public:
 
 	void addData(const char* semantic, void* dataArray) {		 
 		 int a = layout[semantic];
-		 printf("%s  %d %u\n", layout.desc[a].SemanticName, layout.desc[a].SemanticIndex, layout.sizeVec[a]);
 		 UINT i = 0u, stride= layout.desc[a].AlignedByteOffset, size = layout.sizeVec[a];
 		 byte* _d = data + stride, * _s = (byte*)dataArray;
 
@@ -202,6 +219,10 @@ public:
 			 i++;
 		 }
 
+	}
+
+	Vertex operator[](UINT vertexIndex) {
+		return Vertex(data + vertexIndex * layout.vertexSize,layout);
 	}
 
 	D3D11_INPUT_ELEMENT_DESC* getLayout() {

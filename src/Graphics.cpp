@@ -385,7 +385,8 @@ void ThirdPearsonPerspective::updateCameraRotation(float _lattude, float _depart
 }
 
 void FirstPearsonPerspective::GUIcontrol() {
-	
+	ImGui::SetNextWindowBgAlpha(0.7f);
+
 	if (ImGui::Begin("camera", nullptr, (ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))) {
 		ImGui::Text("For Camera Transilation speed in System control");
 		ImGui::SliderFloat("cammera speed", &CameraTransilationSpeed, 0, 10);

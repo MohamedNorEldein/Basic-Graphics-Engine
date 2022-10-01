@@ -23,12 +23,12 @@ private:
 		DirectX::XMMATRIX Tr;
 	};
 
-	VertexConstantBuffer vcb;
+	CBuffer vcb;
 	
 
 public:
 	TransformCBuffer(Graphics& gfx, UINT Slot = 0u)
-		:vcb(gfx, Slot, sizeof(TransformMat)), Bindable(BINDABLE_TYPE::TRANSFORMCBUFFER)
+		:vcb(gfx, Slot, sizeof(TransformMat),BIND_STAGE::VERTEX_SHADER_STAGE), Bindable(BINDABLE_TYPE::TRANSFORMCBUFFER)
 	{
 	}
 

@@ -136,6 +136,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="headers\ComputeShaderBuffer.h" />
     <ClInclude Include="dxtex\include\dxtex\BC.h" />
     <ClInclude Include="dxtex\include\dxtex\BCDirectCompute.h" />
     <ClInclude Include="dxtex\include\dxtex\d3dx12.h" />
@@ -165,6 +166,7 @@
     <ClInclude Include="Headers\mstring.h" />
     <ClInclude Include="headers\PixelShader.h" />
     <ClInclude Include="headers\Sampler.h" />
+    <ClInclude Include="headers\ShaderResource.h" />
     <ClInclude Include="headers\SingleLinkedList.h" />
     <ClInclude Include="headers\VertexBuffer.h" />
     <ClInclude Include="headers\VertexShader.h" />

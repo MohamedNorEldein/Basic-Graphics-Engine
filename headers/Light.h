@@ -25,10 +25,10 @@ class UniformLight
 private:
 	lightData li;
 	UINT SLOT;
-	PixelConstantBuffer lightCbuff;
+	CBuffer lightCbuff;
 public:
 	UniformLight(Graphics& gfx, UINT SLOT)
-		:  SLOT(SLOT), lightCbuff(gfx,SLOT, sizeof(lightData)),li()
+		:  SLOT(SLOT), lightCbuff(gfx,SLOT, sizeof(lightData),BIND_STAGE::PIXEL_SHADER_STAGE),li()
 	{
 	}
 
@@ -50,6 +50,8 @@ public:
 	}
 
 	void GuiControl() {
+		ImGui::SetNextWindowBgAlpha(0.7f);
+
 		if (ImGui::Begin("light", nullptr, (ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))) {
 			ImGui::SliderFloat3("position", (float*)&li.lightDir, -1.0, +1.0);
 			ImGui::SliderFloat3("ambient", (float*)&li.ambient, 0, +1.0);
@@ -90,10 +92,10 @@ class PointSource
 private:
 	PointlightData li;
 	UINT SLOT;
-	PixelConstantBuffer lightCbuff;
+	CBuffer lightCbuff;
 public:
 	PointSource(Graphics& gfx, UINT SLOT)
-		: SLOT(SLOT), lightCbuff(gfx, SLOT, sizeof(lightData)), li()
+		: SLOT(SLOT), lightCbuff(gfx, SLOT, sizeof(lightData),PIXEL_SHADER_STAGE), li()
 	{
 	}
 

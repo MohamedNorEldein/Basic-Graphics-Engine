@@ -51,7 +51,6 @@ public:
 
 		while ((i>0) && (item->getType()< (*this)[i-1]->getType()))
 		{
-			printf("%d->%d\n", i - 1, i);
 			(*this)[i] = (*this)[i - 1];
 			i--;
 		}

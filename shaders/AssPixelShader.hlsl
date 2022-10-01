@@ -1,24 +1,44 @@
+sampler smplr;
+
+Texture2D DiffuseMap;
+Texture2D ampientMap;
+Texture2D Specular;
+
 
 cbuffer lightSource
 {
     float3 lightDir;
     float3 lightColor;
-    float3 ambient ;
+    float3 ambientColor;
     float diffuseIntensity ;
     float ambientIntensity;
 
 };
 
-cbuffer material
+/*
+Buffer<float> p;
+
+cbuffer MaterialData
 {
-    float3 color ;
+    float3 MaterialDiffuse;
+    float3 MaterialAmpient;
+};
+*/
+
+struct VSINPUT
+{
+    float3 normal : NORMAL;
+    float2 tex2d : TEXCOORD;
 };
 
 
-float4 main( float3 normal : Normal) : SV_Target
+float4 main(VSINPUT vin) : SV_Target
 {
 	
-    float diffuse = diffuseIntensity * dot(normal, lightDir) / (length(normal) * length(lightDir));
+    float diffuse = diffuseIntensity * dot(vin.normal, lightDir) / (length(vin.normal) * length(lightDir));
+    float4 diffuseTexData = diffuse * float4(lightColor, 0.0f) * DiffuseMap.Sample(smplr, vin.tex2d) / length(lightColor);
+    float4 ampientTexData = float4(ambientColor, 0.0f) * ampientMap.Sample(smplr, vin.tex2d) * ambientIntensity / length(ambientColor);
     
-    return float4(saturate(normalize(ambient) * ambientIntensity + diffuse * lightColor) * color, 1.0f);
+    return saturate( ampientTexData + diffuseTexData );
+    //return float4(vin.tex2d, 0, 0);
 }

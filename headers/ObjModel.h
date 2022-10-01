@@ -102,6 +102,9 @@ class ObjModel
 private:
 	// stack data
 	char name[50];
+	wchar_t fileName[1024];
+	UINT lenFolder, lenFile;
+
 	Graphics& gfx;
 	TransformCBuffer* tr;
 		int selectedmesh;
@@ -116,14 +119,14 @@ private:
 
 
 private:
-	void loadModelFromFile(const char* srcFileName);
+	void loadModelFromFile( const char* src);
 
 	ObjModel* copy();
 
 public:
-	PixelConstantBuffer* pcb;
+	CBuffer* pcb;
 
-	ObjModel(Graphics& gfx, const char* src);
+	ObjModel(Graphics& gfx,const char* src,UINT lenFolder=0u);
 	~ObjModel();
 
 	void Draw();
