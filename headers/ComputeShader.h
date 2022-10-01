@@ -28,7 +28,7 @@ public:
 
 #endif // _DEBUG
 
-			gfx.getdevice()->CreateComputeShader(pBlop->GetBufferPointer(), pBlop->GetBufferSize(), NULL, &cs);
+			CHECK(gfx.getdevice()->CreateComputeShader(pBlop->GetBufferPointer(), pBlop->GetBufferSize(), NULL, &cs));
 
 		}
 	}

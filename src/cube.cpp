@@ -57,7 +57,7 @@ std::vector<unsigned short> indeces =
 
 };
 
-std::vector<D3D11_INPUT_ELEMENT_DESC> ied = {
+D3D11_INPUT_ELEMENT_DESC ied[] = {
 	{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
 	{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(DirectX::XMFLOAT3), D3D11_INPUT_PER_VERTEX_DATA, 0},
 	{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(DirectX::XMFLOAT3) * 2, D3D11_INPUT_PER_VERTEX_DATA, 0}
@@ -73,7 +73,7 @@ void Cube::generate() {
 	dc.AddBindable(new VertexBuffer(gfx, vBuffData));
 	dc.AddBindable(vs);
 	dc.AddBindable(new PixelShader(gfx, L"shaders\\CubePixelShader.hlsl",false));
-	dc.AddBindable(new InputLayout(gfx, ied, vs->getpBlob()));
+	dc.AddBindable(new InputLayout(gfx, ied,3, vs->getpBlob()));
 ///	dc.AddBindable(Cube::pcb);
 	tr = new TransformCBuffer(gfx);
 	dc.AddBindable(tr);

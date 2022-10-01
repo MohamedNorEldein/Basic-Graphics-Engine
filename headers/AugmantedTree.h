@@ -10,6 +10,12 @@
 #ifndef DATASTRUCTURES_CPP_AUGMANTEDTREE_H
 #define DATASTRUCTURES_CPP_AUGMANTEDTREE_H
 
+#define BTREE_BUFFER_SIZE 10
+
+#ifndef max
+#define max(a,b)            (((a) > (b)) ? (a) : (b))
+#endif
+std::string space(int n);
 
 namespace AugmantedTree {
     using namespace __BUFFER;
@@ -298,5 +304,265 @@ namespace AugmantedTree {
     };
 
 }
+
+
+namespace BTEE {
+
+    typedef int DATATYPE;
+
+    typedef struct BTN {
+        UINT hight;
+        BTN(UINT hight) : hight(hight)
+        {
+        }
+        BTN() :hight(0u)
+        {
+        }
+    }BTN;
+
+
+    typedef struct Node :BTN {
+        DATATYPE* key;
+        BTN* left, * right;
+        Node(UINT hight, DATATYPE* key, BTN* left, BTN* right) :
+            key(key), left(left), right(right), BTN(hight)
+        {
+
+        }
+    }Node;
+
+
+    typedef struct Leaf:BTN {
+        UINT length;
+        DATATYPE data[BTREE_BUFFER_SIZE];
+
+        Leaf():BTN(0u) {
+            length = 0;
+        }
+
+        ~Leaf() = default;
+
+        DATATYPE* find(DATATYPE* item) {
+            UINT i = 0;
+            while(i < length )
+            {
+                if (*item == data[i])
+                    return data + i;
+                ++i;
+            }
+            return nullptr;
+        }
+
+        void leafInsert(DATATYPE* item) {
+            if (length == 0) {
+                data[0] = (*item);
+                length++;
+                return; 
+            }
+            
+            UINT i = length;
+            length++;
+
+            while ((i > 0) && (*item < data[i - 1]))
+            {
+                data[i] = data[i - 1];
+                i--;
+            }
+            data[i] = *item;
+            
+        }
+
+        UINT leafremove(DATATYPE* item) {
+            UINT i = 0;
+            while ((i < length) && (data[i]< *item))
+            {
+                i++;
+            }
+            if (data[i] != *item) {
+                return NULL;
+            }
+            length--;
+            while (i < length)
+            {
+                data[i] = data[i + 1];
+                i++;
+            }
+        }
+
+        void print() {
+           
+            for (UINT i = 0; i < length; i++)
+            {
+                printf("%d ", data[i]);
+            }
+            printf("\n");
+        }
+
+        void read(void* p, void (*func)(DATATYPE item,void*p)) {
+
+            for (UINT i = 0; i < length; i++)
+            {
+                func(data[i], p);
+            }
+        }
+
+        Node* split() {
+            /* split the leaf to two leafs connectd to a child leaf which is to be connected to the parent */
+            Leaf* leaf2 = new Leaf();
+            
+            this->length /= 2;
+            leaf2->length = BTREE_BUFFER_SIZE - this->length;
+            memcpy(leaf2->data, this->data + this->length, leaf2->length * sizeof(DATATYPE));
+
+            return new Node{ 1u,leaf2->data,(Node*)this,(Node*)leaf2 };
+        }
+
+        Node* insert( DATATYPE* item)
+        {
+            leafInsert(item);
+            if (length == BTREE_BUFFER_SIZE)
+                return split();
+            return (Node*)this;
+        }
+        
+        Node* remove(DATATYPE* item) {
+            if (leafremove(item) == NULL) {
+                throw NotFound();
+            }
+
+            if (length == 0) {
+                //delete this;
+                return nullptr;
+            }
+            return (Node*)this;
+        }
+
+    }Leaf;
+     
+
+    class Btree {
+    private:
+        Node* root;
+        UINT length;
+
+    private:
+
+        void set_height(Node* parent) {
+            if (parent->hight == 0u) { return; }
+            parent->hight = 1 + max(parent->right->hight, parent->left->hight);
+        }
+
+        BTN* remove(Node* parent,DATATYPE* item) {
+            if (parent->hight == 0) {
+               return ((Leaf*)parent)->remove(item);
+            }
+
+            if (*item > *(parent->key))
+            {
+                parent->right = remove((Node*)(parent->right), item);
+                if (parent->right == nullptr)
+                {
+                    BTN* node = parent->left;
+                    delete parent;
+                    return node;
+                }
+                set_height(parent);
+                return parent;
+            }
+            parent->left = remove((Node*)parent->left, item);
+            if (parent->left == nullptr)
+            {
+                BTN* node = parent->right;
+                delete parent;
+                return node;
+            }
+            set_height(parent);
+            return parent;
+        }
+
+        BTN* inser(Node* parent, DATATYPE* item) {
+            if (parent->hight == 0) {
+                return ((Leaf*)parent)->insert(item);
+            }
+
+            if (*item > *(parent->key))
+            {
+                parent->right = inser((Node*)(parent->right), item);
+                set_height(parent);
+                return parent;
+            }
+            parent->left = inser((Node*)parent->left, item);
+            set_height(parent);
+            return parent;
+        }
+
+        BTN* find(Node* parent, DATATYPE* item) {
+            if (parent->hight == 0) {
+                return parent;
+            }
+            if (*item > *(parent->key))
+            {
+                parent->right = find((Node*)(parent->right), item);
+                return parent;
+            }
+            parent->left = find((Node*)parent->left, item);
+            return parent;
+
+        }
+
+        void print(Node* parent) {
+            space(10 - 3*parent->hight);
+            if (parent->hight == 0u) {
+                ((Leaf*)parent)->print();
+                return;
+            }
+            print((Node*)parent->left);
+            print((Node*)parent->right);
+
+        }
+
+        void read(Node* parent, void* p, void (*func)(DATATYPE item, void* p)) {
+            if (parent->hight == 0u) {
+                ((Leaf*)parent)->read(p, func);
+                return;
+            }
+            read((Node*)parent->left, p, func);
+            read((Node*)parent->right, p, func);
+
+        }
+
+    public:
+        Btree():length(0),root( (Node*) new Leaf())
+        {
+        }
+
+        void insert(const DATATYPE& item) {
+            length++;
+            root = (Node*)inser(root, (DATATYPE*) & item);
+        }
+
+        DATATYPE* find(const DATATYPE& item) {
+            return ((Leaf*)find(root, (DATATYPE*)&item))->find((DATATYPE*)&item);
+        }
+
+        void print() {
+            print(root);
+        }
+
+        void read(void* p, void (*func)(DATATYPE item, void* p)) {
+            read(root, p, func);
+        }
+
+        void remove(const DATATYPE& item) {
+            if (length == 0)
+                throw EmptyTree();
+            length--;
+            root = (Node*)remove(root, (DATATYPE*)&item);
+        }
+
+    };
+
+};
+
 
 #endif //DATASTRUCTURES_CPP_AUGMANTEDTREE_H

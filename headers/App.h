@@ -33,7 +33,7 @@ private:
     ObjModel objModel;
 private:
     // camera and light
-    FirstPearsonPerspective camera;
+    ThirdPearsonPerspective camera;
     UniformLight lamp;
 
 public:

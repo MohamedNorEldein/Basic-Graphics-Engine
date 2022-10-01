@@ -248,7 +248,7 @@ DirectX::XMMATRIX FirstPearsonPerspective::getCameraProjection()
 	using namespace DirectX;
 
 	return
-		DirectX::XMMatrixTranslationFromVector(CameraPosition)
+		DirectX::XMMatrixTranslationFromVector(-CameraPosition)
 		*
 		DirectX::XMMatrixRotationRollPitchYaw(0.0f, -cameraRotation.m128_f32[1], 0.0)
 		*
@@ -257,14 +257,12 @@ DirectX::XMMATRIX FirstPearsonPerspective::getCameraProjection()
 
 void FirstPearsonPerspective::updateCameraPosition(float x, float y, float z)
 {
-	XMVECTOR vin = XMVectorSet(x, y, z, 0.0f);
-	CameraPosition += XMVector3Transform(vin, XMMatrixRotationRollPitchYawFromVector(cameraRotation));
+	CameraPosition += XMVector3Transform(XMVectorSet(x, y, z, 0.0f), XMMatrixRotationRollPitchYawFromVector(cameraRotation));
 }
 
 void FirstPearsonPerspective::FirstPearsonPerspective::updateCameraRotation(float x, float y,float z)
 {
 	cameraRotation += XMVectorSet(x, y, z, 0.0f);
-
 }
 
 void FirstPearsonPerspective::CameraMouseControl(MouseEvents& mouseEvent) {
@@ -364,9 +362,7 @@ ThirdPearsonPerspective::ThirdPearsonPerspective(Graphics& camera) :
 
 void ThirdPearsonPerspective::updateCameraPosition(float x, float y, float z) {
 	using namespace DirectX;
-	XMVECTOR vin = XMVectorSet(x, y, z, 0.0f);
-	CameraPosition += XMVector3Transform(vin, XMMatrixRotationY(cameraRotation.m128_f32[1]) * XMMatrixRotationX(cameraRotation.m128_f32[0]));
-	
+	CameraPosition += XMVector3Transform(XMVectorSet(x, y, z, 0.0f), XMMatrixRotationY(cameraRotation.m128_f32[1]) * XMMatrixRotationX(cameraRotation.m128_f32[0]));
 }					   
 
 void ThirdPearsonPerspective::updateCameraRotation(float _lattude, float _departure,float nr) {
@@ -390,7 +386,7 @@ void ThirdPearsonPerspective::updateCameraRotation(float _lattude, float _depart
 
 void FirstPearsonPerspective::GUIcontrol() {
 	
-	if (ImGui::Begin("camera")) {
+	if (ImGui::Begin("camera", nullptr, (ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))) {
 		ImGui::Text("For Camera Transilation speed in System control");
 		ImGui::SliderFloat("cammera speed", &CameraTransilationSpeed, 0, 10);
 		ImGui::Text("Camera GUIcontrol");

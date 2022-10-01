@@ -6,17 +6,12 @@
 class LayoutStrucure {
 
 private:
-	typedef struct element {
-		UINT stride, size;
-	}element;
 	
 	std::vector<D3D11_INPUT_ELEMENT_DESC> desc;
-	std::vector<element> descData;
-
+	std::vector<size_t> sizeVec;
 	UINT vertexSize;
 public:
 	
-
 public:
 	LayoutStrucure() :
 		vertexSize(0u)
@@ -36,11 +31,11 @@ public:
 		return desc.size();
 	}
 
-	element& operator[](const char* semantic) {
+	int operator[](const char* semantic) {
 		int i = 0;
 		for (auto& a : desc) {
 			if (!strcmp(semantic, a.SemanticName)) {
-				return descData[i];
+				return i;
 			}
 			i++;
 		}
@@ -48,7 +43,7 @@ public:
 		throw std::exception();
 	}
 
-	D3D11_INPUT_ELEMENT_DESC* data() {
+	constexpr D3D11_INPUT_ELEMENT_DESC* data() {
 		return desc.data();
 	}
 
@@ -61,7 +56,7 @@ public:
 		desc.push_back({ semantics, 0, DXGI_FORMAT::DXGI_FORMAT_R32G32B32A32_FLOAT, 0, vertexSize, D3D11_INPUT_PER_VERTEX_DATA, 0 });
 		
 		UINT newSize = 4 * sizeof(float);
-		descData.push_back({ vertexSize,newSize });
+		sizeVec.push_back(newSize);
 		vertexSize += newSize;
 	}
 
@@ -70,7 +65,8 @@ public:
 		desc.push_back({ semantics, 0, DXGI_FORMAT::DXGI_FORMAT_R32G32B32_FLOAT, 0, vertexSize, D3D11_INPUT_PER_VERTEX_DATA, 0 });
 		
 		UINT newSize = 3 * sizeof(float);
-		descData.push_back({ vertexSize,newSize });
+		sizeVec.push_back(newSize);
+
 		vertexSize += newSize;
 	}
 
@@ -79,7 +75,8 @@ public:
 		desc.push_back({ semantics, 0, DXGI_FORMAT::DXGI_FORMAT_R32G32_FLOAT, 0, vertexSize, D3D11_INPUT_PER_VERTEX_DATA, 0 });
 
 		UINT newSize = 2 * sizeof(float);
-		descData.push_back({ vertexSize,newSize });
+		sizeVec.push_back(newSize);
+
 		vertexSize += newSize;
 	}
 
@@ -88,7 +85,8 @@ public:
 		desc.push_back({ semantics, 0, DXGI_FORMAT::DXGI_FORMAT_D32_FLOAT, 0, vertexSize, D3D11_INPUT_PER_VERTEX_DATA, 0 });
 
 		UINT newSize =  sizeof(float);
-		descData.push_back({ vertexSize,newSize });
+		sizeVec.push_back(newSize);
+
 		vertexSize += newSize;
 	}
 
@@ -97,7 +95,8 @@ public:
 		desc.push_back({ semantics, 0, DXGI_FORMAT::DXGI_FORMAT_R32_SINT, 0, vertexSize, D3D11_INPUT_PER_VERTEX_DATA, 0 });
 
 		UINT newSize = sizeof(int);
-		descData.push_back({ vertexSize,newSize });
+		sizeVec.push_back(newSize);
+
 		vertexSize += newSize;
 	}
 
@@ -106,25 +105,28 @@ public:
 		desc.push_back({ semantics, 0, DXGI_FORMAT::DXGI_FORMAT_R32_UINT, 0, vertexSize, D3D11_INPUT_PER_VERTEX_DATA, 0 });
 
 		UINT newSize = sizeof(int);
-		descData.push_back({ vertexSize,newSize });
+		sizeVec.push_back(newSize);
+
 		vertexSize += newSize;
 	}
 
 	template<>
 	void Append<DirectX::XMINT2>(const char* semantics) {
-		desc.push_back({ semantics, 0, DXGI_FORMAT::DXGI_FORMAT_R32G32_UINT, 0, vertexSize, D3D11_INPUT_PER_VERTEX_DATA, 0 });
+		desc.push_back({ semantics,0, DXGI_FORMAT::DXGI_FORMAT_R32G32_UINT, 0, vertexSize, D3D11_INPUT_PER_VERTEX_DATA, 0});
 
 		UINT newSize = 2 * sizeof(int);
-		descData.push_back({ vertexSize,newSize });
+		sizeVec.push_back(newSize);
+
 		vertexSize += newSize;
 	}
 
 	template<>
 	void Append<DirectX::XMINT3>(const char* semantics) {
-		desc.push_back({ semantics, 0, DXGI_FORMAT::DXGI_FORMAT_R32G32B32_UINT, 0, vertexSize, D3D11_INPUT_PER_VERTEX_DATA, 0 });
+		desc.push_back({ semantics,0, DXGI_FORMAT::DXGI_FORMAT_R32G32B32_UINT, 0, vertexSize, D3D11_INPUT_PER_VERTEX_DATA, 0 });
 
 		UINT newSize = 3 * sizeof(int);
-		descData.push_back({ vertexSize,newSize });
+		sizeVec.push_back(newSize);
+
 		vertexSize += newSize;
 	}
 
@@ -147,7 +149,7 @@ public:
 		GetDevice(gfx)->CreateInputLayout(layOuts.data(), layOuts.size(), pvertexShaderBlob->GetBufferPointer(), pvertexShaderBlob->GetBufferSize(), &pInputLayout);
 	}
 
-	InputLayout(Graphics& gfx, D3D11_INPUT_ELEMENT_DESC* layOuts,UINT count, ID3DBlob* pvertexShaderBlob) :
+	InputLayout(Graphics& gfx,const D3D11_INPUT_ELEMENT_DESC* layOuts,UINT count, ID3DBlob* pvertexShaderBlob) :
 		Bindable(BINDABLE_TYPE::LAYOUT)
 	{
 
@@ -157,7 +159,6 @@ public:
 	InputLayout(Graphics& gfx, LayoutStrucure& layOuts, ID3DBlob* pvertexShaderBlob) :
 		Bindable(BINDABLE_TYPE::LAYOUT)
 	{
-
 		GetDevice(gfx)->CreateInputLayout(layOuts.data(), layOuts.count(), pvertexShaderBlob->GetBufferPointer(), pvertexShaderBlob->GetBufferSize(), &pInputLayout);
 	}
 
@@ -184,12 +185,13 @@ public:
 	vertexBufferData(LayoutStrucure& layout,size_t count) :
 		layout(layout), data((byte*)malloc(layout.size() * count )), sizeOfVertex(layout.size()) , count(count)
 	{
+		printf("vertex size : %d\n", sizeOfVertex);
 	}
 
 	void addData(const char* semantic, void* dataArray) {		 
-		 LayoutStrucure::element& a = layout[semantic];
-
-		 UINT i = 0u, stride= a.stride, size = a.size;
+		 int a = layout[semantic];
+		 printf("%s  %d %u\n", layout.desc[a].SemanticName, layout.desc[a].SemanticIndex, layout.sizeVec[a]);
+		 UINT i = 0u, stride= layout.desc[a].AlignedByteOffset, size = layout.sizeVec[a];
 		 byte* _d = data + stride, * _s = (byte*)dataArray;
 
 		 while( i < count) {

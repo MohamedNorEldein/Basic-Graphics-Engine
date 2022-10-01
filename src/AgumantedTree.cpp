@@ -121,7 +121,7 @@ namespace AugmantedTree {
 
 	void set_height(tree_node* parent) {
 		if (parent == nullptr) { return; }
-		parent->height = 1 + std::max(height(parent->right), height(parent->left));
+		parent->height = 1 + max(height(parent->right), height(parent->left));
 	}
 
 	node_ptr right_r(node_ptr x) {

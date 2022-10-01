@@ -13,11 +13,18 @@ cbuffer lightSource
 
 };
 
-float4 main(float4 normal : NORMAL, float4 tex2 : TEXCOORD) : SV_Target
+
+struct VSINPUT
+{
+    float3 normal : NORMAL;
+    float2 tex2d : TEXCOORD;
+};
+
+
+float4 main(VSINPUT vin) : SV_Target
 {
 	
-    float diffuse = diffuseIntensity * dot(normal.rgb, lightDir) / (length(normal) * length(lightDir));
+    float diffuse = diffuseIntensity * dot(vin.normal, lightDir) / (length(vin.normal) * length(lightDir));
     
-    //return float4(saturate(normalize(ambient) * ambientIntensity + diffuse * lightColor) * color, 1.0f);
-    return text.Sample(smplr, tex2);
+    return float4(normalize(ambient) * ambientIntensity + diffuse * lightColor, 1.0) * text.Sample(smplr, vin.tex2d);
 }

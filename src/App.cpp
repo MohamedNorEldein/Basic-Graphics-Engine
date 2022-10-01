@@ -82,6 +82,7 @@ WPARAM App::doFrame() {
 App::App() : window(L"hello world", 1200, 600), gfx(window)
 , objModel(gfx, "Models src data\\nanosuit.obj")
 , lamp(gfx, 0u)
+
 , model1(gfx)
 , model2(gfx)
 , model3(gfx)

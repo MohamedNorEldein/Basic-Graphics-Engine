@@ -1,20 +1,13 @@
 
-cbuffer INPUT_STRUCT
+Buffer<float> InputBuf : register(t0);
+RWBuffer<float> OutputBuf : register(u0);
+// Group size
+#define size_x 20
+#define size_y 1
+// Declare one thread f o r each texel of the input texture.
+[numthreads(size_x, size_y, 1)]
+void main(uint3 DispatchThreadID : SV_DispatchThreadID)
 {
-    int a[5] = { 0, 1, 2, 3, 4 };
-    int b[5] = { 5, 4, 3, 2, 1 };
-};
-
-
-cbuffer OUTPUT_STRUCT
-{
-    int c[5];
-};
-
-
-[numthreads(5, 1, 1)]
-void main( uint3 DTid : SV_DispatchThreadID )
-{
-    c[DTid.r] = a[DTid.r] + b[DTid.r];
-
+    float Value = InputBuf.Load(DispatchThreadID.x);
+    OutputBuf[DispatchThreadID.x] = 2.0f * Value;
 }

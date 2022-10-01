@@ -192,13 +192,17 @@ void ObjModel::loadModelFromFile( const char *srcFileName)
 	aiMesh* pmesh;
 
 	/* creating common data*/
-	VertexShader* vs = new VertexShader(gfx, L"shaders\\AssVertexShader.hlsl", false);
-	VertexShader* vsT = new VertexShader(gfx, L"shaders\\CubeVertexShader.hlsl", false);
-	PixelShader* ps = new PixelShader(gfx, L"shaders\\AssPixelShader.hlsl", false);
-	PixelShader* psT = new PixelShader(gfx, L"shaders\\CubePixelShader.hlsl", false);
 
+	// textured
+	VertexShader* vsT = new VertexShader(gfx, L"shaders\\CubeVertexShader.hlsl", false);
+	PixelShader* psT = new PixelShader(gfx, L"shaders\\CubePixelShader.hlsl", false);
+	InputLayout* IlT = new InputLayout(gfx, la2, vsT->getpBlob());
+
+
+	// non textured
+	VertexShader* vs = new VertexShader(gfx, L"shaders\\AssVertexShader.hlsl", false);
+	PixelShader* ps = new PixelShader(gfx, L"shaders\\AssPixelShader.hlsl", false);
 	InputLayout* Il1 = new InputLayout(gfx, la1, vs->getpBlob());
-	InputLayout* IlT = new InputLayout(gfx, la2, vs->getpBlob());
 
 	PrimativeTopology* pt = new PrimativeTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	tr = new TransformCBuffer(gfx);
@@ -234,14 +238,11 @@ void ObjModel::loadModelFromFile( const char *srcFileName)
 			vbd.addData("TEXCOORD", pmesh->mTextureCoords[0]);
 			vbd.addData("POSITION", pmesh->mVertices);
 			vbd.addData("NORMAL", pmesh->mNormals);
-			vbd.print();
 			auto material = pmodel->mMaterials[pmesh->mMaterialIndex];
 			
 			aiString str;
 			material->GetTexture(aiTextureType_DIFFUSE, 0, &str);
 			wchar_t fileName[500] = L"Models src data\\";
-
-			//wsprintf(fileName,L"%s\\%s", folderName, str.C_Str());
 
 			mbstowcs(&fileName[16], str.C_Str(), strlen(str.C_Str()));
 			wprintf(L"texture count %d at %s \n", material->GetTextureCount(aiTextureType_DIFFUSE),fileName);
@@ -332,8 +333,9 @@ char GUI_MESH_NAME[CHAR_MAX], GUI_NODE_NAME[CHAR_MAX];
 
 void  ObjModel::GuiControl() {
 
-
-	if (ImGui::Begin("name")) {
+	ImGui::SetNextWindowBgAlpha(0.7f);
+	
+	if (ImGui::Begin("name",nullptr,(ImGuiWindowFlags_NoResize| ImGuiWindowFlags_NoMove))) {
 		ImGui::Columns(2);
 		//selectedNode = 0;
 

@@ -50,7 +50,7 @@ public:
 	}
 
 	void GuiControl() {
-		if (ImGui::Begin("light")) {
+		if (ImGui::Begin("light", nullptr, (ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))) {
 			ImGui::SliderFloat3("position", (float*)&li.lightDir, -1.0, +1.0);
 			ImGui::SliderFloat3("ambient", (float*)&li.ambient, 0, +1.0);
 			ImGui::SliderFloat3("diffuse color", (float*)&li.lightColor, 0.0, +1.0);
