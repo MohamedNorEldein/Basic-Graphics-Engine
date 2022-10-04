@@ -92,6 +92,7 @@ public:
 	Bindable* operator[](BINDABLE_TYPE i);
 	unsigned int getIndecesNumber();
 	void AddBindable(Bindable* bindable);
+	Bindable* back() { return cbv.back(); }
 	void Draw(Graphics& gfx);
 
 public:

@@ -8,6 +8,7 @@
 #include "cube.h"
 #include "ComputeShader.h"
 
+
 #ifndef MAIN_CPP_APP_H
 #define MAIN_CPP_APP_H
 
@@ -22,18 +23,18 @@ enum mouseEvetType {
 
 
 class App {
-private:
+public:
     // Basic D3D stuff
     Window window;
     Graphics gfx;
 
 private:
     // models
-    Cube model1, model2, model3 , model4;
-    ObjModel objModel;
+   
+    ObjModel GirlModel;// , HouseModel;
 private:
     // camera and light
-    ThirdPearsonPerspective camera;
+    FirstPearsonPerspective camera;
     UniformLight lamp;
 
 public:

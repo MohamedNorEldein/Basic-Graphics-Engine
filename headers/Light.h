@@ -25,7 +25,7 @@ class UniformLight
 private:
 	lightData li;
 	UINT SLOT;
-	CBuffer lightCbuff;
+	RawCBuffer lightCbuff;
 public:
 	UniformLight(Graphics& gfx, UINT SLOT)
 		:  SLOT(SLOT), lightCbuff(gfx,SLOT, sizeof(lightData),BIND_STAGE::PIXEL_SHADER_STAGE),li()
@@ -92,7 +92,7 @@ class PointSource
 private:
 	PointlightData li;
 	UINT SLOT;
-	CBuffer lightCbuff;
+	RawCBuffer lightCbuff;
 public:
 	PointSource(Graphics& gfx, UINT SLOT)
 		: SLOT(SLOT), lightCbuff(gfx, SLOT, sizeof(lightData),PIXEL_SHADER_STAGE), li()

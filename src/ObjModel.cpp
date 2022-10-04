@@ -13,7 +13,7 @@ bool nodeChange;
 const wchar_t* wstr(const char* str, size_t length) {
 
 	wchar_t* _wstr = new wchar_t(length);
-	for (int i = 0; i < length;++i) {
+	for (int i = 0; i < length; ++i) {
 		_wstr[i] = wchar_t(str[i]);
 	}
 	wprintf(_wstr);
@@ -40,11 +40,11 @@ int printf(const DirectX::XMVECTOR& v) {
 		v);
 	printf("vector\n");
 	printf("<%f, %f, %f, %f>\n", f.x, f.y, f.z, f.w);
-	
+
 	return 0;
 }
 
-void ObjMesh::updateAPI(Graphics& gfx, TransformCBuffer& tr,  DirectX::XMMATRIX PTrMat)
+void ObjMesh::updateAPI(Graphics& gfx, TransformCBuffer& tr, DirectX::XMMATRIX PTrMat)
 {
 	using namespace DirectX;
 	tr.update(gfx, PTrMat);
@@ -58,9 +58,9 @@ ObjMesh::ObjMesh(const char* _name) :
 	memcpy(name, _name, strlen(name));
 }
 
-ObjMesh::~ObjMesh() 
+ObjMesh::~ObjMesh()
 {
-	printf( "delete mesh %s at %x \n", name, this);	
+	printf("delete mesh %s at %x \n", name, this);
 };
 
 ObjNode::ObjNode(const char* _name)
@@ -77,7 +77,7 @@ ObjNode::ObjNode(aiNode* nodeptr, ObjModel* GrandParent) :
 	transformation = DirectX::XMMatrixTranspose(transformation);
 	ObjMesh* mesh = 0;
 	for (int i = 0; i < nodeptr->mNumMeshes; ++i) {
-		mesh = GrandParent->AllMeshs[nodeptr->mMeshes[ i]];
+		mesh = GrandParent->AllMeshs[nodeptr->mMeshes[i]];
 		meshs.push_back(mesh);
 		printf("node %s : adding mesh %s\n", name, mesh->name);
 	}
@@ -90,7 +90,7 @@ ObjNode::ObjNode(aiNode* nodeptr, ObjModel* GrandParent) :
 ObjNode::~ObjNode()
 {
 	printf("delete node : '%s'\n", name);
-	
+
 	for (auto a : children) {
 		delete a;
 	}
@@ -171,16 +171,17 @@ void ObjNode::GuiControl() {
 
 struct ModelMaterialCbufferData
 {
-	DirectX::XMFLOAT3 MaterialDiffuse;
-	DirectX::XMFLOAT3 MaterialAmpient;
+	__declspec(align(16)) aiColor4D DiffuseColor;
+	__declspec(align(16)) aiColor4D AmpientColor;
+	__declspec(align(16)) aiColor4D SpecularColor;
 };
 
 
-void ObjModel::loadModelFromFile( const char* file)
+void ObjModel::loadModelFromFile(const std::string& folderName, const std::string& fileName)
 {
 	Assimp::Importer imp;
 
-	auto pmodel = imp.ReadFile(file, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
+	auto pmodel = imp.ReadFile((folderName + "\\" + fileName).c_str(), aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
 	printf(imp.GetErrorString());
 
 	/* Name */
@@ -204,14 +205,14 @@ void ObjModel::loadModelFromFile( const char* file)
 
 	PrimativeTopology* pt = new PrimativeTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	tr = new TransformCBuffer(gfx);
-	pcb = new CBuffer(gfx, 1u, sizeof(COLOR),PIXEL_SHADER_STAGE);
+	pcb = new RawCBuffer(gfx, 1u, sizeof(COLOR), PIXEL_SHADER_STAGE);
 
 	printf("\n");
 	/* saving common data*/
 	commonBindables.insert(pt);
 	commonBindables.insert(tr);
 	commonBindables.insert(pcb);
-	
+
 	/* loading aiMeshs */
 	for (int i = 0; i < pmodel->mNumMeshes; ++i) {
 		/* creating objmesh */
@@ -237,7 +238,7 @@ void ObjModel::loadModelFromFile( const char* file)
 		vbd.addData("NORMAL", pmesh->mNormals);
 		auto material = pmodel->mMaterials[pmesh->mMaterialIndex];
 
-		auto data = (float*)vbd.Data() ;
+		auto data = (float*)vbd.Data();
 		/*
 		for (UINT i = 0u; i < 50; i++) {
 			printf("ass[i]: %f %f %f\n", pmesh->mTextureCoords[0][i][0], pmesh->mTextureCoords[0][i][1], pmesh->mTextureCoords[0][i][2]);
@@ -246,23 +247,28 @@ void ObjModel::loadModelFromFile( const char* file)
 		*/
 
 		aiString str;
-		mbstowcs(fileName, file, strlen(file));
+		ModelMaterialCbufferData m;
 
 		for (UINT i = aiTextureType_DIFFUSE; i < aiTextureType_EMISSIVE; i += 1)
 		{
-			for (short i = 0; i < material->GetTextureCount((aiTextureType)i); i++)
+			if( material->GetTextureCount((aiTextureType)i) > 0u) 
 			{
-
 				material->GetTexture((aiTextureType)i, 0, &str);
-				mbstowcs(fileName + lenFolder - 1, str.C_Str(), str.length);
-				fileName[lenFolder + str.length - 1] = '\000';
-				//wsprintf(fileName,L"%s\\%s\000",file,str.C_Str());
-				wprintf(L"texture count %d at %s \n", lenFolder + str.length, fileName);
-				AllMeshs.back()->AddBindable(new Texture(gfx, fileName, i - 1));
+				std::string c = folderName + "\\" + str.C_Str() + '\000';
+				mbstowcs(_fileName, c.c_str(), c.size());
+				wprintf(L"tetxture %s\n", _fileName);
+				AllMeshs.back()->AddBindable(new Texture(gfx, _fileName, i - 1));
+			}
+			else {
+				material->Get(AI_MATKEY_COLOR_DIFFUSE, m.DiffuseColor);
+				material->Get(AI_MATKEY_COLOR_AMBIENT, m.AmpientColor);
+				material->Get(AI_MATKEY_COLOR_SPECULAR, m.SpecularColor);
+
+				AllMeshs.back()->AddBindable(new RawCBuffer(gfx,1u,m,PIXEL_SHADER_STAGE));
+				//((CBuffer*)AllMeshs.back()->back())->update(gfx, m);
 
 			}
 		}
-
 
 		AllMeshs.back()->AddBindable(new Sampler(gfx, 0u));
 		AllMeshs.back()->AddBindable(new VertexBuffer(gfx, vbd));
@@ -276,7 +282,7 @@ void ObjModel::loadModelFromFile( const char* file)
 
 	}
 
-	
+
 	/* creating Nodes using the common data recursively */
 	root = new ObjNode(pmodel->mRootNode, this);
 
@@ -288,10 +294,15 @@ ObjModel* ObjModel::copy()
 	return nullptr;
 }
 
-ObjModel::ObjModel(Graphics& gfx, const char* folder, UINT lenFolder)
-	:gfx(gfx), scale(1,1,1),rot(0,0,0),pos(0,0,0), lenFile(0), lenFolder(lenFolder)
+ObjModel::ObjModel(Graphics& gfx, const std::string& folderName, const std::string& fileName)
+	:gfx(gfx), scale(1, 1, 1), rot(0, 0, 0), pos(0, 0, 0)
 {
-	loadModelFromFile(folder);
+	loadModelFromFile(folderName, fileName);
+}
+
+ObjModel::ObjModel(Graphics& gfx)
+	:gfx(gfx), scale(1, 1, 1), rot(0, 0, 0), pos(0, 0, 0)
+{
 }
 
 ObjModel::~ObjModel()
@@ -312,9 +323,9 @@ ObjModel::~ObjModel()
 	for (auto a : AllMeshs) {
 		delete a;
 	}
-	
 
-	
+
+
 }
 
 void ObjModel::Draw() {
@@ -334,8 +345,8 @@ char GUI_MESH_NAME[CHAR_MAX], GUI_NODE_NAME[CHAR_MAX];
 void  ObjModel::GuiControl() {
 
 	ImGui::SetNextWindowBgAlpha(0.7f);
-	
-	if (ImGui::Begin("name",nullptr,(ImGuiWindowFlags_NoResize| ImGuiWindowFlags_NoMove))) {
+
+	if (ImGui::Begin("name", nullptr, (ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))) {
 		ImGui::Columns(2);
 		//selectedNode = 0;
 

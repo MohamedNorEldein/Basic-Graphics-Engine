@@ -1,6 +1,6 @@
 
-Buffer<float> InputBuf : register(t0);
-RWBuffer<float> OutputBuf : register(u0);
+Buffer<float> InputBuf ;
+Buffer<float> OutputBuf ;
 // Group size
 #define size_x 20
 #define size_y 1

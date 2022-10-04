@@ -81,9 +81,6 @@
     <ClInclude Include="headers\WindowClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="headers\CBuffer.h">
-      <Filter>Bindable</Filter>
-    </ClInclude>
     <ClInclude Include="headers\constantBuffer.h">
       <Filter>Bindable</Filter>
     </ClInclude>
@@ -180,6 +177,9 @@
     <ClInclude Include="headers\ShaderResource.h">
       <Filter>Bindable</Filter>
     </ClInclude>
+    <ClInclude Include="headers\ComputePipeLine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Events.cpp">
@@ -252,6 +252,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\WICTextur.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ComputePipeLine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

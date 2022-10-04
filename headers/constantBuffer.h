@@ -6,7 +6,7 @@
 
 
 
-class CBuffer :
+class RawCBuffer :
     public Bindable
 {
 protected:
@@ -14,8 +14,28 @@ protected:
     UINT Slot;
     BIND_STAGE bs;
 public:
+    template<typename T>
+    RawCBuffer(Graphics& gfx, UINT Slot,const T& data, BIND_STAGE bs) :
+        Slot(Slot), Bindable(BINDABLE_TYPE::CONSTANT_BUFFER), bs(bs)
+    {
+        D3D11_SUBRESOURCE_DATA TmatData = { 0 };
+        TmatData.pSysMem = &data;
 
-    CBuffer(Graphics& gfx , void* cb, unsigned int Slot, size_t size, BIND_STAGE bs):
+        D3D11_BUFFER_DESC bd = { 0 };
+
+        bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+        bd.Usage = D3D11_USAGE_DYNAMIC;
+
+        bd.CPUAccessFlags = D3D11_CPU_ACCESS_FLAG::D3D11_CPU_ACCESS_WRITE;
+        bd.MiscFlags = 0;
+
+        bd.ByteWidth = sizeof(T);
+        bd.StructureByteStride = 0;
+
+        CHECK(GetDevice(gfx)->CreateBuffer(&bd, &TmatData, &pconstantBuffer));
+    }
+
+    RawCBuffer(Graphics& gfx, unsigned int Slot, void* cb, size_t size, BIND_STAGE bs):
         Slot(Slot),Bindable(BINDABLE_TYPE::CONSTANT_BUFFER),bs(bs)
     {
         D3D11_SUBRESOURCE_DATA TmatData = { 0 };
@@ -36,7 +56,7 @@ public:
     }
 
   
-    CBuffer(Graphics& gfx, UINT Slot , size_t size, BIND_STAGE bs):
+    RawCBuffer(Graphics& gfx, UINT Slot , size_t size, BIND_STAGE bs):
     Slot(Slot), Bindable(CONSTANT_BUFFER), bs(bs)
     {
         
@@ -55,7 +75,7 @@ public:
     }
 
 
-    ~CBuffer() override{
+    ~RawCBuffer() override{
         //cout("delete ConstantBuffer");
         pconstantBuffer->Release();
     }
@@ -102,6 +122,54 @@ public:
 };
 
 
+class TransformCBuffer :
+    public Bindable
+{
+private:
+
+    __declspec(align(16))
+        struct  TransformMat
+    {
+        DirectX::XMMATRIX nTr;
+        DirectX::XMMATRIX Tr;
+    };
+
+    RawCBuffer vcb;
+
+
+public:
+    TransformCBuffer(Graphics& gfx, UINT Slot = 0u)
+        :vcb(gfx, Slot, sizeof(TransformMat), BIND_STAGE::VERTEX_SHADER_STAGE), Bindable(BINDABLE_TYPE::TRANSFORMCBUFFER)
+    {
+    }
+
+    void update(Graphics& gfx, const DirectX::XMMATRIX& Tr) {
+        using namespace DirectX;
+        vcb.update(gfx,
+            TransformMat{
+                    DirectX::XMMatrixTranspose(Tr)
+                ,
+                DirectX::XMMatrixTranspose(
+                    Tr
+                    *
+                    gfx.getCameraProjection()
+                    *
+                    gfx.getProjection()
+                )
+            });
+    }
+
+    void bind(Graphics& gfx) {
+
+        vcb.bind(gfx);
+
+    }
+
+    ~TransformCBuffer() {
+        //cout("delete TransformCBuffer");
+    }
+
+};
 
 
 

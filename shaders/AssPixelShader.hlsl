@@ -15,15 +15,11 @@ cbuffer lightSource
 
 };
 
-/*
-Buffer<float> p;
-
+//Buffer<float> p;
 cbuffer MaterialData
 {
-    float3 MaterialDiffuse;
-    float3 MaterialAmpient;
+    float4 DiffuseColor, AmpientColor, SpecularColor;
 };
-*/
 
 struct VSINPUT
 {
@@ -34,11 +30,13 @@ struct VSINPUT
 
 float4 main(VSINPUT vin) : SV_Target
 {
-	
+
+    float4 ampientTexData = normalize(float4(ambientColor, 0.0f)) * ampientMap.Sample(smplr, vin.tex2d) * ambientIntensity;
+//    float4 ampientTexData = normalize(float4(ambientColor, 0.0f)) * AmpientColor * ambientIntensity;
+
     float diffuse = diffuseIntensity * dot(vin.normal, lightDir) / (length(vin.normal) * length(lightDir));
-    float4 diffuseTexData = diffuse * float4(lightColor, 0.0f) * DiffuseMap.Sample(smplr, vin.tex2d) / length(lightColor);
-    float4 ampientTexData = float4(ambientColor, 0.0f) * ampientMap.Sample(smplr, vin.tex2d) * ambientIntensity / length(ambientColor);
+    float4 diffuseTexData = diffuse * normalize(float4(lightColor, 0.0f)) * DiffuseMap.Sample(smplr, vin.tex2d) / length(lightColor);
     
-    return saturate( ampientTexData + diffuseTexData );
-    //return float4(vin.tex2d, 0, 0);
+    return  ampientTexData + diffuseTexData;
+   
 }

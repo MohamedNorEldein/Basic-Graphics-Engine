@@ -37,6 +37,11 @@ WPARAM App::doFrame() {
 	
 	lamp.bind(gfx);
 
+	ImGui::SetNextWindowBgAlpha(0.7f);
+	camera.GUIcontrol();
+	lamp.GuiControl();
+	GirlModel.GuiControl();
+
 	if (window.keyBoardEvent.isDown(VK_TAB) && window.keyBoardEvent.type == WM_KEYDOWN) {
 
 		if (window.mouseEvent.IsRawInputEnable()) {
@@ -49,34 +54,15 @@ WPARAM App::doFrame() {
 			printf("raw Mouse input enable\n");
 		}
 	}
-	c = { 1,0,0 };
 	
-	//model1.pcb->update(gfx, c);
-	model1.Draw();
-
-	c = { 0,1.0,0 };
-	//model2.pcb->update(gfx, c);
-	model2.Draw();
-
-	c = { 0,0,1 };
-	//model3.pcb->update(gfx, c);
-	model3.Draw();
-
-	c = { 0,1,1 };
-	//model4.pcb->update(gfx, c);
-	model4.Draw();
 	
-	objModel.pcb->update(gfx, c);
-	objModel.Draw();
+	GirlModel.Draw();
 
 	/* scene control */
 	camera.CameraMouseControl(window.mouseEvent);
 	camera.CameraKeyboardCotrol(window.keyBoardEvent);
 	/* Imgui */
-	ImGui::SetNextWindowBgAlpha(0.7f);
-	camera.GUIcontrol();
-	lamp.GuiControl();
-	objModel.GuiControl();
+
 
 
 	/*window end frame stuff */
@@ -84,35 +70,20 @@ WPARAM App::doFrame() {
 	return 0;
 }
 
-App::App() : window(L"hello world", 1200, 600), gfx(window)
+App::App() : window(0, 1200, 600), gfx(window)
 , lamp(gfx, 0u)
-, objModel(gfx, "Models src data\\gvv1e7u547-Borderlands 2 - Maya\\Borderlands 2 - Maya\\maya.obj", _countof("Models src data\\gvv1e7u547 - Borderlands 2 - Maya\\Borderlands 2 - Maya\\"))
-//, objModel(gfx, "Models src data\\Man_with_suit.obj", _countof("Models src data\\"))
-, model1(gfx)
-, model2(gfx)
-, model3(gfx)
-, model4(gfx)
+, GirlModel(gfx,"Models src data", "nanosuit.obj" )
 ,camera(gfx)
 {
 
 	gfx.setProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5, 10000.0f));
 	
-	model1.setPos(-100, 0, 100);
-	model1.setDiminsion(50, 50, 50);
+	
+	GirlModel.setPos(0, 0, 10);
+	GirlModel.setDiminsion(10, 10, 10);
+	GirlModel.setRotation(0, MATH_PI, 0);
 
-	model2.setPos(100, 0, 100);
-	model2.setDiminsion(50, 50, 50);
-
-	model3.setPos(100, 0, -100);
-	model3.setDiminsion(50, 50, 50);
-
-	model4.setPos(-100, 0, -100);
-	model4.setDiminsion(50, 50, 50);
-
-	objModel.setPos(0, 0, 100);
-	objModel.setDiminsion(10,10,10);
-
-	lamp.updateDir({ -1.0,1.0,1.0 });
+	lamp.updateDir({ -1.0,1.0,-1.0 });
 
 }
 

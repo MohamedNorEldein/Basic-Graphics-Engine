@@ -1,7 +1,6 @@
 #pragma once
 #include "Drawable.h"
-#include "CBuffer.h"
-
+#include "constantBuffer.h"
 
 //GCLASS* GenerateCubeGCLASS(Graphics& );
 

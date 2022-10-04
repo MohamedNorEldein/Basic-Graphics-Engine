@@ -24,11 +24,11 @@ public:
 #ifdef _DEBUG
 			CHECK(D3DCompileFromFile(src, NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "cs_5_0", D3DCOMPILE_DEBUG, 0, &pBlop, NULL));
 #else
-			CHECK(D3DCompileFromFile(src, NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "cs_5_0", 0, 0, &pBlop, NULL));
+			CHECK(D3DCompileFromFile(src, NULL, 0, "main", "cs_5_0", 0, 0, &pBlop, NULL));
 
 #endif // _DEBUG
 
-			CHECK(gfx.getdevice()->CreateComputeShader(pBlop->GetBufferPointer(), pBlop->GetBufferSize(), NULL, &cs));
+ 			CHECK(gfx.getdevice()->CreateComputeShader(pBlop->GetBufferPointer(), pBlop->GetBufferSize(), NULL, &cs));
 
 		}
 	}

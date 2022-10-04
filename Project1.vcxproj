@@ -136,6 +136,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="headers\ComputePipeLine.h" />
     <ClInclude Include="headers\ComputeShaderBuffer.h" />
     <ClInclude Include="dxtex\include\dxtex\BC.h" />
     <ClInclude Include="dxtex\include\dxtex\BCDirectCompute.h" />
@@ -151,7 +152,6 @@
     <ClInclude Include="headers\ObjModel.h" />
     <ClInclude Include="headers\AugmantedTree.h" />
     <ClInclude Include="headers\Bindable.h" />
-    <ClInclude Include="headers\CBuffer.h" />
     <ClInclude Include="headers\constantBuffer.h" />
     <ClInclude Include="headers\DataStructures.h" />
     <ClInclude Include="headers\DoubleLinkedList.h" />
@@ -186,6 +186,7 @@
     <ClInclude Include="headers\Texture.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\ComputePipeLine.cpp" />
     <ClCompile Include="src\App.cpp" />
     <ClCompile Include="src\cube.cpp" />
     <ClCompile Include="src\ImageFactory.cpp" />

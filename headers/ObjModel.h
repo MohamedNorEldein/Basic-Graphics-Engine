@@ -4,7 +4,6 @@
 #include "constantBuffer.h"
 #include "InputLayout.h"
 #include "PixelShader.h"
-#include "CBuffer.h"
 #include "VertexBuffer.h"
 #include "VertexShader.h"
 #include "IndexBuffer.h"
@@ -102,9 +101,8 @@ class ObjModel
 private:
 	// stack data
 	char name[50];
-	wchar_t fileName[1024];
-	UINT lenFolder, lenFile;
-
+	wchar_t _fileName[1024];
+	
 	Graphics& gfx;
 	TransformCBuffer* tr;
 		int selectedmesh;
@@ -119,14 +117,16 @@ private:
 
 
 private:
-	void loadModelFromFile( const char* src);
+	void loadModelFromFile(const std::string& folderName, const std::string& fileName);
 
 	ObjModel* copy();
 
 public:
-	CBuffer* pcb;
+	RawCBuffer* pcb;
 
-	ObjModel(Graphics& gfx,const char* src,UINT lenFolder=0u);
+	ObjModel(Graphics& gfx,const std::string& folderName , const std::string& fileName);
+	ObjModel(Graphics& gfx);
+
 	~ObjModel();
 
 	void Draw();
