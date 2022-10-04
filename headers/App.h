@@ -31,7 +31,7 @@ public:
 private:
     // models
    
-    ObjModel GirlModel;// , HouseModel;
+  //  ObjModel GirlModel;// , HouseModel;
 private:
     // camera and light
     FirstPearsonPerspective camera;

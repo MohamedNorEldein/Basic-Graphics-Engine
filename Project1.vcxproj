@@ -173,6 +173,9 @@
     <ClInclude Include="headers\WICTextur.h" />
     <ClInclude Include="headers\WindowClass.h" />
     <ClInclude Include="headers\ImageFactory.h" />
+    <ClInclude Include="headers\Light.h" />
+    <ClInclude Include="headers\PrimativeTopology.h" />
+    <ClInclude Include="headers\Texture.h" />
     <ClInclude Include="ImGui\imconfig.h" />
     <ClInclude Include="ImGui\imgui.h" />
     <ClInclude Include="ImGui\imgui_impl_dx11.h" />
@@ -181,18 +184,8 @@
     <ClInclude Include="ImGui\imstb_rectpack.h" />
     <ClInclude Include="ImGui\imstb_textedit.h" />
     <ClInclude Include="ImGui\imstb_truetype.h" />
-    <ClInclude Include="headers\Light.h" />
-    <ClInclude Include="headers\PrimativeTopology.h" />
-    <ClInclude Include="headers\Texture.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\ComputePipeLine.cpp" />
-    <ClCompile Include="src\App.cpp" />
-    <ClCompile Include="src\cube.cpp" />
-    <ClCompile Include="src\ImageFactory.cpp" />
-    <ClCompile Include="src\ObjModel.cpp" />
-    <ClCompile Include="src\Drawable.cpp" />
-    <ClCompile Include="src\mstring.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
     <ClCompile Include="ImGui\imgui_demo.cpp" />
     <ClCompile Include="ImGui\imgui_draw.cpp" />
@@ -200,6 +193,13 @@
     <ClCompile Include="ImGui\imgui_impl_win32.cpp" />
     <ClCompile Include="ImGui\imgui_tables.cpp" />
     <ClCompile Include="ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="src\ComputePipeLine.cpp" />
+    <ClCompile Include="src\App.cpp" />
+    <ClCompile Include="src\cube.cpp" />
+    <ClCompile Include="src\ImageFactory.cpp" />
+    <ClCompile Include="src\ObjModel.cpp" />
+    <ClCompile Include="src\Drawable.cpp" />
+    <ClCompile Include="src\mstring.cpp" />
     <ClCompile Include="src\Light.cpp" />
     <ClCompile Include="src\AgumantedTree.cpp" />
     <ClCompile Include="src\DataStructures.cpp" />
@@ -217,6 +217,30 @@
     <None Include="imgui.ini" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="shaders\ComputeShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.1</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.1</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.1</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.1</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)shaders\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)shaders\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)shaders\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)shaders\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="shaders\ComputeShader2.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+    </FxCompile>
     <FxCompile Include="shaders\CubePixelShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>

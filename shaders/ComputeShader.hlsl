@@ -1,13 +1,13 @@
 
-Buffer<float> InputBuf ;
-Buffer<float> OutputBuf ;
-// Group size
-#define size_x 20
-#define size_y 1
-// Declare one thread f o r each texel of the input texture.
-[numthreads(size_x, size_y, 1)]
+struct output
+{
+    float data;
+};
+
+RWStructuredBuffer<output> OutputBuf : register(u0);
+
+[numthreads(5, 1, 1)]
 void main(uint3 DispatchThreadID : SV_DispatchThreadID)
 {
-    float Value = InputBuf.Load(DispatchThreadID.x);
-    OutputBuf[DispatchThreadID.x] = 2.0f * Value;
+    OutputBuf[DispatchThreadID.x].data = 5.0f * OutputBuf[DispatchThreadID.x].data;
 }

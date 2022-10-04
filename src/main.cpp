@@ -1,6 +1,8 @@
 
 #include <App.h>
+#include "ComputePipeLine.h"
 #include "ShaderResource.h"
+#include "ComputeShader.h"
 
 int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 
@@ -9,24 +11,31 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	freopen("CONIN$", "r", stdin);
 	
 	{
+		ComputePipeLine gfx;
 
-		float in_data[5] = { 0,1,2,3,4 };
-		float out_data[5] = { 0,1,2,3,4 };
+		std::vector<float> in_data = { 0,1,2,3,4 };
+		std::vector<float> out_data = { 0,1,2,3,4 };
 
+		
+		ComputeShader cs(gfx, L"shaders\\ComputeShader.hlsl",false);
+		ComputeShader cs2(gfx, L"shaders\\ComputeShader2.hlsl", false);
 
-		App app;
+		ComputeShaderOutput<float> srOut(gfx, out_data,0);
 
-		ComputeShader cs(app.gfx, L"shaders\\ComputeShader.hlsl",false);
-		ShaderResource srIn(app.gfx, in_data, sizeof(in_data), DXGI_FORMAT_R32_FLOAT, COMPUTE_SHADER_STAGE, 0u, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
-		ShaderResource srOut(app.gfx, in_data, sizeof(in_data), DXGI_FORMAT_R32_FLOAT, COMPUTE_SHADER_STAGE, 1u, D3D11_USAGE_STAGING, D3D11_CPU_ACCESS_READ);
+		srOut.bind(gfx);
+		cs.bind(gfx);
+		gfx.getcontext()->Dispatch(1, 1, 1);
+		srOut.bind(gfx);
+		cs2.bind(gfx);
+		gfx.getcontext()->Dispatch(1, 1, 1);
 
-		cs.bind(app.gfx);
-		srIn.bind(app.gfx);
-		srOut.bind(app.gfx);
+		float * data = srOut.Map(gfx);
+		srOut.Unmap(gfx);
 
-		app.gfx.getcontext()->Dispatch(1, 0, 0);
-		app.go();
-
+		for (short i = 0; i < 5; i++)
+		{
+			std::cout << i << " : " << data[i] << '\n';
+		}
 	}
 	std::cin.get();
 	FreeConsole();
