@@ -32,6 +32,7 @@ private:
 public:
 //	static PixelConstantBuffer* pcb;
 
+
 public:
 	Cube(Graphics& gfx);
 

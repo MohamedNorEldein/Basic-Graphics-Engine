@@ -306,7 +306,7 @@ namespace AugmantedTree {
 }
 
 
-namespace BTEE {
+namespace BTREE {
 
     typedef int DATATYPE;
 
@@ -480,18 +480,18 @@ namespace BTEE {
             return parent;
         }
 
-        BTN* inser(Node* parent, DATATYPE* item) {
+        BTN* insert(Node* parent, DATATYPE* item) {
             if (parent->hight == 0) {
                 return ((Leaf*)parent)->insert(item);
             }
 
             if (*item > *(parent->key))
             {
-                parent->right = inser((Node*)(parent->right), item);
+                parent->right = insert((Node*)(parent->right), item);
                 set_height(parent);
                 return parent;
             }
-            parent->left = inser((Node*)parent->left, item);
+            parent->left = insert((Node*)parent->left, item);
             set_height(parent);
             return parent;
         }
@@ -538,7 +538,7 @@ namespace BTEE {
 
         void insert(const DATATYPE& item) {
             length++;
-            root = (Node*)inser(root, (DATATYPE*) & item);
+            root = (Node*)insert(root, (DATATYPE*) & item);
         }
 
         DATATYPE* find(const DATATYPE& item) {
@@ -561,6 +561,7 @@ namespace BTEE {
         }
 
     };
+
 
 };
 

@@ -355,33 +355,32 @@ void FirstPearsonPerspective::CameraKeyboardCotrol(KeyBoardEvent keyBoardEvent) 
 }
 
 ThirdPearsonPerspective::ThirdPearsonPerspective(Graphics& camera) :
-	FirstPearsonPerspective(camera)
+	FirstPearsonPerspective(camera), focus({ 0,0,100,0 })
 {
 
 }
 
 void ThirdPearsonPerspective::updateCameraPosition(float x, float y, float z) {
 	using namespace DirectX;
-	CameraPosition += XMVector3Transform(XMVectorSet(x, y, z, 0.0f), XMMatrixRotationY(cameraRotation.m128_f32[1]) * XMMatrixRotationX(cameraRotation.m128_f32[0]));
+	DirectX::XMVECTOR v = XMVector3Transform(XMVectorSet(x, y, z, 0.0f), XMMatrixRotationY(cameraRotation.m128_f32[1]) * XMMatrixRotationX(cameraRotation.m128_f32[0]));
+	CameraPosition += v;
+	focus += v;
 }					   
 
 void ThirdPearsonPerspective::updateCameraRotation(float _lattude, float _departure,float nr) {
 	
-	cameraRotation.m128_f32[2] += nr;
-	if (cameraRotation.m128_f32[2] < 0) {
-		cameraRotation.m128_f32[2] = 0.0f;
-	}
+	focus.m128_f32[2] += nr;
+	
 
 	using namespace DirectX;
-	XMVECTOR R = XMVectorSet(0, 0, cameraRotation.m128_f32[2], 0.0f);
+	XMVECTOR R = focus - CameraPosition;
 	auto M = XMMatrixRotationX(_lattude) * XMMatrixRotationY(_departure) ;
-	auto CRM = XMMatrixRotationX(cameraRotation.m128_f32[0])* XMMatrixRotationY(cameraRotation.m128_f32[1]) ;
 	auto s = XMVector4Transform(R, 
-		(M - XMMatrixIdentity()) * CRM
+		( XMMatrixIdentity()-M)
 	);
 	CameraPosition += s;
-	cameraRotation.m128_f32[0] -= _lattude;
-	cameraRotation.m128_f32[1] -= _departure;
+	cameraRotation.m128_f32[0] += _lattude;
+	cameraRotation.m128_f32[1] += _departure;
 }
 
 void FirstPearsonPerspective::GUIcontrol() {
@@ -394,7 +393,7 @@ void FirstPearsonPerspective::GUIcontrol() {
 		ImGui::SliderFloat3("cammera Position", CameraPosition.m128_f32, -1000.0f, 1000.0f);
 		ImGui::SliderAngle("cammera Lattiude", &cameraRotation.m128_f32[0], -180.0f, 180.0f);
 		ImGui::SliderAngle("cammera Departure", &cameraRotation.m128_f32[1], -180.0f, 180.0f);
-		ImGui::SliderFloat("cammera Radius", &cameraRotation.m128_f32[2], 0.0f, 1000.0f);
+		//ImGui::SliderFloat3("cammera focus", &focus.m128_f32[2], 0.0f, 1000.0f);
 
 	}
 	ImGui::End();

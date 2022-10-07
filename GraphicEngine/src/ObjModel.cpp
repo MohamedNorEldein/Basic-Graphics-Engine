@@ -8,7 +8,11 @@ DirectX::XMFLOAT3 GUIpos;
 DirectX::XMFLOAT3 GUIScale;
 
 ObjNode* selectedNode = 0;
+ObjModel* selectedModel = 0;
 bool nodeChange;
+
+std::vector<ObjModel*> AllModels;
+
 
 const wchar_t* wstr(const char* str, size_t length) {
 
@@ -163,7 +167,6 @@ void ObjNode::GuiControl() {
 		for (auto a : children) {
 			a->GuiControl();
 		}
-
 		ImGui::TreePop();
 	}
 
@@ -183,10 +186,18 @@ void ObjModel::loadModelFromFile(const std::string& folderName, const std::strin
 
 	auto pmodel = imp.ReadFile((folderName + "\\" + fileName).c_str(), aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
 	printf(imp.GetErrorString());
+	if (pmodel == 0) {
+		throw std::exception("unable to open file");
+	}
+
 
 	/* Name */
-	memcpy(name, pmodel->mName.C_Str(), pmodel->mName.length);
-
+	if (pmodel->mName.C_Str()[0] != 0) {
+		memcpy(name, pmodel->mName.C_Str(), pmodel->mName.length);
+	}
+	else {
+		memcpy(name, "model",sizeof("model"));
+	}
 	/* Layout definesion */
 	LayoutStrucure  la2;
 
@@ -199,8 +210,8 @@ void ObjModel::loadModelFromFile(const std::string& folderName, const std::strin
 	/* creating common data*/
 
 	// textured
-	VertexShader* vsT = new VertexShader(gfx, L"shaders\\AssVertexShader.hlsl", false);
-	PixelShader* psT = new PixelShader(gfx, L"shaders\\AssPixelShader.hlsl", false);
+	VertexShader* vsT = new VertexShader(gfx, L"GraphicEngine\\shaders\\AssVertexShader.hlsl", false);
+	PixelShader* psT = new PixelShader(gfx, L"GraphicEngine\\shaders\\AssPixelShader.hlsl", false);
 	InputLayout* IlT = new InputLayout(gfx, la2, vsT->getpBlob());
 
 	PrimativeTopology* pt = new PrimativeTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -239,13 +250,7 @@ void ObjModel::loadModelFromFile(const std::string& folderName, const std::strin
 		auto material = pmodel->mMaterials[pmesh->mMaterialIndex];
 
 		auto data = (float*)vbd.Data();
-		/*
-		for (UINT i = 0u; i < 50; i++) {
-			printf("ass[i]: %f %f %f\n", pmesh->mTextureCoords[0][i][0], pmesh->mTextureCoords[0][i][1], pmesh->mTextureCoords[0][i][2]);
-			printf("vbd[i]: %f %f %f\n",vbd[i].Data<DirectX::XMFLOAT3>(2u).x, vbd[i].Data<DirectX::XMFLOAT3>(2u).y, vbd[i].Data<DirectX::XMFLOAT3>(2u).z);
-		}
-		*/
-
+		
 		aiString str;
 		ModelMaterialCbufferData m;
 
@@ -259,15 +264,7 @@ void ObjModel::loadModelFromFile(const std::string& folderName, const std::strin
 				wprintf(L"tetxture %s\n", _fileName);
 				AllMeshs.back()->AddBindable(new Texture(gfx, _fileName, i - 1));
 			}
-			else {
-				material->Get(AI_MATKEY_COLOR_DIFFUSE, m.DiffuseColor);
-				material->Get(AI_MATKEY_COLOR_AMBIENT, m.AmpientColor);
-				material->Get(AI_MATKEY_COLOR_SPECULAR, m.SpecularColor);
-
-				AllMeshs.back()->AddBindable(new RawCBuffer(gfx,1u,m,PIXEL_SHADER_STAGE));
-				//((CBuffer*)AllMeshs.back()->back())->update(gfx, m);
-
-			}
+			
 		}
 
 		AllMeshs.back()->AddBindable(new Sampler(gfx, 0u));
@@ -291,17 +288,20 @@ void ObjModel::loadModelFromFile(const std::string& folderName, const std::strin
 
 ObjModel* ObjModel::copy()
 {
+	/*
+	* a copy algorithim using breadth firts algo
+	*/
 	return nullptr;
 }
 
 ObjModel::ObjModel(Graphics& gfx, const std::string& folderName, const std::string& fileName)
-	:gfx(gfx), scale(1, 1, 1), rot(0, 0, 0), pos(0, 0, 0)
+	:gfx(gfx), scale(1), rot(0, 0, 0), pos(0, 0, 0)
 {
 	loadModelFromFile(folderName, fileName);
 }
 
 ObjModel::ObjModel(Graphics& gfx)
-	:gfx(gfx), scale(1, 1, 1), rot(0, 0, 0), pos(0, 0, 0)
+	:gfx(gfx), scale(1), rot(0, 0, 0), pos(0, 0, 0)
 {
 }
 
@@ -332,7 +332,7 @@ void ObjModel::Draw() {
 	commonBindables.bind(gfx);
 	using namespace DirectX;
 	root->Draw(gfx, *tr,
-		DirectX::XMMatrixScaling(scale.x, scale.y, scale.z)
+		DirectX::XMMatrixScaling(scale, scale, scale)
 		*
 		DirectX::XMMatrixRotationRollPitchYaw(rot.x, rot.y, rot.z)
 		*
@@ -343,36 +343,8 @@ void ObjModel::Draw() {
 char GUI_MESH_NAME[CHAR_MAX], GUI_NODE_NAME[CHAR_MAX];
 
 void  ObjModel::GuiControl() {
-
-	ImGui::SetNextWindowBgAlpha(0.7f);
-
-	if (ImGui::Begin("name", nullptr, (ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))) {
-		ImGui::Columns(2);
-		//selectedNode = 0;
-
-		root->GuiControl();
-
-		ImGui::NextColumn();
-		/*	change parameters of the currently selected node */
-		ImGui::Text("Position");
-		ImGui::SliderFloat("position x", &pos.x, -500.0f, +500.0f);
-		ImGui::SliderFloat("position y", &pos.y, -500.0f, +500.0f);
-		ImGui::SliderFloat("position z", &pos.z, -500.0f, +500.0f);
-
-		ImGui::Text("Rotation");
-		ImGui::SliderAngle("rotation x", &rot.x, -180.0f, +180.0f);
-		ImGui::SliderAngle("rotation y", &rot.y, -180.0f, +180.0f);
-		ImGui::SliderAngle("rotation z", &rot.z, -180.0f, +180.0f);
-
-		ImGui::Text("Scale");
-		ImGui::SliderFloat("Scale x", &scale.x, -180.0f, +180.0f);
-		ImGui::SliderFloat("Scale y", &scale.y, -180.0f, +180.0f);
-		ImGui::SliderFloat("Scale z", &scale.z, -180.0f, +180.0f);
-
-
-	}
-
-	ImGui::End();
+	selectedModel = this;
+	root->GuiControl();
 }
 
 
@@ -390,10 +362,70 @@ void ObjModel::setRotation(float x, float y, float z) {
 
 }
 
-void ObjModel::setDiminsion(float x, float y, float z)
+void ObjModel::setDiminsion(float x)
 {
-	scale.x = x;
-	scale.y = y;
-	scale.z = z;
+	scale = x;
+}
+char folder[100] = { 0 };
+char file[20] = { 0 };
+
+void ModelsGuiControl(Graphics& gfx)
+{
+	if (ImGui::Begin("name", nullptr, (ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove))) {
+		ImGui::Text("Add Model ");
+
+		ImGui::InputText("folder name", folder, 100);
+		ImGui::InputText("file name", file, 20);
+		if (ImGui::Button("attach", ImVec2(20, 20))) {
+			try {
+				AllModels.push_back(new ObjModel(gfx, folder, file));
+			}
+			catch (std::exception& e) {
+				cout(e.what());
+			}
+			folder[0] = '\000';
+			file[0] = '\000';
+
+		}
+
+		ImGui::Columns(2);
+
+		for (auto a : AllModels) {
+			a->GuiControl();
+		}
+
+		ImGui::NextColumn();
+		if (selectedNode != 0) {
+			ImGui::Text("Node Name %s", selectedNode->getName());
+			for (auto a : selectedNode->meshs) {
+				ImGui::Text("Mesh Name %s", a->getName());
+			}
+
+			//ImGui::NextColumn();
+			/*	change parameters of the currently selected node */
+
+			ImGui::Text("Position");
+			ImGui::SliderFloat("position x", &selectedModel->pos.x, -500.0f, +500.0f);
+			ImGui::SliderFloat("position y", &selectedModel->pos.y, -500.0f, +500.0f);
+			ImGui::SliderFloat("position z", &selectedModel->pos.z, -500.0f, +500.0f);
+
+			ImGui::Text("Rotation");
+			ImGui::SliderAngle("rotation x", &selectedModel->rot.x, -180.0f, +180.0f);
+			ImGui::SliderAngle("rotation y", &selectedModel->rot.y, -180.0f, +180.0f);
+			ImGui::SliderAngle("rotation z", &selectedModel->rot.z, -180.0f, +180.0f);
+
+			ImGui::Text("Scale");
+			ImGui::SliderFloat("Scale   ", &selectedModel->scale, -100.0f, +100.0f);
+			
+		}
+	}
+	ImGui::End();
 
 }
+
+void DrawAllModels(Graphics& gfx) {
+	for (auto a : AllModels) {
+		a->Draw();
+	}
+}
+

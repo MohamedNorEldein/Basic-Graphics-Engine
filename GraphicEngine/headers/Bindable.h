@@ -57,7 +57,7 @@ public:
 
 		if (referenceCount==0)
 		{
-			delete this;
+			this->~Bindable();
 			return nullptr;
 		}
 		return this;

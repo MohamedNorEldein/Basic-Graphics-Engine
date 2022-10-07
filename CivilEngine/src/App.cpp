@@ -40,7 +40,6 @@ WPARAM App::doFrame() {
 	ImGui::SetNextWindowBgAlpha(0.7f);
 	camera.GUIcontrol();
 	lamp.GuiControl();
-	//GirlModel.GuiControl();
 
 	if (window.keyBoardEvent.isDown(VK_TAB) && window.keyBoardEvent.type == WM_KEYDOWN) {
 
@@ -54,16 +53,15 @@ WPARAM App::doFrame() {
 			printf("raw Mouse input enable\n");
 		}
 	}
+	GirlModel.Draw();
 	
 	
-	//GirlModel.Draw();
-
 	/* scene control */
 	camera.CameraMouseControl(window.mouseEvent);
 	camera.CameraKeyboardCotrol(window.keyBoardEvent);
 	/* Imgui */
-
-
+	ModelsGuiControl(gfx);
+	DrawAllModels(gfx);
 
 	/*window end frame stuff */
 	gfx.EndFrame();
@@ -72,17 +70,17 @@ WPARAM App::doFrame() {
 
 App::App() : window(0, 1200, 600), gfx(window)
 , lamp(gfx, 0u)
-//, GirlModel(gfx,"Models src data", "nanosuit.obj" )
+, GirlModel(gfx,"GraphicEngine\\Models src data", "nanosuit.obj" )
 ,camera(gfx)
 {
 
 	gfx.setProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5, 10000.0f));
 	
-	/*
+	
 	GirlModel.setPos(0, 0, 10);
-	GirlModel.setDiminsion(10, 10, 10);
+	GirlModel.setDiminsion(10);
 	GirlModel.setRotation(0, MATH_PI, 0);
-	*/
+	
 	lamp.updateDir({ -1.0,1.0,-1.0 });
 
 }

@@ -105,6 +105,8 @@ public:
 class ThirdPearsonPerspective :
     public FirstPearsonPerspective {
 
+    DirectX::XMVECTOR focus;
+
 public:
     ThirdPearsonPerspective(Graphics& camera);
     void updateCameraPosition(float x, float y, float z);

@@ -1,283 +1,311 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Bindable">
-      <UniqueIdentifier>{260a2c9b-c86d-4351-9113-e1e2d74d93c6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Drawable">
-      <UniqueIdentifier>{5dae98d1-c728-4c3d-b85f-b1814dfb4d61}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Shaders">
-      <UniqueIdentifier>{33f39f9f-18e6-4eac-b9a3-a3923afb3fe1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Drawable\header">
-      <UniqueIdentifier>{7c75d864-459b-4145-b4f2-29d7d3def240}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Drawable\source">
-      <UniqueIdentifier>{79c07c26-0833-4315-a887-39061ddbc818}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ImGui">
-      <UniqueIdentifier>{005a5562-0971-4cf7-9a0d-50d5d88577d2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="DataStructure">
       <UniqueIdentifier>{36c76b06-cb4e-47cb-b8dc-c634703c1bf7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GraphicEngine">
+      <UniqueIdentifier>{829daacd-caeb-4800-a921-c19c25cf0f84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GraphicEngine\Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="GraphicEngine\Drawable">
+      <UniqueIdentifier>{5dae98d1-c728-4c3d-b85f-b1814dfb4d61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GraphicEngine\Drawable\header">
+      <UniqueIdentifier>{7c75d864-459b-4145-b4f2-29d7d3def240}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GraphicEngine\Drawable\source">
+      <UniqueIdentifier>{79c07c26-0833-4315-a887-39061ddbc818}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GraphicEngine\Bindable">
+      <UniqueIdentifier>{260a2c9b-c86d-4351-9113-e1e2d74d93c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GraphicEngine\Shaders">
+      <UniqueIdentifier>{33f39f9f-18e6-4eac-b9a3-a3923afb3fe1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GraphicEngine\ImGui">
+      <UniqueIdentifier>{005a5562-0971-4cf7-9a0d-50d5d88577d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CivilEngine">
+      <UniqueIdentifier>{595ac367-ee3b-4a20-a00e-69487f8322b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CivilEngine\source">
+      <UniqueIdentifier>{2394527f-229e-4451-bf03-4c98c331fe5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CivilEngine\Header">
+      <UniqueIdentifier>{141ce492-f09c-4a1e-9577-edabdf999d1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GraphicEngine\Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="CivilEngine\shaders">
+      <UniqueIdentifier>{c7a7e4af-961e-465c-836e-a912ce801728}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="headers\App.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="headers\Events.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="headers\Graphics.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="headers\List.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="headers\mndErrors.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="headers\mndWindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="headers\WindowClass.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="headers\constantBuffer.h">
-      <Filter>Bindable</Filter>
-    </ClInclude>
-    <ClInclude Include="headers\Bindable.h">
-      <Filter>Bindable</Filter>
-    </ClInclude>
-    <ClInclude Include="headers\IndexBuffer.h">
-      <Filter>Bindable</Filter>
-    </ClInclude>
-    <ClInclude Include="headers\InputLayout.h">
-      <Filter>Bindable</Filter>
-    </ClInclude>
-    <ClInclude Include="headers\VertexBuffer.h">
-      <Filter>Bindable</Filter>
-    </ClInclude>
-    <ClInclude Include="headers\VertexShader.h">
-      <Filter>Bindable</Filter>
-    </ClInclude>
-    <ClInclude Include="headers\Light.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="headers\PrimativeTopology.h">
-      <Filter>Bindable</Filter>
-    </ClInclude>
-    <ClInclude Include="headers\PixelShader.h">
-      <Filter>Bindable</Filter>
-    </ClInclude>
-    <ClInclude Include="headers\ObjModel.h">
-      <Filter>Drawable\header</Filter>
-    </ClInclude>
-    <ClInclude Include="headers\Drawable.h">
-      <Filter>Drawable\header</Filter>
-    </ClInclude>
-    <ClInclude Include="headers\AugmantedTree.h">
-      <Filter>DataStructure</Filter>
-    </ClInclude>
-    <ClInclude Include="headers\DataStructures.h">
-      <Filter>DataStructure</Filter>
-    </ClInclude>
-    <ClInclude Include="headers\DoubleLinkedList.h">
-      <Filter>DataStructure</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\mstring.h">
-      <Filter>DataStructure</Filter>
-    </ClInclude>
-    <ClInclude Include="headers\SingleLinkedList.h">
-      <Filter>DataStructure</Filter>
-    </ClInclude>
-    <ClInclude Include="headers\ComputeShader.h">
-      <Filter>Bindable</Filter>
-    </ClInclude>
-    <ClInclude Include="headers\Cube.h">
-      <Filter>Drawable\header</Filter>
-    </ClInclude>
-    <ClInclude Include="headers\Texture.h">
-      <Filter>Bindable</Filter>
-    </ClInclude>
     <ClInclude Include="dxtex\include\dxtex\scoped.h">
-      <Filter>Header Files</Filter>
+      <Filter>GraphicEngine\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="dxtex\include\dxtex\BC.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="dxtex\include\dxtex\BCDirectCompute.h">
-      <Filter>Header Files</Filter>
+      <Filter>GraphicEngine\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="dxtex\include\dxtex\d3dx12.h">
-      <Filter>Header Files</Filter>
+      <Filter>GraphicEngine\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="dxtex\include\dxtex\DDS.h">
-      <Filter>Header Files</Filter>
+      <Filter>GraphicEngine\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="dxtex\include\dxtex\DirectXTex.h">
-      <Filter>Header Files</Filter>
+      <Filter>GraphicEngine\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="dxtex\include\dxtex\DirectXTexP.h">
-      <Filter>Header Files</Filter>
+      <Filter>GraphicEngine\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="dxtex\include\dxtex\filters.h">
-      <Filter>Header Files</Filter>
+      <Filter>GraphicEngine\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="headers\Sampler.h">
-      <Filter>Bindable</Filter>
+    <ClInclude Include="GraphicEngine\ImGui\imconfig.h">
+      <Filter>GraphicEngine\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="headers\ImageFactory.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="GraphicEngine\ImGui\imgui.h">
+      <Filter>GraphicEngine\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="headers\WICTextur.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="GraphicEngine\ImGui\imgui_impl_dx11.h">
+      <Filter>GraphicEngine\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="headers\ComputeShaderBuffer.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="GraphicEngine\ImGui\imgui_impl_win32.h">
+      <Filter>GraphicEngine\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="headers\ShaderResource.h">
-      <Filter>Bindable</Filter>
+    <ClInclude Include="GraphicEngine\ImGui\imgui_internal.h">
+      <Filter>GraphicEngine\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="headers\ComputePipeLine.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="GraphicEngine\ImGui\imstb_rectpack.h">
+      <Filter>GraphicEngine\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="ImGui\imconfig.h">
-      <Filter>ImGui</Filter>
+    <ClInclude Include="GraphicEngine\ImGui\imstb_textedit.h">
+      <Filter>GraphicEngine\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="ImGui\imgui.h">
-      <Filter>ImGui</Filter>
+    <ClInclude Include="GraphicEngine\ImGui\imstb_truetype.h">
+      <Filter>GraphicEngine\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="ImGui\imgui_impl_dx11.h">
-      <Filter>ImGui</Filter>
+    <ClInclude Include="CivilEngine\headers\App.h">
+      <Filter>GraphicEngine\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ImGui\imgui_impl_win32.h">
-      <Filter>ImGui</Filter>
+    <ClInclude Include="GraphicEngine\headers\ComputePipeLine.h">
+      <Filter>GraphicEngine\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ImGui\imgui_internal.h">
-      <Filter>ImGui</Filter>
+    <ClInclude Include="GraphicEngine\headers\DDSTexture.h">
+      <Filter>GraphicEngine\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ImGui\imstb_rectpack.h">
-      <Filter>ImGui</Filter>
+    <ClInclude Include="GraphicEngine\headers\Events.h">
+      <Filter>GraphicEngine\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ImGui\imstb_textedit.h">
-      <Filter>ImGui</Filter>
+    <ClInclude Include="GraphicEngine\headers\Graphics.h">
+      <Filter>GraphicEngine\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ImGui\imstb_truetype.h">
-      <Filter>ImGui</Filter>
+    <ClInclude Include="GraphicEngine\headers\ImageFactory.h">
+      <Filter>GraphicEngine\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicEngine\headers\Light.h">
+      <Filter>GraphicEngine\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicEngine\headers\mndErrors.h">
+      <Filter>GraphicEngine\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicEngine\headers\mndWindow.h">
+      <Filter>GraphicEngine\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicEngine\headers\WICTextur.h">
+      <Filter>GraphicEngine\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicEngine\headers\WindowClass.h">
+      <Filter>GraphicEngine\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicEngine\headers\Bindable.h">
+      <Filter>GraphicEngine\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicEngine\headers\ComputeShader.h">
+      <Filter>GraphicEngine\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicEngine\headers\constantBuffer.h">
+      <Filter>GraphicEngine\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicEngine\headers\IndexBuffer.h">
+      <Filter>GraphicEngine\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicEngine\headers\InputLayout.h">
+      <Filter>GraphicEngine\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicEngine\headers\PixelShader.h">
+      <Filter>GraphicEngine\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicEngine\headers\Sampler.h">
+      <Filter>GraphicEngine\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicEngine\headers\PrimativeTopology.h">
+      <Filter>GraphicEngine\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicEngine\headers\ShaderResource.h">
+      <Filter>GraphicEngine\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicEngine\headers\Texture.h">
+      <Filter>GraphicEngine\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicEngine\headers\VertexBuffer.h">
+      <Filter>GraphicEngine\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicEngine\headers\VertexShader.h">
+      <Filter>GraphicEngine\Bindable</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicEngine\headers\SingleLinkedList.h">
+      <Filter>DataStructure</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicEngine\headers\AugmantedTree.h">
+      <Filter>DataStructure</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicEngine\headers\DataStructures.h">
+      <Filter>DataStructure</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicEngine\headers\DoubleLinkedList.h">
+      <Filter>DataStructure</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicEngine\headers\List.h">
+      <Filter>DataStructure</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicEngine\headers\Cube.h">
+      <Filter>GraphicEngine\Drawable\header</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicEngine\headers\Drawable.h">
+      <Filter>GraphicEngine\Drawable\header</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicEngine\headers\Gobject.h">
+      <Filter>GraphicEngine\Drawable\header</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicEngine\headers\ObjModel.h">
+      <Filter>GraphicEngine\Drawable\header</Filter>
+    </ClInclude>
+    <ClInclude Include="CivilEngine\headers\Truss.h">
+      <Filter>CivilEngine\Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Events.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="GraphicEngine\src\Events.cpp">
+      <Filter>GraphicEngine\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="GraphicEngine\src\Graphics.cpp">
+      <Filter>GraphicEngine\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Window.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="GraphicEngine\src\Window.cpp">
+      <Filter>GraphicEngine\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Errors.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="GraphicEngine\src\Errors.cpp">
+      <Filter>GraphicEngine\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\main.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="CivilEngine\src\main.cpp">
+      <Filter>GraphicEngine\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Light.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="GraphicEngine\src\Light.cpp">
+      <Filter>GraphicEngine\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\App.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="CivilEngine\src\App.cpp">
+      <Filter>GraphicEngine\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ObjModel.cpp">
-      <Filter>Drawable\source</Filter>
+    <ClCompile Include="GraphicEngine\src\ObjModel.cpp">
+      <Filter>GraphicEngine\Drawable\source</Filter>
     </ClCompile>
-    <ClCompile Include="src\Drawable.cpp">
-      <Filter>Drawable\source</Filter>
+    <ClCompile Include="GraphicEngine\src\Drawable.cpp">
+      <Filter>GraphicEngine\Drawable\source</Filter>
     </ClCompile>
-    <ClCompile Include="src\AgumantedTree.cpp">
+    <ClCompile Include="GraphicEngine\src\AgumantedTree.cpp">
       <Filter>DataStructure</Filter>
     </ClCompile>
-    <ClCompile Include="src\DataStructures.cpp">
+    <ClCompile Include="GraphicEngine\src\DataStructures.cpp">
       <Filter>DataStructure</Filter>
     </ClCompile>
-    <ClCompile Include="src\DoubleLinkedList.cpp">
+    <ClCompile Include="GraphicEngine\src\DoubleLinkedList.cpp">
       <Filter>DataStructure</Filter>
     </ClCompile>
-    <ClCompile Include="src\SingleLinkedList.cpp">
+    <ClCompile Include="GraphicEngine\src\SingleLinkedList.cpp">
       <Filter>DataStructure</Filter>
     </ClCompile>
-    <ClCompile Include="src\mstring.cpp">
+    <ClCompile Include="GraphicEngine\src\mstring.cpp">
       <Filter>DataStructure</Filter>
     </ClCompile>
-    <ClCompile Include="src\cube.cpp">
-      <Filter>Drawable\source</Filter>
+    <ClCompile Include="GraphicEngine\src\cube.cpp">
+      <Filter>GraphicEngine\Drawable\source</Filter>
     </ClCompile>
-    <ClCompile Include="src\ImageFactory.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="GraphicEngine\src\ImageFactory.cpp">
+      <Filter>GraphicEngine\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\WICTextur.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="GraphicEngine\src\WICTextur.cpp">
+      <Filter>GraphicEngine\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ComputePipeLine.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="GraphicEngine\src\ComputePipeLine.cpp">
+      <Filter>GraphicEngine\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ImGui\imgui.cpp">
-      <Filter>ImGui</Filter>
+    <ClCompile Include="GraphicEngine\ImGui\imgui.cpp">
+      <Filter>GraphicEngine\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="ImGui\imgui_demo.cpp">
-      <Filter>ImGui</Filter>
+    <ClCompile Include="GraphicEngine\ImGui\imgui_demo.cpp">
+      <Filter>GraphicEngine\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="ImGui\imgui_draw.cpp">
-      <Filter>ImGui</Filter>
+    <ClCompile Include="GraphicEngine\ImGui\imgui_draw.cpp">
+      <Filter>GraphicEngine\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="ImGui\imgui_impl_dx11.cpp">
-      <Filter>ImGui</Filter>
+    <ClCompile Include="GraphicEngine\ImGui\imgui_impl_dx11.cpp">
+      <Filter>GraphicEngine\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="ImGui\imgui_impl_win32.cpp">
-      <Filter>ImGui</Filter>
+    <ClCompile Include="GraphicEngine\ImGui\imgui_impl_win32.cpp">
+      <Filter>GraphicEngine\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="ImGui\imgui_tables.cpp">
-      <Filter>ImGui</Filter>
+    <ClCompile Include="GraphicEngine\ImGui\imgui_tables.cpp">
+      <Filter>GraphicEngine\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="ImGui\imgui_widgets.cpp">
-      <Filter>ImGui</Filter>
+    <ClCompile Include="GraphicEngine\ImGui\imgui_widgets.cpp">
+      <Filter>GraphicEngine\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicEngine\src\DDSTexture.cpp">
+      <Filter>GraphicEngine\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CivilEngine\src\Truss.cpp">
+      <Filter>CivilEngine\source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui.ini" />
     <None Include="dxtex\include\dxtex\DirectXTex.inl">
-      <Filter>Header Files</Filter>
+      <Filter>GraphicEngine\Header Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="shaders\AssVertexShader.hlsl">
-      <Filter>Shaders</Filter>
+    <FxCompile Include="GraphicEngine\shaders\AssVertexShader.hlsl">
+      <Filter>GraphicEngine\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="shaders\AssPixelShader.hlsl">
-      <Filter>Shaders</Filter>
+    <FxCompile Include="GraphicEngine\shaders\AssPixelShader.hlsl">
+      <Filter>GraphicEngine\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="shaders\CubePixelShader.hlsl">
-      <Filter>Shaders</Filter>
+    <FxCompile Include="GraphicEngine\shaders\CubePixelShader.hlsl">
+      <Filter>GraphicEngine\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="shaders\CubeVertexShader.hlsl">
-      <Filter>Shaders</Filter>
+    <FxCompile Include="GraphicEngine\shaders\CubeVertexShader.hlsl">
+      <Filter>GraphicEngine\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="shaders\ComputeShader.hlsl" />
-    <FxCompile Include="shaders\ComputeShader2.hlsl" />
+    <FxCompile Include="CivilEngine\shaders\MemberShader.hlsl">
+      <Filter>CivilEngine\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="CivilEngine\shaders\NodeShader.hlsl">
+      <Filter>CivilEngine\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="CivilEngine\shaders\preMemberShader.hlsl">
+      <Filter>CivilEngine\shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

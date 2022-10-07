@@ -50,6 +50,9 @@ public:
 	~ObjMesh();
 
 	friend class ObjNode;
+	friend void ModelsGuiControl();
+	friend void ModelsGuiControl(Graphics& gfx);
+
 };
 
 class ObjNode {
@@ -92,28 +95,35 @@ public:
 
 	/* Gui Control */
 	void GuiControl();
+	const char * const getName() {
+		return name;
+	}
+
+	friend class ObjModel;
+	friend void ModelsGuiControl();
+	friend void ModelsGuiControl(Graphics& gfx);
 
 };
 
 
-class ObjModel 
+class ObjModel
 {
 private:
 	// stack data
 	char name[50];
 	wchar_t _fileName[1024];
-	
+
 	Graphics& gfx;
 	TransformCBuffer* tr;
-		int selectedmesh;
-	DirectX::XMFLOAT3 pos, scale, rot;
+	//int selectedmesh;
+	DirectX::XMFLOAT3 pos, rot;
+	float scale;
 private:
 	// heap data
 	ObjNode* root;
 	BV commonBindables;
 	std::vector<const char*> meshsNames;
 	std::vector<ObjMesh*> AllMeshs;
-
 
 
 private:
@@ -124,7 +134,7 @@ private:
 public:
 	RawCBuffer* pcb;
 
-	ObjModel(Graphics& gfx,const std::string& folderName , const std::string& fileName);
+	ObjModel(Graphics& gfx, const std::string& folderName, const std::string& fileName);
 	ObjModel(Graphics& gfx);
 
 	~ObjModel();
@@ -137,11 +147,11 @@ public:
 
 	void setRotation(float x, float y, float z);
 
-	void setDiminsion(float x, float y, float z);
+	void setDiminsion(float x);
 
 	friend class ObjNode;
 	friend class ObjMesh;
+	friend void ModelsGuiControl(Graphics& gfx);
 };
-
-
- 
+void ModelsGuiControl(Graphics &gfx);
+void DrawAllModels(Graphics& gfx);

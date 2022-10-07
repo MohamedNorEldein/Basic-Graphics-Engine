@@ -39,7 +39,7 @@ Window::Window(const wchar_t* titel1, int width, int height)
 	};
 	AdjustWindowRect(&rect,  WS_SYSMENU, false);
 
-	windowhandel = CreateWindowEx(WS_EX_ACCEPTFILES, windowClassName, titel, WS_SYSMENU  ,
+	windowhandel = CreateWindowEx(WS_EX_ACCEPTFILES, windowClassName, titel, WS_SYSMENU |WS_SIZEBOX ,
 		200, 200,
 		rect.right - rect.left,
 		rect.bottom - rect.top,

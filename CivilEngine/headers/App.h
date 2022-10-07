@@ -12,18 +12,8 @@
 #ifndef MAIN_CPP_APP_H
 #define MAIN_CPP_APP_H
 
-enum mouseEvetType {
-    NONE = 0,
-    CameraMoveFowrwad,
-    Scale,
-    CameraRotaote,
-    CameraMove
-
-};
-
-
 class App {
-public:
+private:
     // Basic D3D stuff
     Window window;
     Graphics gfx;
@@ -31,10 +21,10 @@ public:
 private:
     // models
    
-  //  ObjModel GirlModel;// , HouseModel;
+    ObjModel GirlModel;// , HouseModel;
 private:
     // camera and light
-    FirstPearsonPerspective camera;
+    ThirdPearsonPerspective camera;
     UniformLight lamp;
 
 public:

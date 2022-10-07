@@ -76,6 +76,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)GraphicEngine\headers;$(ProjectDir)GraphicEngine\ImGui;$(ProjectDir)CivilEngine\headers</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -92,7 +93,7 @@
       <ConformanceMode>true</ConformanceMode>
       <CompileAsManaged>true</CompileAsManaged>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\computer\directX\Project1\dxtex\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)GraphicEngine\headers;$(ProjectDir)GraphicEngine\ImGui;$(ProjectDir)CivilEngine\headers</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -107,7 +108,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)\ImGui;$(ProjectDir)\Project1;$(ProjectDir)\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)GraphicEngine\headers;$(ProjectDir)GraphicEngine\ImGui;$(ProjectDir)CivilEngine\headers</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
@@ -124,7 +125,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)\ImGui;$(ProjectDir)\Project1;$(ProjectDir)\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)GraphicEngine\headers;$(ProjectDir)GraphicEngine\ImGui;$(ProjectDir)CivilEngine\headers</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
@@ -136,88 +137,90 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="headers\ComputePipeLine.h" />
-    <ClInclude Include="headers\ComputeShaderBuffer.h" />
     <ClInclude Include="dxtex\include\dxtex\BC.h" />
-    <ClInclude Include="dxtex\include\dxtex\BCDirectCompute.h" />
     <ClInclude Include="dxtex\include\dxtex\d3dx12.h" />
     <ClInclude Include="dxtex\include\dxtex\DDS.h" />
     <ClInclude Include="dxtex\include\dxtex\DirectXTex.h" />
     <ClInclude Include="dxtex\include\dxtex\DirectXTexP.h" />
     <ClInclude Include="dxtex\include\dxtex\filters.h" />
     <ClInclude Include="dxtex\include\dxtex\scoped.h" />
-    <ClInclude Include="headers\ComputeShader.h" />
-    <ClInclude Include="headers\App.h" />
-    <ClInclude Include="headers\Cube.h" />
-    <ClInclude Include="headers\ObjModel.h" />
-    <ClInclude Include="headers\AugmantedTree.h" />
-    <ClInclude Include="headers\Bindable.h" />
-    <ClInclude Include="headers\constantBuffer.h" />
-    <ClInclude Include="headers\DataStructures.h" />
-    <ClInclude Include="headers\DoubleLinkedList.h" />
-    <ClInclude Include="headers\Drawable.h" />
-    <ClInclude Include="headers\Events.h" />
-    <ClInclude Include="headers\Graphics.h" />
-    <ClInclude Include="headers\IndexBuffer.h" />
-    <ClInclude Include="headers\InputLayout.h" />
-    <ClInclude Include="headers\List.h" />
-    <ClInclude Include="headers\mndErrors.h" />
-    <ClInclude Include="headers\mndWindow.h" />
-    <ClInclude Include="Headers\mstring.h" />
-    <ClInclude Include="headers\PixelShader.h" />
-    <ClInclude Include="headers\Sampler.h" />
-    <ClInclude Include="headers\ShaderResource.h" />
-    <ClInclude Include="headers\SingleLinkedList.h" />
-    <ClInclude Include="headers\VertexBuffer.h" />
-    <ClInclude Include="headers\VertexShader.h" />
-    <ClInclude Include="headers\WICTextur.h" />
-    <ClInclude Include="headers\WindowClass.h" />
-    <ClInclude Include="headers\ImageFactory.h" />
-    <ClInclude Include="headers\Light.h" />
-    <ClInclude Include="headers\PrimativeTopology.h" />
-    <ClInclude Include="headers\Texture.h" />
-    <ClInclude Include="ImGui\imconfig.h" />
-    <ClInclude Include="ImGui\imgui.h" />
-    <ClInclude Include="ImGui\imgui_impl_dx11.h" />
-    <ClInclude Include="ImGui\imgui_impl_win32.h" />
-    <ClInclude Include="ImGui\imgui_internal.h" />
-    <ClInclude Include="ImGui\imstb_rectpack.h" />
-    <ClInclude Include="ImGui\imstb_textedit.h" />
-    <ClInclude Include="ImGui\imstb_truetype.h" />
+    <ClInclude Include="CivilEngine\headers\App.h" />
+    <ClInclude Include="GraphicEngine\headers\AugmantedTree.h" />
+    <ClInclude Include="GraphicEngine\headers\Bindable.h" />
+    <ClInclude Include="GraphicEngine\headers\ComputePipeLine.h" />
+    <ClInclude Include="GraphicEngine\headers\ComputeShader.h" />
+    <ClInclude Include="GraphicEngine\headers\constantBuffer.h" />
+    <ClInclude Include="GraphicEngine\headers\Cube.h" />
+    <ClInclude Include="GraphicEngine\headers\DataStructures.h" />
+    <ClInclude Include="GraphicEngine\headers\DDSTexture.h" />
+    <ClInclude Include="GraphicEngine\headers\DoubleLinkedList.h" />
+    <ClInclude Include="GraphicEngine\headers\Drawable.h" />
+    <ClInclude Include="GraphicEngine\headers\Events.h" />
+    <ClInclude Include="GraphicEngine\headers\Gobject.h" />
+    <ClInclude Include="GraphicEngine\headers\Graphics.h" />
+    <ClInclude Include="GraphicEngine\headers\ImageFactory.h" />
+    <ClInclude Include="GraphicEngine\headers\IndexBuffer.h" />
+    <ClInclude Include="GraphicEngine\headers\InputLayout.h" />
+    <ClInclude Include="GraphicEngine\headers\Light.h" />
+    <ClInclude Include="GraphicEngine\headers\List.h" />
+    <ClInclude Include="GraphicEngine\headers\mndErrors.h" />
+    <ClInclude Include="GraphicEngine\headers\mndWindow.h" />
+    <ClInclude Include="GraphicEngine\headers\ObjModel.h" />
+    <ClInclude Include="GraphicEngine\headers\PixelShader.h" />
+    <ClInclude Include="GraphicEngine\headers\PrimativeTopology.h" />
+    <ClInclude Include="GraphicEngine\headers\Sampler.h" />
+    <ClInclude Include="GraphicEngine\headers\ShaderResource.h" />
+    <ClInclude Include="GraphicEngine\headers\SingleLinkedList.h" />
+    <ClInclude Include="GraphicEngine\headers\Texture.h" />
+    <ClInclude Include="GraphicEngine\headers\VertexBuffer.h" />
+    <ClInclude Include="GraphicEngine\headers\VertexShader.h" />
+    <ClInclude Include="GraphicEngine\headers\WICTextur.h" />
+    <ClInclude Include="GraphicEngine\headers\WindowClass.h" />
+    <ClInclude Include="GraphicEngine\ImGui\imconfig.h" />
+    <ClInclude Include="GraphicEngine\ImGui\imgui.h" />
+    <ClInclude Include="GraphicEngine\ImGui\imgui_impl_dx11.h" />
+    <ClInclude Include="GraphicEngine\ImGui\imgui_impl_win32.h" />
+    <ClInclude Include="GraphicEngine\ImGui\imgui_internal.h" />
+    <ClInclude Include="GraphicEngine\ImGui\imstb_rectpack.h" />
+    <ClInclude Include="GraphicEngine\ImGui\imstb_textedit.h" />
+    <ClInclude Include="GraphicEngine\ImGui\imstb_truetype.h" />
+    <ClInclude Include="CivilEngine\headers\Truss.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ImGui\imgui.cpp" />
-    <ClCompile Include="ImGui\imgui_demo.cpp" />
-    <ClCompile Include="ImGui\imgui_draw.cpp" />
-    <ClCompile Include="ImGui\imgui_impl_dx11.cpp" />
-    <ClCompile Include="ImGui\imgui_impl_win32.cpp" />
-    <ClCompile Include="ImGui\imgui_tables.cpp" />
-    <ClCompile Include="ImGui\imgui_widgets.cpp" />
-    <ClCompile Include="src\ComputePipeLine.cpp" />
-    <ClCompile Include="src\App.cpp" />
-    <ClCompile Include="src\cube.cpp" />
-    <ClCompile Include="src\ImageFactory.cpp" />
-    <ClCompile Include="src\ObjModel.cpp" />
-    <ClCompile Include="src\Drawable.cpp" />
-    <ClCompile Include="src\mstring.cpp" />
-    <ClCompile Include="src\Light.cpp" />
-    <ClCompile Include="src\AgumantedTree.cpp" />
-    <ClCompile Include="src\DataStructures.cpp" />
-    <ClCompile Include="src\DoubleLinkedList.cpp" />
-    <ClCompile Include="src\Errors.cpp" />
-    <ClCompile Include="src\Events.cpp" />
-    <ClCompile Include="src\Graphics.cpp" />
-    <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\SingleLinkedList.cpp" />
-    <ClCompile Include="src\WICTextur.cpp" />
-    <ClCompile Include="src\Window.cpp" />
+    <ClCompile Include="GraphicEngine\ImGui\imgui.cpp" />
+    <ClCompile Include="GraphicEngine\ImGui\imgui_demo.cpp" />
+    <ClCompile Include="GraphicEngine\ImGui\imgui_draw.cpp" />
+    <ClCompile Include="GraphicEngine\ImGui\imgui_impl_dx11.cpp" />
+    <ClCompile Include="GraphicEngine\ImGui\imgui_impl_win32.cpp" />
+    <ClCompile Include="GraphicEngine\ImGui\imgui_tables.cpp" />
+    <ClCompile Include="GraphicEngine\ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="GraphicEngine\src\ComputePipeLine.cpp" />
+    <ClCompile Include="CivilEngine\src\App.cpp" />
+    <ClCompile Include="GraphicEngine\src\cube.cpp" />
+    <ClCompile Include="GraphicEngine\src\DDSTexture.cpp" />
+    <ClCompile Include="GraphicEngine\src\ImageFactory.cpp" />
+    <ClCompile Include="GraphicEngine\src\ObjModel.cpp" />
+    <ClCompile Include="GraphicEngine\src\Drawable.cpp" />
+    <ClCompile Include="GraphicEngine\src\mstring.cpp" />
+    <ClCompile Include="GraphicEngine\src\Light.cpp" />
+    <ClCompile Include="GraphicEngine\src\AgumantedTree.cpp" />
+    <ClCompile Include="GraphicEngine\src\DataStructures.cpp" />
+    <ClCompile Include="GraphicEngine\src\DoubleLinkedList.cpp" />
+    <ClCompile Include="GraphicEngine\src\Errors.cpp" />
+    <ClCompile Include="GraphicEngine\src\Events.cpp" />
+    <ClCompile Include="GraphicEngine\src\Graphics.cpp" />
+    <ClCompile Include="CivilEngine\src\main.cpp" />
+    <ClCompile Include="GraphicEngine\src\SingleLinkedList.cpp" />
+    <ClCompile Include="GraphicEngine\src\WICTextur.cpp" />
+    <ClCompile Include="GraphicEngine\src\Window.cpp" />
+    <ClCompile Include="CivilEngine\src\Truss.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="dxtex\include\dxtex\DirectXTex.inl" />
     <None Include="imgui.ini" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="shaders\ComputeShader.hlsl">
+    <FxCompile Include="CivilEngine\shaders\NodeShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.1</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
@@ -231,17 +234,17 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)shaders\%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)shaders\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
-    <FxCompile Include="shaders\ComputeShader2.hlsl">
+    <FxCompile Include="CivilEngine\shaders\MemberShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.1</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.1</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.1</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.1</ShaderModel>
     </FxCompile>
-    <FxCompile Include="shaders\CubePixelShader.hlsl">
+    <FxCompile Include="GraphicEngine\shaders\CubePixelShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
@@ -251,7 +254,7 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)\shader\%(Filename).cso</ObjectFileOutput>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
     </FxCompile>
-    <FxCompile Include="shaders\CubeVertexShader.hlsl">
+    <FxCompile Include="GraphicEngine\shaders\CubeVertexShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
@@ -261,7 +264,7 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)\shader\%(Filename).cso</ObjectFileOutput>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
     </FxCompile>
-    <FxCompile Include="shaders\AssPixelShader.hlsl">
+    <FxCompile Include="GraphicEngine\shaders\AssPixelShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
@@ -269,13 +272,23 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)\shaders\%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)\shaders\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
-    <FxCompile Include="shaders\AssVertexShader.hlsl">
+    <FxCompile Include="GraphicEngine\shaders\AssVertexShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)\shaders\%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)\shaders\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="CivilEngine\shaders\preMemberShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
