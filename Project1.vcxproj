@@ -137,6 +137,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CivilEngine\headers\StaticSystem.h" />
     <ClInclude Include="dxtex\include\dxtex\BC.h" />
     <ClInclude Include="dxtex\include\dxtex\d3dx12.h" />
     <ClInclude Include="dxtex\include\dxtex\DDS.h" />
@@ -187,6 +188,7 @@
     <ClInclude Include="CivilEngine\headers\Truss.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CivilEngine\src\StaticSystem.cpp" />
     <ClCompile Include="GraphicEngine\ImGui\imgui.cpp" />
     <ClCompile Include="GraphicEngine\ImGui\imgui_demo.cpp" />
     <ClCompile Include="GraphicEngine\ImGui\imgui_draw.cpp" />

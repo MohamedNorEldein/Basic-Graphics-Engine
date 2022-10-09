@@ -203,7 +203,6 @@ public:
 
 };
 
-template<typename T>
 class ComputeShaderOutput :
 	public Bindable
 {
@@ -214,8 +213,8 @@ private:
 	size_t size;
 public:
 
-	ComputeShaderOutput(ComputePipeLine& gfx, UINT count, UINT Slot) :
-		Bindable(SHADER_RESOURCE), Slot(Slot), size(sizeof(T)* count)
+	ComputeShaderOutput(PipeLine& gfx, UINT count, size_t item_size , UINT Slot) :
+		Bindable(SHADER_RESOURCE), Slot(Slot), size(item_size* count)
 	{
 		/* create buffer to be used by gpu as output */
 		
@@ -224,8 +223,8 @@ public:
 		bd.Usage = D3D11_USAGE_DEFAULT;
 		bd.CPUAccessFlags = 0;
 		bd.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
-		bd.ByteWidth = sizeof(T) * count;
-		bd.StructureByteStride = sizeof(T);
+		bd.ByteWidth = size;
+		bd.StructureByteStride = item_size;
 
 		CHECK(gfx.getdevice()->CreateBuffer(&bd, nullptr, &pBuf));
 		
@@ -250,9 +249,14 @@ public:
 
 	}
 
-	ComputeShaderOutput(Graphics& gfx, UINT count, UINT Slot) :
-		Bindable(SHADER_RESOURCE), Slot(Slot), size(sizeof(T)* count)
+
+	ComputeShaderOutput(PipeLine& gfx,void* data, UINT count, size_t item_size, UINT Slot) :
+		Bindable(SHADER_RESOURCE), Slot(Slot), size(item_size* count)
 	{
+		/* create buffer to be used by gpu as output */
+		D3D11_SUBRESOURCE_DATA Tdata = { 0 };
+		Tdata.pSysMem = data;
+
 		/* create buffer to be used by gpu as output */
 
 		D3D11_BUFFER_DESC bd = { 0 };
@@ -260,10 +264,10 @@ public:
 		bd.Usage = D3D11_USAGE_DEFAULT;
 		bd.CPUAccessFlags = 0;
 		bd.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
-		bd.ByteWidth = sizeof(T) * count;
-		bd.StructureByteStride = sizeof(T);
+		bd.ByteWidth = size;
+		bd.StructureByteStride = item_size;
 
-		CHECK(gfx.getdevice()->CreateBuffer(&bd, nullptr, &pBuf));
+		CHECK(gfx.getdevice()->CreateBuffer(&bd, &Tdata, &pBuf));
 
 		/* create buffer for gpu to write and cpu to read */
 		bd.BindFlags = 0;
@@ -283,9 +287,11 @@ public:
 		uav.Buffer.NumElements = count;
 
 		CHECK(gfx.getdevice()->CreateUnorderedAccessView(pBuf, &uav, &pView));
+
 	}
 
-	ComputeShaderOutput(ComputePipeLine& gfx,std::vector<T> data, UINT Slot) :
+	template<typename T>
+	ComputeShaderOutput(PipeLine& gfx,std::vector<T> data, UINT Slot) :
 		Bindable(SHADER_RESOURCE), Slot(Slot),size(sizeof(T)* data.size())
 	{
 		/* create buffer to be used by gpu as output */
@@ -322,45 +328,8 @@ public:
 		CHECK(gfx.getdevice()->CreateUnorderedAccessView(pBuf, &uav, &pView));
 
 	}
-
-	ComputeShaderOutput(Graphics& gfx, std::vector<T> data, UINT Slot) :
-		Bindable(SHADER_RESOURCE), Slot(Slot), size(sizeof(T)* data.size())
-	{
-		/* create buffer to be used by gpu as output */
-		D3D11_SUBRESOURCE_DATA Tdata = { 0 };
-		Tdata.pSysMem = data.data();
-
-		D3D11_BUFFER_DESC bd = { 0 };
-		bd.BindFlags = D3D11_BIND_UNORDERED_ACCESS;
-		bd.Usage = D3D11_USAGE_DEFAULT;
-		bd.CPUAccessFlags = 0;
-		bd.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
-		bd.ByteWidth = sizeof(T) * data.size();
-		bd.StructureByteStride = sizeof(T);
-
-		CHECK(gfx.getdevice()->CreateBuffer(&bd, &Tdata, &pBuf));
-
-		/* create buffer for gpu to write and cpu to read */
-		bd.BindFlags = 0;
-		bd.Usage = D3D11_USAGE_STAGING;
-		bd.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
-
-		CHECK(gfx.getdevice()->CreateBuffer(&bd, nullptr, &presult));
-
-		/* unordered acsses view */
-
-
-		D3D11_UNORDERED_ACCESS_VIEW_DESC uav = {};
-		uav.Format = DXGI_FORMAT_UNKNOWN;
-		uav.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
-		uav.Buffer.FirstElement = 0;
-		uav.Buffer.Flags = 0;
-		uav.Buffer.NumElements = data.size();
-
-		CHECK(gfx.getdevice()->CreateUnorderedAccessView(pBuf, &uav, &pView));
-
-	}
-
+	
+	
 	~ComputeShaderOutput() {
 		pBuf->Release();
 		pView->Release();
@@ -375,7 +344,7 @@ public:
 		gfx.getcontext()->CSSetUnorderedAccessViews(Slot, 1, &pView,0);
 	}
 
-	
+	template<typename T>
 	T* read(ComputePipeLine& gfx) {
 		gfx.getcontext()->CopyResource(presult,pBuf);
 		D3D11_MAPPED_SUBRESOURCE TData;
@@ -384,6 +353,7 @@ public:
 		return (T*)TData.pData;
 	}
 
+	template<typename T>
 	T* read(Graphics& gfx) {
 		gfx.getcontext()->CopyResource(presult, pBuf);
 		D3D11_MAPPED_SUBRESOURCE TData;
@@ -392,7 +362,7 @@ public:
 		return (T*)TData.pData;
 	}
 
-	void write(Graphics& gfx, T* data) {
+	void write(Graphics& gfx, void* data) {
 		gfx.getcontext()->CopyResource(presult, pBuf);
 		D3D11_MAPPED_SUBRESOURCE TData;
 		CHECK(gfx.getcontext()->Map(presult, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &TData));
@@ -401,7 +371,7 @@ public:
 
 	}
 
-	void write(ComputePipeLine& gfx, T* data) {
+	void write(ComputePipeLine& gfx, void* data) {
 		gfx.getcontext()->CopyResource(presult, pBuf);
 		D3D11_MAPPED_SUBRESOURCE TData;
 		CHECK(gfx.getcontext()->Map(presult, 0u, D3D11_MAP_WRITE_DISCARD, 0u, &TData));
@@ -409,4 +379,6 @@ public:
 		gfx.getcontext()->Unmap(presult, 0u);
 
 	}
+
+
 };

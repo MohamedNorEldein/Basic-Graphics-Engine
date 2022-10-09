@@ -195,6 +195,9 @@
     <ClInclude Include="CivilEngine\headers\Truss.h">
       <Filter>CivilEngine\Header</Filter>
     </ClInclude>
+    <ClInclude Include="CivilEngine\headers\StaticSystem.h">
+      <Filter>CivilEngine\Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GraphicEngine\src\Events.cpp">
@@ -276,6 +279,9 @@
       <Filter>GraphicEngine\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CivilEngine\src\Truss.cpp">
+      <Filter>CivilEngine\source</Filter>
+    </ClCompile>
+    <ClCompile Include="CivilEngine\src\StaticSystem.cpp">
       <Filter>CivilEngine\source</Filter>
     </ClCompile>
   </ItemGroup>

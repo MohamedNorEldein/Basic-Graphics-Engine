@@ -10,15 +10,18 @@ struct Support
     float3 pos, externalForce;
     uint num, memberIndecies[5];
     uint reactionNum;
-    float3 reaction[3];
+    float3 rDir[3];
+    float r[3];
 };
 
 struct Member
 {
     float3 direction;
-    float magnitude_start, magnitude_end;
+    float magnitude;
     uint start, end;
+    bool ocubied;
 };
+
 
 RWStructuredBuffer<Node> vArray : register(u0);
 RWStructuredBuffer<Member> mArray : register(u1);

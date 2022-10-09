@@ -1,22 +1,8 @@
-#pragma once
-#include "Cube.h"
-#include "ComputeShader.h"
-#include "ShaderResource.h"
+#include "StaticSystem.h"
 
 typedef struct _Node {
 	DirectX::XMFLOAT3 pos, externalForce;
 	UINT num, memberIndecies[5];
-/*
-public:
-	_Node(DirectX::XMFLOAT3 pos) :pos(pos), num(0)
-	{
-	}
-
-	_Node(DirectX::XMFLOAT3 pos, const DirectX::XMFLOAT3& d1) :pos(pos), num(0)
-	{
-		externalForce = (d1);
-	}
-	*/
 }_Node;
 
 typedef struct _support 
@@ -24,13 +10,15 @@ typedef struct _support
 	DirectX::XMFLOAT3 pos, externalForce;
 	UINT num, memberIndecies[5];
 	UINT reactionNum;
-	DirectX::XMFLOAT3 reaction[3];
+	DirectX::XMFLOAT3 rDir[3];
+	float r[3];
 }_support;
 
 typedef struct _Member {
 	DirectX::XMFLOAT3 direction;
-	float magnitude_start, magnitude_end;
+	float magnitude;
 	UINT start, end;
+	bool ocupied;
 }_Member;
 
 
@@ -57,30 +45,29 @@ public:
 };
 
 
-
 class Truss
 {
 private:
 	std::vector<_Node> nodes = {
-	_Node{	{2.0f,	0.0f,	0.0f},	{0	,-10,0}	,4	,{0	,1,5,6,0}},		// 0
-	_Node{	{1.0f,	2.0f,	0.0f},	{0	,0	,0}	,3	,{4	,5,3,0,0}},		// 1
-	_Node{	{3.0f,	2.0f,	0.0f},	{0	,0	,0}	,3	,{2	,3,6,0,0}}		// 2
+	_Node{	{2.0f,	0.0f,	0.0f},	{0	,-10,0}	,4	,{0	,3,4,6,0}},	// 0
+	_Node{	{1.0f,	2.0f,	0.0f},	{0	,0	,0}	,3	,{0	,1,5,0,0}},	// 1
+	_Node{	{3.0f,	2.0f,	0.0f},	{0	,0	,0}	,3	,{2	,1,6,0,0}}	// 2
 	};
 
 	std::vector<_support> supports = 
 	{
-	_support{	{0.0f,	0.0f,	0.0f},	{0,0,0}	,2	,{0	,4,0,0,0}	,0	,{{0,5.0f,0},{0,0,0},{0,0,0} }},		// 3
-	_support{	{4.0f,	0.0f,	0.0f},	{0,0,0}	,2	,{1	,2,0,0,0}	,0	,{{0,5.0f,0},{0,0,0},{0,0,0} }},		// 4
+	_support{	{0.0f,	0.0f,	0.0f},	{0,0,0}	,2	,{5	,4,0,0,0}	,2	,{{0,1.0f,0},{1,0,0},{0,0,0}},	{0,0,0} },		// 3
+	_support{	{4.0f,	0.0f,	0.0f},	{0,0,0}	,2	,{3	,2,0,0,0}	,1	,{{0,1.0f,0},{0,0,0},{0,0,0}},	{0,0,0}	}		// 4
 	};
 
 	std::vector<_Member> members = {
-	{{0	,0	,0}	,0	,0	,0	,1	}, //0
-	{{0	,0	,0}	,0	,0	,1	,2	}, //1
-	{{0	,0	,0}	,0	,0	,2	,4	}, //2
-	{{0	,0	,0}	,0	,0	,4	,0	}, //3
-	{{0	,0	,0}	,0	,0	,3	,0	}, //4 
-	{{0	,0	,0}	,0	,0	,1	,3	}, //5
-	{{0	,0	,0}	,0	,0	,2	,0	}  //6
+	{{0	,0	,0}	,0	,0	,1 ,0}, //0
+	{{0	,0	,0}	,0	,1	,2 ,0}, //1
+	{{0	,0	,0}	,0	,2	,4 ,0}, //2
+	{{0	,0	,0}	,0	,4	,0 ,0}, //3
+	{{0	,0	,0}	,0	,3	,0 ,0}, //4 
+	{{0	,0	,0}	,0	,1	,3 ,0}, //5
+	{{0	,0	,0}	,0	,2	,0 ,0}  //6
 	};
 
 	ComputeShader* NodeShader, * memberShader, * PreMemberShader;
@@ -128,13 +115,13 @@ public:
 
 	void pushMember(UINT startNodeIndex, UINT endNodeIndex)
 	{
-		using namespace DirectX;
-		XMFLOAT3 dir;
-		dir.x = getPos(endNodeIndex).x - getPos(startNodeIndex).x;
-		dir.y = getPos(endNodeIndex).y - getPos(startNodeIndex).y;
-		dir.z = getPos(endNodeIndex).z - getPos(startNodeIndex).z;
+		nodes[startNodeIndex].memberIndecies[nodes[startNodeIndex].num] = members.size();
+		nodes[startNodeIndex].num++;
 
-		members.push_back({ dir,0,0,startNodeIndex ,endNodeIndex });
+		nodes[endNodeIndex].memberIndecies[nodes[endNodeIndex].num] = members.size();
+		nodes[endNodeIndex].num++;
+
+		members.push_back({ {},0,startNodeIndex ,endNodeIndex,0 });
 	}
 
 	void attachNodeShader(const wchar_t* shaderSrc)
@@ -155,43 +142,43 @@ public:
 		PreMemberShader = new ComputeShader(gfx, shaderSrc, false);
 	}
 
-	void printMembers(ComputeShaderOutput<_Member>& memberBuffer) {
+	void printf(ComputeShaderOutput& memberBuffer) {
 		{
-			_Member* m = memberBuffer.read(gfx);
+			_Member* m = memberBuffer.read<_Member>(gfx);
 
 			for (UINT i = 0; i < members.size(); ++i) {
-				printf("%u : %u -> %u : <%f %f %f> magnitude %f, %f\n",
+				::printf("%u : %u -> %u : <%f %f %f> magnitude %f, %d\n",
 					i, m[i].start, m[i].end,
 					m[i].direction.x, m[i].direction.y, m[i].direction.z,
-					m[i].magnitude_start,m[i].magnitude_end
+					m[i].magnitude,m[i].ocupied
 				);
 			}
-			printf("/**************/\n");
+			::printf("/**************/\n");
 		}
 	}
 
-	void printSupport(ComputeShaderOutput<_support>& supportBuffer) {
+	void printf(ComputeShaderOutput& supportBuffer) {
 		{
-			_support* m = supportBuffer.read(gfx);
+			_support* m = supportBuffer.read<_support>(gfx);
 			for (UINT i = 0; i < supports.size(); ++i) {
-				printf("%u : f {%f %f %f},\n\t%u r1 {%f %f %f},r2 {%f %f %f}, r3{%f %f %f} \n", i,
+				::printf("%u : f {%f %f %f},\n\t%u r1 %f,r2 %f r3 %f \n", i,
 					m[i].externalForce.x, m[i].externalForce.y, m[i].externalForce.z,
 					m[i].reactionNum,
-					m[i].reaction[0].x, m[i].reaction[0].y, m[i].reaction[0].z,
-					m[i].reaction[1].x, m[i].reaction[1].y, m[i].reaction[1].z,
-					m[i].reaction[2].x, m[i].reaction[2].y, m[i].reaction[2].z
+					m[i].r[0],
+					m[i].r[1],
+					m[i].r[2]
 				);
 			}
-			printf("/**************/\n");
+			::printf("/**************/\n");
 		}
 	}
 
 
 	void Analyse(UINT length = 50)
 	{
-		ComputeShaderOutput<_Node> nodeBuffer(gfx, nodes, 0);
-		ComputeShaderOutput<_Member> memberBuffer(gfx, members, 1);
-		ComputeShaderOutput<_support> supportBuffer(gfx, supports, 2);
+		ComputeShaderOutput nodeBuffer(gfx, nodes, 0);
+		ComputeShaderOutput memberBuffer(gfx, members, 1);
+		ComputeShaderOutput supportBuffer(gfx, supports, 2);
 
 		nodeBuffer.bind(gfx);
 		memberBuffer.bind(gfx);
@@ -199,36 +186,21 @@ public:
 
 		PreMemberShader->bind(gfx);
 		gfx.getcontext()->Dispatch(1, 1, 1);
-
+		printf(memberBuffer);
+		
 		
 		for (size_t i = 0; i < length; i++)
 		{
 			NodeShader->bind(gfx);
 			gfx.getcontext()->Dispatch(1, 1, 1);
-			memberShader->bind(gfx);
-			gfx.getcontext()->Dispatch(1, 1, 1);
+			//memberShader->bind(gfx);
+			//gfx.getcontext()->Dispatch(1, 1, 1);
 		}
-		printMembers(memberBuffer);
-		printSupport(supportBuffer);
+		printf(memberBuffer);
+		printf(supportBuffer);
 		
 	}
 
-	void loadDataFromFile(const wchar_t* filePath) {
-		FILE* file = _wfopen(filePath, L"r");
-		wchar_t line[512];
 
-
-		while (fgetws(line, 512, file))
-		{
-			//swscanf(line,"%c %f %f %f")
-			if (line[0] = L'N')
-			{
-				float x, y, z, dx, dy, dz, r;
-				swscanf(line, L"N <%f %f %f> <%f %f %f> %f", &x, &y, &z, &dx, &dy, &dz, &r);
-			}
-
-		}
-
-	}
 };
 

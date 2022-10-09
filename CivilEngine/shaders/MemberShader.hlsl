@@ -1,3 +1,4 @@
+
 struct Node
 {
     float3 pos, externalForce;
@@ -9,14 +10,16 @@ struct Support
     float3 pos, externalForce;
     uint num, memberIndecies[5];
     uint reactionNum;
-    float3 reaction[3];
+    float3 rDir[3];
+    float r[3];
 };
 
 struct Member
 {
     float3 direction;
-    float magnitude_start, magnitude_end;
+    float magnitude;
     uint start, end;
+    bool ocubied;
 };
 
 RWStructuredBuffer<Node> vArray : register(u0);
@@ -29,7 +32,7 @@ RWStructuredBuffer<Support> sArray : register(u2);
 [numthreads(7, 1, 1)]
 void main(uint3 DTID : SV_GroupThreadID)
 {
-    thisMember.magnitude_start = (thisMember.magnitude_start + thisMember.magnitude_end) * 0.5f;
-    thisMember.magnitude_end =  thisMember.magnitude_start;
+ //   thisMember.magnitude_start = (thisMember.magnitude_start + thisMember.magnitude_end) * 0.5f;
+  //  thisMember.magnitude_end =  thisMember.magnitude_start;
     
 }

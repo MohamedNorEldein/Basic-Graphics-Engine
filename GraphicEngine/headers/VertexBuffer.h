@@ -80,7 +80,7 @@ public:
 		CHECK(GetDevice(gfx)->CreateBuffer(&BufferDesc, &vdata, &pVertexBuffer));
 	}
 
-	VertexBuffer(Graphics& gfx, vertexBufferData& vbd) : stride(vbd.getSizeOfVertex()), offset(0u), Bindable(BINDABLE_TYPE::VERTEX_BUFFER)
+	VertexBuffer(Graphics& gfx, BufferData& vbd) : stride(vbd.getSizeOfVertex()), offset(0u), Bindable(BINDABLE_TYPE::VERTEX_BUFFER)
 	{
 		D3D11_SUBRESOURCE_DATA vdata = { 0 };
 		vdata.pSysMem = vbd.Data();

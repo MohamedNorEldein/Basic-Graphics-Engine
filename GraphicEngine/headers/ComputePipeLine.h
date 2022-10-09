@@ -12,7 +12,8 @@ int printf(const DirectX::XMMATRIX& mat);
 
 
 
-class ComputePipeLine
+class ComputePipeLine:
+    public PipeLine 
 {
 private:
     ID3D11Device* pdevice;

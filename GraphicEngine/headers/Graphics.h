@@ -21,9 +21,19 @@
 int printf(const DirectX::XMVECTOR& v);
 int printf(const DirectX::XMMATRIX& mat);
 
+class PipeLine {
+public:
+
+public:
+    virtual ID3D11DeviceContext* getcontext() = 0;
+    virtual ID3D11Device* getdevice() = 0;
+
+};
+
 class FirstPearsonPerspective;
 
-class Graphics{
+class Graphics:
+    public PipeLine{
 private:
     ID3D11Device* pdevice;  
     // allocating memmory on d3d side

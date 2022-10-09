@@ -47,7 +47,7 @@ public:
 		return desc.data();
 	}
 
-	friend class Vertex;
+	friend class Item;
 
 public:
 	template<typename T>
@@ -132,7 +132,7 @@ public:
 		vertexSize += newSize;
 	}
 
-	friend class vertexBufferData;
+	friend class BufferData;
 };
 
 
@@ -176,12 +176,12 @@ public:
 
 };
 
-class Vertex {
+class Item {
 private:
 	byte* data;
 	LayoutStrucure& layout;
 public:
-	Vertex(byte* data, LayoutStrucure& layout):
+	Item(byte* data, LayoutStrucure& layout):
 		data(data), layout(layout)
 	{
 	}
@@ -191,16 +191,21 @@ public:
 		return *(T*)(data + layout.desc[i].AlignedByteOffset);
 	}
 
+	template<typename T>
+	T operator[](UINT i) {
+		return *(T*)(data + layout.desc[i].AlignedByteOffset);
+	}
+
 };
 
-class vertexBufferData {
+class BufferData {
 private:
 	LayoutStrucure& layout;
 	byte* data;
 	size_t sizeOfVertex, count;
 
 public:
-	vertexBufferData(LayoutStrucure& layout,size_t count) :
+	BufferData(LayoutStrucure& layout,size_t count) :
 		layout(layout), data((byte*)malloc(layout.size() * count )), sizeOfVertex(layout.size()) , count(count)
 	{
 		printf("vertex size : %d\n", sizeOfVertex);
@@ -221,8 +226,8 @@ public:
 
 	}
 
-	Vertex operator[](UINT vertexIndex) {
-		return Vertex(data + vertexIndex * layout.vertexSize,layout);
+	Item operator[](UINT vertexIndex) {
+		return Item(data + vertexIndex * layout.vertexSize,layout);
 	}
 
 	D3D11_INPUT_ELEMENT_DESC* getLayout() {
@@ -268,7 +273,7 @@ public:
 		return count;
 	}
 
-	~vertexBufferData() {
+	~BufferData() {
 		delete data;
 	}
 

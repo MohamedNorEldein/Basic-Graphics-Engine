@@ -24,29 +24,6 @@ const wchar_t* wstr(const char* str, size_t length) {
 	return _wstr;
 }
 
-int printf(const DirectX::XMMATRIX& mat) {
-	using namespace DirectX;
-	XMFLOAT4X4 f;
-	XMStoreFloat4x4(&f,
-		mat);
-	printf("Matrix\n");
-	printf("[%f, %f, %f, %f]\n", f._11, f._21, f._31, f._41);
-	printf("[%f, %f, %f, %f]\n", f._12, f._22, f._32, f._42);
-	printf("[%f, %f, %f, %f]\n", f._13, f._23, f._33, f._43);
-	printf("[%f, %f, %f, %f]\n", f._14, f._24, f._34, f._44);
-	return 0;
-}
-
-int printf(const DirectX::XMVECTOR& v) {
-	using namespace DirectX;
-	XMFLOAT4 f;
-	XMStoreFloat4(&f,
-		v);
-	printf("vector\n");
-	printf("<%f, %f, %f, %f>\n", f.x, f.y, f.z, f.w);
-
-	return 0;
-}
 
 void ObjMesh::updateAPI(Graphics& gfx, TransformCBuffer& tr, DirectX::XMMATRIX PTrMat)
 {
@@ -243,7 +220,7 @@ void ObjModel::loadModelFromFile(const std::string& folderName, const std::strin
 
 
 
-		vertexBufferData vbd(la2, pmesh->mNumVertices);
+		BufferData vbd(la2, pmesh->mNumVertices);
 		vbd.addData("TEXCOORD", pmesh->mTextureCoords[0]);
 		vbd.addData("POSITION", pmesh->mVertices);
 		vbd.addData("NORMAL", pmesh->mNormals);
