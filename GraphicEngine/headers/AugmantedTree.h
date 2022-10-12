@@ -1,4 +1,4 @@
-/*
+ /*
 * an AVL tree based system with
 * last edit in 26 septemper 2022
 * 
@@ -308,8 +308,7 @@ namespace AugmantedTree {
 
 namespace BTREE {
 
-    typedef int DATATYPE;
-
+    //typedef int DATATYPE;
     typedef struct BTN {
         UINT hight;
         BTN(UINT hight) : hight(hight)
@@ -321,7 +320,8 @@ namespace BTREE {
     }BTN;
 
 
-    typedef struct Node :BTN {
+    template<typename DATATYPE>
+    struct Node :BTN {
         DATATYPE* key;
         BTN* left, * right;
         Node(UINT hight, DATATYPE* key, BTN* left, BTN* right) :
@@ -329,10 +329,12 @@ namespace BTREE {
         {
 
         }
-    }Node;
+    };
 
+#define Node Node<DATATYPE>
 
-    typedef struct Leaf:BTN {
+    template<typename DATATYPE>
+    struct Leaf:BTN {
         UINT length;
         DATATYPE data[BTREE_BUFFER_SIZE];
 
@@ -437,9 +439,11 @@ namespace BTREE {
             return (Node*)this;
         }
 
-    }Leaf;
-     
+    };
 
+#define Leaf Leaf<DATATYPE>
+
+    template<typename DATATYPE>
     class Btree {
     private:
         Node* root;
@@ -561,9 +565,41 @@ namespace BTREE {
         }
 
     };
+    
+    template<typename KEYTYPE,typename DATATYPE>
+    struct DATA {
+        KEYTYPE key;
+        DATATYPE data;
 
+        DATA(KEYTYPE key, DATATYPE data):
+            key(key), data(data)
+        {
+        }
+    };
 
-};
+    template<typename KEYTYPE, typename DATATYPE>
+    bool operator < (const DATA<KEYTYPE, DATATYPE> &a,const DATA<KEYTYPE, DATATYPE>& b) {
+        return a.key < b.key;
+    }
 
+    template<typename KEYTYPE, typename DATATYPE>
+    bool operator > (const DATA<KEYTYPE, DATATYPE>& a, const DATA<KEYTYPE, DATATYPE>& b) {
+        return a.key > b.key;
+    }
+
+    template<typename KEYTYPE, typename DATATYPE>
+    bool operator == (const DATA<KEYTYPE, DATATYPE>& a, const DATA<KEYTYPE, DATATYPE>& b) {
+        return (a.key == b.key);
+    }
+
+    template<typename KEYTYPE, typename DATATYPE>
+    class Map:
+        public Btree< DATA<KEYTYPE, DATATYPE>>
+    {
+
+    };
+    
+}
+#undef Node
 
 #endif //DATASTRUCTURES_CPP_AUGMANTEDTREE_H

@@ -6,7 +6,7 @@
 #include "Light.h"
 #include "ObjModel.h"
 #include "cube.h"
-#include "ComputeShader.h"
+#include "StaticSystem.h"
 
 
 #ifndef MAIN_CPP_APP_H
@@ -21,7 +21,8 @@ private:
 private:
     // models
    
-    ObjModel GirlModel;// , HouseModel;
+    Structure1D system;
+   // ObjModel GirlModel;// , HouseModel;
 private:
     // camera and light
     ThirdPearsonPerspective camera;

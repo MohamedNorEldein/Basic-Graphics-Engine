@@ -1,5 +1,5 @@
 #include "StaticSystem.h"
-
+/*
 typedef struct _Node {
 	DirectX::XMFLOAT3 pos, externalForce;
 	UINT num, memberIndecies[5];
@@ -153,7 +153,6 @@ public:
 					m[i].magnitude,m[i].ocupied
 				);
 			}
-			::printf("/**************/\n");
 		}
 	}
 
@@ -169,7 +168,6 @@ public:
 					m[i].r[2]
 				);
 			}
-			::printf("/**************/\n");
 		}
 	}
 
@@ -204,3 +202,4 @@ public:
 
 };
 
+*/

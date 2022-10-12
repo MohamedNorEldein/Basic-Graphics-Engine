@@ -1,12 +1,7 @@
 
-//#include "App.h"
+#include "App.h"
 #define _XM_NO_INTRINSICS_
-
-#include "ComputePipeLine.h"
-#include "ShaderResource.h"
-#include "ComputeShader.h"
-
-#include "Truss.h"
+#include "StaticSystem.h"
 
 
 int printf(const DirectX::XMMATRIX& mat) {
@@ -36,39 +31,13 @@ int printf(const DirectX::XMVECTOR& v) {
 
 
 
-/*
-using namespace DirectX;
 
-typedef  DirectX::XMVECTOR float3;
-typedef unsigned int uint;
+using namespace DirectX;
 
 #define dot(v1,v2) (DirectX::XMVector3Dot(v1,v2)).vector4_f32[0]
 #define normalize(v) DirectX::XMVector3Normalize(v)
 
-
-
-struct Node
-{
-	float3 pos, externalForce;
-	uint num, memberIndecies[5];
-};
-
-struct Support
-{
-	float3 pos, externalForce;
-	uint num, memberIndecies[5];
-	uint reactionNum;
-	float3 rDir[3];
-	float r[3];
-};
-
-struct Member
-{
-	float3 direction;
-	float magnitude_start, magnitude_end;
-	uint start, end;
-};
-
+/*
 std::vector<Node> vArray = {
 	Node{	{2.0f,	0.0f,	0.0f},	{0	,-10,0}	,4	,{0	,3,4,6,0}},		// 0
 	Node{	{1.0f,	2.0f,	0.0f},	{0	,0	,0}	,3	,{0	,1,5,0,0}},		// 1
@@ -81,17 +50,17 @@ Support{	{0.0f,	0.0f,	0.0f},	{0,0,0}	,2	,{5	,4,0,0,0}	,1	,{{0,1.0f,0},{1.0,0,0},
 Support{	{4.0f,	0.0f,	0.0f},	{0,0,0}	,2	,{3	,2,0,0,0}	,1	,{{0,1.0f,0},{0.0,0,0},{0,0,0}},	{5.0,0,0}	},		// 4
 };
 
-std::vector<Member> mArray = {
-{{-0.447214	, 0.894427 	,0}	,	0	,2.502 ,0	,1	}, //0
-{{1.000000	, 0.000000 	,0}	,   0	,2.502 ,1	,2	}, //1
-{{0.447214	, -0.894427	,0}	,   0	,2.502 ,2	,4	}, //2
-{{-1.000000	, 0.000000 	,0}	,	0	,2.502 ,4	,0	}, //3
-{{1.000000	, 0.000000 	,0}	,	0	,2.502 ,3	,0	}, //4 
-{{-0.447214	, -0.894427	,0}	,   0	,2.502 ,1	,3	}, //5
-{{-0.447214	, -0.894427	,0}	,	0	,2.502 ,2	,0	}  //6
+std::vector<Member> mArray =
+{
+{{-0.447214	, 0.894427 	,0}	,	0 ,0 ,1	}, //0
+{{1.000000	, 0.000000 	,0}	,   0 ,1 ,2	}, //1
+{{0.447214	, -0.894427	,0}	,   0 ,2 ,4	}, //2
+{{-1.000000	, 0.000000 	,0}	,	0 ,4 ,0	}, //3
+{{1.000000	, 0.000000 	,0}	,	0 ,3 ,0	}, //4 
+{{-0.447214	, -0.894427	,0}	,   0 ,1 ,3	}, //5
+{{-0.447214	, -0.894427	,0}	,	0 ,2 ,0	}  //6
 };
 
-	
 float getMagnitude(uint vertexIndex, uint memberIndex)
 {
 	if (vertexIndex == mArray[memberIndex].start)
@@ -298,21 +267,12 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	freopen("CONIN$", "r", stdin);
 
 	{
-		/*
+		
 		App app;
 		app.go();
-		*/
 		
-		ComputePipeLine gfx;
-		Truss tr(gfx);
-		tr.attachMemberShader(L"CivilEngine\\shaders\\MemberShader.hlsl");
-
-		tr.attachNodeShader(L"CivilEngine\\shaders\\NodeShader.hlsl");
-
-		tr.attachPreMemberShader(L"CivilEngine\\shaders\\preMemberShader.hlsl");
-		tr.Analyse(15);
 		
-		//Analyis();
+		
 	}
 	std::cin.get();
 	FreeConsole();

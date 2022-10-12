@@ -192,9 +192,10 @@ public:
 	}
 
 	template<typename T>
-	T operator[](UINT i) {
+	T& operator[](UINT i) {
 		return *(T*)(data + layout.desc[i].AlignedByteOffset);
 	}
+
 
 };
 

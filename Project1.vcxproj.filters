@@ -313,5 +313,11 @@
     <FxCompile Include="CivilEngine\shaders\preMemberShader.hlsl">
       <Filter>CivilEngine\shaders</Filter>
     </FxCompile>
+    <FxCompile Include="GraphicEngine\shaders\VertexShader.hlsl">
+      <Filter>GraphicEngine\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="GraphicEngine\shaders\PixelShader.hlsl">
+      <Filter>GraphicEngine\Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

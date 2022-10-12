@@ -76,7 +76,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)GraphicEngine\headers;$(ProjectDir)GraphicEngine\ImGui;$(ProjectDir)CivilEngine\headers</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\computer\directX\Project1\CivilEngine\;$(ProjectDir)GraphicEngine\headers;$(ProjectDir)GraphicEngine\ImGui;$(ProjectDir)CivilEngine\headers</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -93,7 +93,7 @@
       <ConformanceMode>true</ConformanceMode>
       <CompileAsManaged>true</CompileAsManaged>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)GraphicEngine\headers;$(ProjectDir)GraphicEngine\ImGui;$(ProjectDir)CivilEngine\headers</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\computer\directX\Project1\CivilEngine\;$(ProjectDir)GraphicEngine\headers;$(ProjectDir)GraphicEngine\ImGui;$(ProjectDir)CivilEngine\headers</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -108,7 +108,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)GraphicEngine\headers;$(ProjectDir)GraphicEngine\ImGui;$(ProjectDir)CivilEngine\headers</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\computer\directX\Project1\CivilEngine\;$(ProjectDir)GraphicEngine\headers;$(ProjectDir)GraphicEngine\ImGui;$(ProjectDir)CivilEngine\headers</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
@@ -125,7 +125,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)GraphicEngine\headers;$(ProjectDir)GraphicEngine\ImGui;$(ProjectDir)CivilEngine\headers</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\computer\directX\Project1\CivilEngine\;$(ProjectDir)GraphicEngine\headers;$(ProjectDir)GraphicEngine\ImGui;$(ProjectDir)CivilEngine\headers</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
@@ -291,6 +291,18 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="GraphicEngine\shaders\PixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="GraphicEngine\shaders\VertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

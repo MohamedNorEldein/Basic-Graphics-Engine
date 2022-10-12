@@ -1,7 +1,7 @@
 #include "StaticSystem.h"
 
 
-StaticSystem::StaticSystem(ComputePipeLine& gfx) :
+System::System(Graphics& gfx) :
 	gfx(gfx)
 {
 	void* nodes = nullptr, * supports = nullptr, * members = nullptr;
@@ -9,59 +9,45 @@ StaticSystem::StaticSystem(ComputePipeLine& gfx) :
 
 }
 
-StaticSystem::~StaticSystem() {
-	delete NodeShader;
-	delete memberShader;
+System::~System() {
+//	delete NodeShader;
+//	delete memberShader;
 }
 
 
-void StaticSystem::bindNodeShader(const wchar_t* shaderSrc)
+void System::bindNodeShader(ComputeShader* shader)
 {
-	//	delete NodeShader;
-	NodeShader = new ComputeShader(gfx, shaderSrc, false);
+	NodeShader = shader;
 }
 
-void StaticSystem::bindMemberShader(const wchar_t* shaderSrc)
+void System::bindMemberShader(ComputeShader* shader)
 {
-	//delete memberShader;
-	memberShader = new ComputeShader(gfx, shaderSrc, false);
+	memberShader = shader;
 }
 
-void StaticSystem::bindPreMemberShader(const wchar_t* shaderSrc)
+void System::bindPreMemberShader(ComputeShader* shader)
 {
-	//	delete PreMemberShader;
-	PreMemberShader = new ComputeShader(gfx, shaderSrc, false);
+	PreMemberShader = shader;
 }
 
-void StaticSystem::bindNodesData(void* data, UINT num, size_t stride) {
-	nodes = data;
-	nodesNum = num;
-	nodesSize = stride;
+void System::bindNodesData(ComputeShaderOutput* sr) {
+	NodeData = sr;
 }
 
-void StaticSystem::bindMembersData(void* data, UINT num, size_t stride) {
-	members = data;
-	memberNum = num;
-	memberSize = stride;
-
+void System::bindMembersData(ComputeShaderOutput* sr) {
+	memberData = sr;
 }
 
-void StaticSystem::bindSupportData(void* data, UINT num, size_t stride)
+void System::bindSupportData(ComputeShaderOutput* sr)
 {
-	supports = data;
-	supportNum = 0;
-	supportSize = stride;
+	supportData = sr;
 }
 
-void StaticSystem::Analyse(UINT length)
+void System::Analyse(UINT length)
 {
-	ComputeShaderOutput nodeBuffer(gfx, nodes, nodesNum, nodesSize, 0);
-	ComputeShaderOutput	memberBuffer(gfx, members, memberNum, memberSize, 1);
-	ComputeShaderOutput supportBuffer(gfx, supports, supportNum, supportSize, 0);
-
-	nodeBuffer.bind(gfx);
-	memberBuffer.bind(gfx);
-	supportBuffer.bind(gfx);
+	NodeData->bind(gfx);
+	memberData->bind(gfx);
+	supportData->bind(gfx);
 
 	PreMemberShader->bind(gfx);
 	gfx.getcontext()->Dispatch(1, 1, 1);

@@ -1,6 +1,7 @@
 #pragma once
 #include "Bindable.h"
 #include "ComputePipeLine.h"
+#include "InputLayout.h"
 
 class ShaderResource :
 	public Bindable
@@ -213,6 +214,11 @@ private:
 	size_t size;
 public:
 
+	ComputeShaderOutput(Graphics& gfx, BufferData* data, UINT slot) :
+		ComputeShaderOutput(gfx,data->Data(), data->getCount(),data->getSizeOfVertex(), slot )
+	{
+	}
+
 	ComputeShaderOutput(PipeLine& gfx, UINT count, size_t item_size , UINT Slot) :
 		Bindable(SHADER_RESOURCE), Slot(Slot), size(item_size* count)
 	{
@@ -291,7 +297,7 @@ public:
 	}
 
 	template<typename T>
-	ComputeShaderOutput(PipeLine& gfx,std::vector<T> data, UINT Slot) :
+	ComputeShaderOutput(PipeLine& gfx,std::vector<T>& data, UINT Slot) :
 		Bindable(SHADER_RESOURCE), Slot(Slot),size(sizeof(T)* data.size())
 	{
 		/* create buffer to be used by gpu as output */

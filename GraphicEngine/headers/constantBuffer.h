@@ -153,8 +153,8 @@ public:
                     Tr
                     *
                     gfx.getCameraProjection()
-                    *
-                    gfx.getProjection()
+                   *
+                   gfx.getProjection()
                 )
             });
     }
