@@ -1,7 +1,7 @@
 
-Texture2D text;
+//Texture2D text;
 
-sampler smplr;
+//sampler smplr;
 
 cbuffer lightSource
 {
@@ -11,6 +11,11 @@ cbuffer lightSource
     float diffuseIntensity;
     float ambientIntensity;
 
+};
+
+cbuffer lightSource
+{
+    float3 c;
 };
 
 
@@ -26,5 +31,5 @@ float4 main(VSINPUT vin) : SV_Target
 	
     float diffuse = diffuseIntensity * dot(vin.normal, lightDir) / (length(vin.normal) * length(lightDir));
     
-    return float4(normalize(ambient) * ambientIntensity + diffuse * lightColor, 1.0) * text.Sample(smplr, vin.tex2d);
+    return float4(normalize(ambient) * ambientIntensity + diffuse * lightColor, 1.0) * float4(c,1.0);
 }

@@ -49,6 +49,9 @@
     <Filter Include="CivilEngine\shaders">
       <UniqueIdentifier>{c7a7e4af-961e-465c-836e-a912ce801728}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PyWraper">
+      <UniqueIdentifier>{ff3e3fd1-feda-4f12-854f-b71c8cc06107}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dxtex\include\dxtex\scoped.h">
@@ -198,6 +201,9 @@
     <ClInclude Include="CivilEngine\headers\StaticSystem.h">
       <Filter>CivilEngine\Header</Filter>
     </ClInclude>
+    <ClInclude Include="PythonWraper\PyWraper.h">
+      <Filter>GraphicEngine\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GraphicEngine\src\Events.cpp">
@@ -216,9 +222,6 @@
       <Filter>GraphicEngine\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GraphicEngine\src\Light.cpp">
-      <Filter>GraphicEngine\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CivilEngine\src\App.cpp">
       <Filter>GraphicEngine\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GraphicEngine\src\ObjModel.cpp">
@@ -278,11 +281,14 @@
     <ClCompile Include="GraphicEngine\src\DDSTexture.cpp">
       <Filter>GraphicEngine\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CivilEngine\src\Truss.cpp">
-      <Filter>CivilEngine\source</Filter>
+    <ClCompile Include="CivilEngine\src\App.cpp">
+      <Filter>GraphicEngine\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CivilEngine\src\StaticSystem.cpp">
-      <Filter>CivilEngine\source</Filter>
+      <Filter>GraphicEngine\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PythonWraper\PyWraper.cpp">
+      <Filter>GraphicEngine\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -303,15 +309,6 @@
     </FxCompile>
     <FxCompile Include="GraphicEngine\shaders\CubeVertexShader.hlsl">
       <Filter>GraphicEngine\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="CivilEngine\shaders\MemberShader.hlsl">
-      <Filter>CivilEngine\shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="CivilEngine\shaders\NodeShader.hlsl">
-      <Filter>CivilEngine\shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="CivilEngine\shaders\preMemberShader.hlsl">
-      <Filter>CivilEngine\shaders</Filter>
     </FxCompile>
     <FxCompile Include="GraphicEngine\shaders\VertexShader.hlsl">
       <Filter>GraphicEngine\Shaders</Filter>

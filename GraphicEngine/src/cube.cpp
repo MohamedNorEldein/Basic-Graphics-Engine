@@ -63,22 +63,26 @@ D3D11_INPUT_ELEMENT_DESC ied[] = {
 
 };
 
+RawCBuffer* Cube::pcb;
+
 
 void Cube::generate() {
 	printf("loading static bindables across all the cube class\n");
-	VertexShader* vs = new VertexShader(gfx, L"shaders\\CubeVertexShader.hlsl",false);
+	VertexShader* vs = new VertexShader(gfx, L"GraphicEngine\\shaders\\CubeVertexShader.hlsl",false);
 	//Cube::pcb = new PixelConstantBuffer(gfx, 1u, sizeof(Cube::COLOR));
 	dc.AddBindable(new IndexBuffer(gfx, indeces));
 	dc.AddBindable(new VertexBuffer(gfx, vBuffData));
 	dc.AddBindable(vs);
-	dc.AddBindable(new PixelShader(gfx, L"shaders\\CubePixelShader.hlsl",false));
+	dc.AddBindable(new PixelShader(gfx, L"GraphicEngine\\shaders\\CubePixelShader.hlsl",false));
 	dc.AddBindable(new InputLayout(gfx, ied,3, vs->getpBlob()));
 ///	dc.AddBindable(Cube::pcb);
 	tr = new TransformCBuffer(gfx);
+	pcb = new RawCBuffer(gfx, 1u, sizeof(COLOR), PIXEL_SHADER_STAGE);
+	dc.AddBindable(pcb);
 	dc.AddBindable(tr);
 	dc.AddBindable(new PrimativeTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
-	dc.AddBindable(new Texture(gfx, L"Models src data\\Great_Wave_off_Kanagawa2.jpg"));
-	dc.AddBindable(new Sampler(gfx, 0u));
+	//dc.AddBindable(new Texture(gfx, L"Models src data\\Great_Wave_off_Kanagawa2.jpg"));
+	//dc.AddBindable(new Sampler(gfx, 0u));
 }
 
 Cube::Cube(Graphics& gfx) :
@@ -100,7 +104,7 @@ void Cube::Draw()
 		XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&theta))
 		*
 		XMMatrixTranslationFromVector(XMLoadFloat3(&pos)));
-	//pcb->update(gfx, c);
+	pcb->update(gfx, c);
 
 	dc.Draw(gfx);
 

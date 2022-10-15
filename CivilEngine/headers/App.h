@@ -15,17 +15,17 @@
 class App {
 private:
     // Basic D3D stuff
-    Window window;
-    Graphics gfx;
-
-private:
-    // models
    
-    Structure1D system;
-   // ObjModel GirlModel;// , HouseModel;
+    Window window;
+    Graphics& gfx;
+
+public:
+
+   Structure1D system;
+   
 private:
     // camera and light
-    ThirdPearsonPerspective camera;
+    FirstPearsonPerspective camera;
     UniformLight lamp;
 
 public:
@@ -35,8 +35,10 @@ public:
 
 private:
     WPARAM doFrame();
-
 };
 
+
+Export
+int main();
 
 #endif //MAIN_CPP_APP_H

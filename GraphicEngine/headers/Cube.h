@@ -17,7 +17,7 @@ public:
 		DirectX::XMFLOAT3 Normal;
 		DirectX::XMFLOAT2 Texture;
 	};
-
+private:
 	void generate();
 
 private:
@@ -29,8 +29,8 @@ private:
 	static Drawable dc;
 
 
-public:
-//	static PixelConstantBuffer* pcb;
+private:
+	static RawCBuffer* pcb;
 
 
 public:
@@ -55,6 +55,13 @@ public:
 		scale.y = y;
 		scale.z = z;
 	}
+
+	void setColor(float x, float y, float z) {
+		c.r = x;
+		c.b = y;
+		c.g = z;
+	}
+
 
 	void updatePos(float x, float y, float z) {
 		pos.x += x;

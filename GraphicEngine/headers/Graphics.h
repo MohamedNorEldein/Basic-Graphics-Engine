@@ -2,7 +2,7 @@
 // Created by m7mdn on 7/24/2022.
 //
 #include <WindowClass.h>
-#include <d3d11.h>
+#include <d3d11on12.h>
 #include <mndErrors.h>
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
@@ -27,7 +27,7 @@ public:
 public:
     virtual ID3D11DeviceContext* getcontext() = 0;
     virtual ID3D11Device* getdevice() = 0;
-
+    virtual ~PipeLine() {};
 };
 
 class FirstPearsonPerspective;
@@ -47,6 +47,7 @@ private:
     ID3D11DepthStencilView* pdsv;
 private:
     FirstPearsonPerspective* camera;
+
     DirectX::XMMATRIX projection;
     int width, height;
 
@@ -94,11 +95,12 @@ protected:
     float CameraTransilationSpeed;
 public:
 
-    FirstPearsonPerspective(Graphics&);
+    FirstPearsonPerspective();
 
-    virtual ~FirstPearsonPerspective() = default;
+    ~FirstPearsonPerspective() {
+    };
 
-    DirectX::XMMATRIX getCameraProjection();
+    const DirectX::XMMATRIX& getCameraProjection();
 
     virtual void updateCameraPosition(float x, float y, float z);
 
@@ -118,7 +120,7 @@ class ThirdPearsonPerspective :
     DirectX::XMVECTOR focus;
 
 public:
-    ThirdPearsonPerspective(Graphics& camera);
+    ThirdPearsonPerspective();
     void updateCameraPosition(float x, float y, float z);
     void updateCameraRotation(float _departure, float _lattude, float r);
     ~ThirdPearsonPerspective() = default;

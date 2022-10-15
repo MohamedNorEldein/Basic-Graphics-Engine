@@ -15,12 +15,9 @@
 #include "assimp/scene.h"
 
 #ifdef _DEBUG
-#pragma comment (lib, "D:/computer/directX/Project1/x64/Debug/assimp-vc143-mt")
-
+#pragma comment (lib, "D:/computer/directX/Civil Engine/x64/Debug/assimp-vc143-mt")
 #else
-
-#pragma comment (lib, "D:/computer/directX/Project1/x64/Release/assimp-vc143-mt")
-
+#pragma comment (lib, "D:/computer/directX/Civil Engine/x64/Debug/assimp-vc143-mt")
 #endif // _DEBUG
 
 __declspec(align(16))

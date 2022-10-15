@@ -43,7 +43,7 @@ public:
 		throw std::exception();
 	}
 
-	constexpr D3D11_INPUT_ELEMENT_DESC* data() {
+	 D3D11_INPUT_ELEMENT_DESC* data() {
 		return desc.data();
 	}
 

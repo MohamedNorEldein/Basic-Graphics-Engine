@@ -142,17 +142,17 @@ Graphics::~Graphics()
 	ImGui_ImplWin32_Shutdown();
 	ImGui_ImplDX11_Shutdown();
 	ImGui::DestroyContext();
-
-	if (!pTarget)
-		pTarget->Release();
-	if (!pswapChain)
-		pswapChain->Release();
-	if (!pcontext)
-		pcontext->Release();
-	if (!pdevice)
-		pdevice->Release();
-	if (!pdsv)
+	if (pdsv)
 		pdsv->Release();
+	if (pTarget)
+		pTarget->Release();
+	if (pswapChain)
+		pswapChain->Release();
+	if (pcontext)
+		pcontext->Release();
+	if (pdevice)
+		pdevice->Release();
+	
 }
 
 void Graphics::BegainFrame()
@@ -235,15 +235,14 @@ void Graphics::setCamera(FirstPearsonPerspective* _camera)
 float FirstPearsonPerspective::cx = 0, FirstPearsonPerspective::cy = 0, FirstPearsonPerspective::cz = 0, FirstPearsonPerspective::rx = 0, FirstPearsonPerspective::ry = 0, FirstPearsonPerspective::rz = 0;
 using namespace DirectX;
 
-FirstPearsonPerspective::FirstPearsonPerspective(Graphics& gfx) :
+FirstPearsonPerspective::FirstPearsonPerspective() :
 	CameraPosition({0,0,0,0}),
 	cameraRotation({0,0,0,0}),
 	CameraTransilationSpeed(1)
 {
-	gfx.setCamera(this);
 }
 
-DirectX::XMMATRIX FirstPearsonPerspective::getCameraProjection()
+const DirectX::XMMATRIX& FirstPearsonPerspective::getCameraProjection()
 {
 	using namespace DirectX;
 
@@ -354,8 +353,8 @@ void FirstPearsonPerspective::CameraKeyboardCotrol(KeyBoardEvent keyBoardEvent) 
 	updateCameraRotation(rx, ry, rz);
 }
 
-ThirdPearsonPerspective::ThirdPearsonPerspective(Graphics& camera) :
-	FirstPearsonPerspective(camera), focus({ 0,0,100,0 })
+ThirdPearsonPerspective::ThirdPearsonPerspective() :
+	focus({ 0,0,100,0 })
 {
 
 }

@@ -22,42 +22,13 @@
 * 
 */
 
-
-struct Node
-{
-    float3 pos, externalForce;
-    uint num, memberIndecies[5];
-};
-
-struct Support
-{
-    float3 pos, externalForce;
-    uint num, memberIndecies[5];
-    uint reactionNum;
-    float3 rDir[3];
-    float r[3];
-};
-
-struct Member
-{
-    float3 direction;
-    float magnitude;
-    uint start, end;
-    bool ocubied;
-};
-
-RWStructuredBuffer<Node> vArray : register(u0);
-RWStructuredBuffer<Member> mArray : register(u1);
-RWStructuredBuffer<Support> sArray : register(u2);
-
+#include "TrussTypes.hlsl"
 
 float getMagnitude(uint vertexIndex, uint memberIndex)
 {
-//	if (vertexIndex == mArray[memberIndex].start)
-		return mArray[memberIndex].magnitude;
-//	return mArray[memberIndex].magnitude_end; 
-}
+    return (mArray[memberIndex].magnitude_start + mArray[memberIndex].magnitude_end ) * 0.5f;
 
+}
 
 float3 getdirection(uint vertexIndex, uint memberIndex)
 {
@@ -68,16 +39,15 @@ float3 getdirection(uint vertexIndex, uint memberIndex)
 
 void setMagnitude(uint vertexIndex, uint memberIndex, float value)
 {
-    // wait until the memory is free
-    while (mArray[memberIndex].ocubied == true);
-    // ocuby memory
-    mArray[memberIndex].ocubied =  true;
-    // modify memory
-    mArray[memberIndex].magnitude = (value + mArray[memberIndex].magnitude) * 0.5;
-    // unocubiy memory
-    mArray[memberIndex].ocubied = false;
-}
+    if (mArray[memberIndex].start == vertexIndex)
+    {
+        mArray[memberIndex].magnitude_start = (value );
+        return;
+    }
+    mArray[memberIndex].magnitude_end = (value);
 
+   
+}
 
 void solveMember(uint vertexIndex, uint memberIndex)
 {    
@@ -99,63 +69,62 @@ void solveMember(uint vertexIndex, uint memberIndex)
 
 // the index of support[i] as vertex = [i + n] 
 
-void solveMemberR(uint vertexIndex, uint memberIndex, uint num)
+void solveMemberR(uint vertexIndex, uint memberIndex)
 {
     float a = { 0 };
     uint j = 0;
     float3 memberDirection = getdirection(vertexIndex, memberIndex);
 
-    for (uint i = 0; i < sArray[vertexIndex - num].num; ++i)
+    for (uint i = 0; i < vArray[vertexIndex].num; ++i)
     {
-        j = sArray[vertexIndex - num].memberIndecies[i];
+        j = vArray[vertexIndex].memberIndecies[i];
         if (j != memberIndex)
         {
             a += (dot(getdirection(vertexIndex, j), getdirection(vertexIndex, memberIndex))) * getMagnitude(vertexIndex, j);
         }
     }
-    a += dot(sArray[vertexIndex - num].externalForce, getdirection(vertexIndex, memberIndex));
+    a += dot(vArray[vertexIndex].externalForce, getdirection(vertexIndex, memberIndex));
 
     j = 0;
-    while (j < sArray[vertexIndex - num].reactionNum)
+    while (j < sArray[vArray[vertexIndex].supportIndex].reactionNum)
     {
-        a += dot(memberDirection, sArray[vertexIndex - num].rDir[j]) * sArray[vertexIndex - num].r[j];
+        a += dot(memberDirection, sArray[vArray[vertexIndex].supportIndex].rDir[j]) * sArray[vArray[vertexIndex].supportIndex].r[j];
         j++;
     }
     setMagnitude(vertexIndex, memberIndex, -a);
 }
 
-void solveReaction(uint vertexIndex, uint k, uint num)
+void solveReaction(uint vertexIndex, uint k)
 {
 
     float a = { 0 };
     uint j = 0;
-    sArray[vertexIndex - num].rDir[k];
+    sArray[vArray[vertexIndex].supportIndex].rDir[k];
 
-    for (uint i = 0; i < sArray[vertexIndex - num].num; ++i)
+    for (uint i = 0; i < vArray[vertexIndex].num; ++i)
     {
-        j = sArray[vertexIndex - num].memberIndecies[i];
+        j = vArray[vertexIndex].memberIndecies[i];
         a += dot(getdirection(vertexIndex, j), getdirection(vertexIndex, 0)) * getMagnitude(vertexIndex, j);
     }
     j = 0;
-    while (j < sArray[vertexIndex - num].reactionNum)
+    while (j < sArray[vArray[vertexIndex].supportIndex].reactionNum)
     {
         if (j != k)
         {
-            a += dot(getdirection(vertexIndex, 0), sArray[vertexIndex - num].rDir[j]) * sArray[vertexIndex - num].r[j];
+            a += dot(getdirection(vertexIndex, 0), sArray[vArray[vertexIndex].supportIndex].rDir[j]) * sArray[vArray[vertexIndex].supportIndex].r[j];
         }
 
         j++;
     }
 
-    sArray[vertexIndex - num].r[k] = -a / (dot(getdirection(vertexIndex, 0), sArray[vertexIndex - num].rDir[k]));
+    sArray[vArray[vertexIndex].supportIndex].r[k] = -a / (dot(getdirection(vertexIndex, 0), sArray[vArray[vertexIndex].supportIndex].rDir[k]));
 }
 
 
-[numthreads(5, 1, 1)]
+[numthreads(NODES_NUM, 1, 1)]
 void main(uint3 DTID : SV_GroupThreadID)
 {
-    uint num = 3;
-    if (DTID.x < num)
+    if (vArray[DTID.x].supportIndex==-1)
     {
         for (uint i = 0; i < vArray[DTID.x].num; ++i)
         {
@@ -165,14 +134,14 @@ void main(uint3 DTID : SV_GroupThreadID)
     else
     {
         uint i = 0;
-        for (i = 0; i < sArray[DTID.x - num].reactionNum; ++i)
+        for (i = 0; i < sArray[vArray[DTID.x].supportIndex].reactionNum; ++i)
         {
-            solveReaction(DTID.x, i, num);
+            solveReaction(DTID.x, i);
         }
 
-        for (i = 0; i < sArray[DTID.x - num.x].num; ++i)
+        for (i = 0; i < vArray[DTID.x ].num; ++i)
         {
-            solveMemberR(DTID.x, sArray[DTID.x - num].memberIndecies[i], num);
+            solveMemberR(DTID.x, vArray[DTID.x].memberIndecies[i]);
         }
 		
 

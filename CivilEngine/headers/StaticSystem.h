@@ -2,41 +2,15 @@
 
 #include "ComputeShader.h"
 #include "ShaderResource.h"
+#include "Cube.h"
+
+#ifndef Export
+#define Export extern "C" __declspec(dllimport)
+#endif // Export
 
 
-#include <dxf/drw_base.h>
-#include <dxf/drw_classes.h>
-#include <dxf/drw_entities.h>
-#include <dxf/drw_header.h>
-#include <dxf/drw_interface.h>
-#include <dxf/drw_objects.h>
-#include <dxf/libdwgr.h>
-#include <dxf/libdxfrw.h>
-
-
-
-
-#include "constantBuffer.h"
-#include "InputLayout.h"
-#include "PixelShader.h"
-#include "VertexBuffer.h"
-#include "VertexShader.h"
-#include "IndexBuffer.h"
-#include "PrimativeTopology.h"
-#include "Texture.h"
-#include "Sampler.h"
-#include "Drawable.h"
-
-#ifdef _DEBUG
-#pragma comment (lib, "D:/computer/directX/Project1/x64/Debug/libdxfrw")
-
-#else
-
-#pragma comment (lib, "D:/computer/directX/Project1/x64/Release/libdxfrw")
-
-#endif // _DEBUG
-
-class System
+float atan(float num, float dem);
+Export class StructuralSystem
 {
 protected:
 	
@@ -45,8 +19,8 @@ protected:
 	Graphics& gfx;
 
 public:
-	System(Graphics& gfx);
-	virtual ~System();
+	StructuralSystem(Graphics& gfx);
+	virtual ~StructuralSystem();
 
 	void bindNodeShader(ComputeShader * shader);
 	void bindMemberShader(ComputeShader* shader);
@@ -70,9 +44,7 @@ public:
 	{
 	}
 
-	~stringVector()
-	{
-	}
+	~stringVector() = default;
 
 	UINT find(const char* type) 
 	{
@@ -85,28 +57,8 @@ public:
 		return 0;
 	}
 
-	
-
-	void insert(const char* item) {
-
-		if (size() == 0) {
-			push_back(item);
-			return;
-		}
-		UINT i = size();
-		push_back(0);
-
-		while ((i > 0) && strcmp(item, (*this)[i - 1]))
-		{
-			(*this)[i] = (*this)[i - 1];
-			i--;
-		}
-		(*this)[i] = item;
-
-	}
-
 	void print() {
-		for (auto a : (*this))
+		for (auto& a : (*this))
 		{
 			printf("(%s)",  a);
 		}
@@ -122,162 +74,139 @@ typedef unsigned int uint;
 struct Node
 {
 	float3 pos, externalForce;
-	uint num, memberIndecies[5];
+	uint num, memberIndecies[5]{0};
+	int supportIndex;	//	if it's a support what is its index of crossponding data -1 means not a support
+	bool ocubied;
+
+	Node() :
+		num(0), supportIndex(-1), ocubied(false)
+	{
+
+	}
+
+	Node(float x, float y, float z, float fx, float fy, float fz) :
+		pos(x,y,z), externalForce(fx, fy,fz),num(0),supportIndex(-1),ocubied(false)
+	{
+	}
+
+	Node(float x, float y, float z, float fx, float fy, float fz,int supportIndex) :
+		pos(x, y, z), externalForce(fx, fy, fz), num(0), supportIndex(supportIndex), ocubied(false)
+	{
+	}
+
 };
 
 struct Support
 {
-	float3 pos, externalForce;
-	uint num, memberIndecies[5];
 	uint reactionNum;
 	float3 rDir[3];
 	float r[3];
+
+	Support() 
+	{
+	}
+
+	Support(float3 _rDir):
+		reactionNum(1) 
+	{
+		rDir[0] = _rDir;
+	}
+
+	Support( float3 _rDir1, float3 _rDir2) :
+		reactionNum(2)
+	{
+		rDir[0] = _rDir1;
+		rDir[1] = _rDir2;
+	}
+	
+	Support(float3 _rDir1, float3 _rDir2, float3 _rDir3) :
+		reactionNum(3)
+	{
+		rDir[0] = _rDir1;
+		rDir[1] = _rDir2;
+		rDir[2] = _rDir3;
+	}
 };
 
 struct Member
 {
 	float3 direction;
-	float magnitude;
+	float magnitude_start, magnitude_end;
 	uint start, end;
 	bool ocubied;
+
+	Member(uint start,uint end):
+		start(start), end(end),magnitude_start(0),magnitude_end(0),ocubied(0)
+	{
+	}
+
+	Member():magnitude_start(0), magnitude_end(0), ocubied(0)
+	{
+
+	}
+
 };
 
 #define VertexNum 10
 
 class Structure1D:
-	public System,
-	public Drawable
+	public StructuralSystem
 {
-private:
-	struct vertex {
-		float x, y, z;
-	};
+public:
+	float scale = 100, nodeScale = 5;
 
-
-	D3D11_INPUT_ELEMENT_DESC ied[1] = 
-	{
-		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0}
-	};
-
-private:
+public:
 	// data holders;
-	std::vector<void*> data;
-	stringVector names;
-
+	std::vector<Node> nodes;
+	std::vector<Member> members;
+	std::vector<Support> supports;
+	//view data
+	std::vector<Cube> cubes;
 	// shaders
 	std::vector<ComputeShader*> shaders;
 	stringVector shadersNames;
 
-	// view data
-	vertex vertecies[VertexNum];
-	TransformCBuffer *tr;
+	
+
+
+	//
+	uint NODES_NUM, MEMBERS_NUM;
+	
+private:
+
 public:
-	Structure1D(Graphics& gfx) :
-		System(gfx),Drawable() 
-	{
-		tr = new TransformCBuffer(gfx, 0);
-		VertexShader* vs = new VertexShader(gfx, L"GraphicEngine\\shaders\\VertexShader.hlsl", false);
-		AddBindable(new PrimativeTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_LINELIST));
-		AddBindable(vs);
-		AddBindable(new PixelShader(gfx, L"GraphicEngine\\shaders\\PixelShader.hlsl", false));
-		AddBindable(new InputLayout(gfx,ied,_countof(ied), vs->getpBlob()));
-		AddBindable(tr);
-	}
-
+	Structure1D(Graphics& gfx);
 	~Structure1D() = default;
+	void push(const Node& _data);
+	void push(const Member& _data);
+	void push(const Support& _data);
 
-	void push(const char *name,std::vector<Node>* _data)
-	{
-		data.push_back(_data);
-		names.push_back(name);
-	}
-	void push(const char* name, std::vector<Member>* _data)
-	{
-		data.push_back(_data);
-		names.push_back(name);
-	}
-	void push(const char* name, std::vector<Support>* _data)
-	{
-		data.push_back(_data);
-		names.push_back(name);
-	}
-	void push(const wchar_t* shaderFileName)
-	{
-		shaders.push_back(new ComputeShader(gfx, shaderFileName, false));
-	}
-	void bindNodeShader(const char* shader) {
-		System::bindNodeShader(shaders[shadersNames.find(shader)]);
-	}
-	void bindMemberShader(const char* shader) {
-		System::bindMemberShader(shaders[shadersNames.find(shader)]);
-	}
-	void bindPreMemberShader(const char* shader){
-		System::bindPreMemberShader(shaders[shadersNames.find(shader)]);
-	}
-	void bindMembersData(const char* _data) {
-	//	delete this->memberData;
-		std::vector<Member>& ptr = *(std::vector<Member>*)data[names.find(_data)];
-		System::bindMembersData(new ComputeShaderOutput(gfx,ptr , 1));
-		std::vector<unsigned short> indecies;
-		for (size_t i = 0; i < ptr.size(); i++)
-		{
-			indecies.push_back( ptr[i].start);
-			indecies.push_back(ptr[i].end);
-		}
-		
+	void push(const std::vector<Node>& nodes);
+	void push(const std::vector<Member>& members);
+	void push(const std::vector<Support>& supports);
 
-		AddBindable(new IndexBuffer(gfx, indecies));
-	}
-	void bindNodesData(const char* _nodes, const char* _supports) {
+	void push(const wchar_t* shaderFileName, const char* name);
+	/* bind by name */
+	void bindNodeShader(const char* shader);
+	void bindMemberShader(const char* shader);
+	void bindPreMemberShader(const char* shader);
+	void processData();
+	void bindData();
+	/* bind by index */
+	void bindNodeShader(uint i);
+	void bindMemberShader(uint i);
+	void bindPreMemberShader(uint i);
+	
+	void ShowData();
+	void updateView();
+	void Draw(Graphics& gfx);
+	void GUIcontrol();
 
-		std::vector<Node>* ptr = (std::vector<Node>*)data[names.find(_nodes)];
-		System::bindNodesData(new ComputeShaderOutput(gfx, *ptr, 0u));
-		size_t i = 0;
-		Node* pt = ptr->data();
-		for (i = 0; i < ptr->size(); i++)
-		{
-			vertecies[i].x = pt[i].pos.x;
-			vertecies[i].y = pt[i].pos.y;
-			vertecies[i].z = pt[i].pos.z;
+	void ParseSupport(char* line);
+	void ParseMember(char* line);
+	void ParseNode(char* line);
 
-		}
+	void PareseLine(char* line);
+	void parseDataFromFile(const char* shaderFileName);
 
-		std::vector<Support>* ptr2 = (std::vector<Support>*)data[names.find(_supports)];
-		System::bindNodesData(new ComputeShaderOutput(gfx, *ptr2, 2u));
-		size_t n = i;
-
-		Support* pt2 = ptr2->data();
-
-		for (i; i < (ptr2->size() + n); i++)
-		{
-			vertecies[i].x = pt2[i-n].pos.x;
-			vertecies[i].y = pt2[i-n].pos.y;
-			vertecies[i].z = pt2[i-n].pos.z;
-
-		}
-		AddBindable(new VertexBuffer(gfx, vertecies,n+ ptr2->size()));
-		
-	}
-	void Draw(Graphics& gfx)
-	{
-		tr->update(gfx, XMMatrixScaling(100, 100, 100));
-		Drawable::Draw(gfx);
-	}
-
-	void GUIcontrol() {
-		char *buff1 = new char[100]{0};
-		char* buff2 = new char[100]{ 0 };
-
-		if (ImGui::Begin("Structure1D"))
-		{
-			ImGui::Columns(2);
-
-			ImGui::InputText("push Shader",buff1,100);
-			ImGui::InputText("push Data", buff2, 100);
-
-
-		}
-		ImGui::End();
-
-	}
 };

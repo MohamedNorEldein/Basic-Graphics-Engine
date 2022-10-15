@@ -65,8 +65,6 @@ Window::Window(const wchar_t* titel1, int width, int height)
 
 Window::~Window()
 {
-	
-
 	UnregisterClass(windowClassName, hInstance);
 	DestroyWindow(windowhandel);
 }
@@ -226,8 +224,6 @@ LRESULT CALLBACK Window::EvetProtocol(HWND handel, unsigned int msg, WPARAM wp, 
 		return DefWindowProc(handel, msg, wp, lp);
 
 	}
-
-	return DefWindowProc(handel, msg, wp, lp);
 
 }
 

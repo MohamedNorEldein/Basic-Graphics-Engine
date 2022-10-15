@@ -6,26 +6,37 @@
 
 
 std::vector<Node> vArray = {
-	Node{	{2.0f,	0.0f,	0.0f},	{0	,-10,0}	,4	,{0	,3,4,6,0}},		// 0
-	Node{	{1.0f,	2.0f,	0.0f},	{0	,0	,0}	,3	,{0	,1,5,0,0}},		// 1
-	Node{	{3.0f,	2.0f,	0.0f},	{0	,0	,0}	,3	,{2	,1,6,0,0}}
+	Node{	2.0f,0.0f,0.0f	,0	,-10,0	,-1	},		// 0
+	Node{	1.0f,2.0f,0.0f	,0	,0	,0	,-1	},		// 1
+	Node{	3.0f,2.0f,0.0f	,0	,0	,0	,-1	},		//	2
+	Node{	0.0f,0.0f,0.0f	,0	,0	,0	,0	},
+	Node{	4.0f,0.0f,0.0f	,0	,0	,0	,1	}
 };
 
+/*
+std::vector<Node> vArray = {
+	Node{	{2.0f,	0.0f,	0.0f},	{0	,-10,0}	,0	,{0	,0,0,0,0}, -1, 0},		// 0
+	Node{	{1.0f,	2.0f,	0.0f},	{0	,0	,0}	,0	,{0	,0,0,0,0}, -1, 0},		// 1
+	Node{	{3.0f,	2.0f,	0.0f},	{0	,0	,0}	,0	,{0	,0,0,0,0}, -1, 0},		//	2
+	Node{	{0.0f,	0.0f,	0.0f},	{0	,0	,0}	,0	,{0	,0,0,0,0},	0, 0},
+	Node{	{4.0f,	0.0f,	0.0f},	{0	,0	,0}	,0	,{0	,0,0,0,0},	1, 0}
+};
+*/
 std::vector<Support> sArray =
 {
-Support{	{0.0f,	0.0f,	0.0f},	{0,0,0}	,2	,{5	,4,0,0,0}	,1	,{{0,1.0f,0},{1.0,0,0},{0,0,0}},	{5.0,1.0,0} },		// 3
-Support{	{4.0f,	0.0f,	0.0f},	{0,0,0}	,2	,{3	,2,0,0,0}	,1	,{{0,1.0f,0},{0.0,0,0},{0,0,0}},	{5.0,0,0}	},		// 4
+Support{{0,1.0f,0},{1.0,0,0} },
+Support{{ 0,1.0f,0 }},
 };
 
 std::vector<Member> mArray =
 {
-{{-0.447214	, 0.894427 	,0}	,	0 ,0 ,1	}, //0
-{{1.000000	, 0.000000 	,0}	,   0 ,1 ,2	}, //1
-{{0.447214	, -0.894427	,0}	,   0 ,2 ,4	}, //2
-{{-1.000000	, 0.000000 	,0}	,	0 ,4 ,0	}, //3
-{{1.000000	, 0.000000 	,0}	,	0 ,3 ,0	}, //4 
-{{-0.447214	, -0.894427	,0}	,   0 ,1 ,3	}, //5
-{{-0.447214	, -0.894427	,0}	,	0 ,2 ,0	}  //6
+Member{0 ,1}, //0
+Member{1 ,2}, //1
+Member{2 ,4}, //2
+Member{4 ,0}, //3
+Member{3 ,0}, //4 
+Member{1 ,3}, //5
+Member{2 ,0}  //6
 };
 
 
@@ -48,7 +59,6 @@ WPARAM App::go() {
 
 
 	return msg.wParam;
-
 }
 COLOR c = { 1.0,0.50,0.20 };
 
@@ -77,58 +87,56 @@ WPARAM App::doFrame() {
 			printf("raw Mouse input enable\n");
 		}
 	}
-	//GirlModel.Draw();
-	
+		
 	system.Draw(gfx);
 	/* scene control */
 	camera.CameraMouseControl(window.mouseEvent);
 	camera.CameraKeyboardCotrol(window.keyBoardEvent);
+	
+	
 	/* Imgui */
 	ModelsGuiControl(gfx);
 	DrawAllModels(gfx);
+	system.GUIcontrol();
 
 	/*window end frame stuff */
 	gfx.EndFrame();
 	return 0;
 }
 
-App::App() : window(0, 1200, 600), gfx(window)
+App::App() : window(0, 1200, 600), gfx(*new Graphics(window))
 , lamp(gfx, 0u)
 //, GirlModel(gfx,"GraphicEngine\\Models src data", "nanosuit.obj" )
-,camera(gfx)
+,camera()
 ,system(gfx)
 {
 
 	gfx.setProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5, 10000.0f));
-	
-	/*
-	GirlModel.setPos(0, 0, 10);
-	GirlModel.setDiminsion(10);
-	GirlModel.setRotation(0, MATH_PI, 0);
-	*/
+	gfx.setCamera(&camera);
+
+
 	lamp.updateDir({ -1.0,1.0,-1.0 });
+	/*
+	system.push(vArray);
+	system.push(mArray);
+	system.push(sArray);
+	*/
 
-	system.push("nodes", &vArray);
-	system.push("members", &mArray);
-	system.push("supports", &sArray);
+	system.push(L"CivilEngine\\shaders\\NodeShader.hlsl","node");
+	system.push(L"CivilEngine\\shaders\\preMemberShader.hlsl","premember");
+	system.push(L"CivilEngine\\shaders\\MemberShader.hlsl", "member");
 
-	system.push(L"CivilEngine\\shaders\\MemberShader.hlsl");
-	system.push(L"CivilEngine\\shaders\\NodeShader.hlsl");
-	system.push(L"CivilEngine\\shaders\\preMemberShader.hlsl");
+	system.processData();
+
+	system.bindMemberShader("member");
+	system.bindNodeShader("node");
+	system.bindPreMemberShader("premember");
 	
-	system.bindMembersData("members");
-	system.bindNodesData("nodes","supports");
-
-	system.bindMemberShader("CivilEngine\\shaders\\MemberShader.hlsl");
-	system.bindNodeShader("CivilEngine\\shaders\\NodeShader.hlsl");
-	system.bindPreMemberShader("CivilEngine\\shaders\\preMemberShader.hlsl");
-
 }
 
 App::~App()
 {
-
-	return;
+	delete& gfx;
 }
 
 
